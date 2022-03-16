@@ -15,7 +15,7 @@ import java.sql.SQLException;
  */
 public class DBConnectionProviderHealth {
     
-    String dbPath = "C:\\Users\\elias\\Documents\\NetBeansProjects\\HealthApplication\\src\\database\\";
+    String dbPath = "C:\\Users\\elias\\Desktop\\VANIER\\5th Semester\\Programming\\CodeFinalProject\\GitHealthApp\\src\\database\\";
 
     String dbName = "databaseHealth.db";
 
