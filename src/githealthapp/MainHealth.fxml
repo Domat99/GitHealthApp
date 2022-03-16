@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="950.0" prefWidth="1500.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="healthapplication.controllerHealth">
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #B4C7E7;" BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="666.0" layoutY="329.0" text="Label">
+               <font>
+                  <Font name="Californian FB Italic" size="96.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </center>
+   <top>
+      <AnchorPane prefHeight="100.0" prefWidth="399.0" style="-fx-background-color: #ADB9CA;" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="54.0" fitWidth="26.0" layoutX="42.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Images/Picture2.png" />
+               </image>
+            </ImageView>
+            <Button fx:id="btnLogOut" layoutX="1356.0" layoutY="36.0" mnemonicParsing="false" onAction="#logOutClicked" style="-fx-cursor: hand; -fx-background-color: red;" text="Log Out" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font></Button>
+            <Label layoutX="71.0" layoutY="25.0" text="Dashboard">
+               <font>
+                  <Font name="Bell MT Bold" size="38.0" />
+               </font>
+            </Label>
+            <Label layoutX="942.0" layoutY="31.0" text="Account">
+               <font>
+                  <Font name="Bell MT Bold" size="38.0" />
+               </font>
+            </Label>
+            <Button fx:id="btnDeleteAccountMain" layoutX="1157.0" layoutY="36.0" mnemonicParsing="false" onAction="#deleteAccount2Clicked" style="-fx-cursor: hand; -fx-background-color: red;" text="DELETE ACCOUNT" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+   </top>
+</BorderPane>

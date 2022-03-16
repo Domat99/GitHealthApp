@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: #B4C7E7;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="healthapplication.controllerHealth">
+   <children>
+      <Text fx:id="txtWelcomeMessage" fill="RED" layoutX="82.0" layoutY="151.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: Rockwell; -fx-font-size: 35; -fx-text-alignment: center;" text="Delete an Account" wrappingWidth="635.0791015625" />
+      <Label fx:id="lbl1" layoutX="96.0" layoutY="178.0" prefHeight="30.0" prefWidth="609.0" style="-fx-text-alignment: center; -fx-font-size: 20;" text="Deleting you account will PERMENANTLY delete all your information" textFill="#cd2020" underline="true">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblUsername2" layoutX="159.0" layoutY="237.0" prefHeight="34.0" prefWidth="127.0" text="Username:">
+         <font>
+            <Font name="Impact" size="28.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtFldUsernameDelete" layoutX="284.0" layoutY="233.0" prefHeight="31.0" prefWidth="329.0" promptText="Type your Username here!">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </TextField>
+      <Label fx:id="lblPassword2" layoutX="161.0" layoutY="294.0" prefHeight="34.0" prefWidth="126.0" text="Password:">
+         <font>
+            <Font name="Impact" size="28.0" />
+         </font>
+      </Label>
+      <PasswordField fx:id="txtFldPasswordDelete" layoutX="284.0" layoutY="290.0" prefHeight="31.0" prefWidth="329.0" promptText="Enter your Password here!">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </PasswordField>
+      <Button fx:id="btnDeleteAccount" layoutX="284.0" layoutY="411.0" mnemonicParsing="false" onAction="#deleteClicked" style="-fx-background-color: red; -fx-cursor: hand;" text="DELETE" textFill="WHITE" />
+      <Button fx:id="btnConfrimDelete" layoutX="377.0" layoutY="411.0" mnemonicParsing="false" onAction="#confirmDeleteClicked" style="-fx-cursor: hand; -fx-background-color: red;" text="CONFIRM DELETE" textFill="WHITE" underline="true" visible="false">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnCancelDelete" layoutX="549.0" layoutY="411.0" mnemonicParsing="false" onAction="#cancelDeleteClicked" onMouseDragEntered="#mouseEnteredCancel" style="-fx-cursor: hand;" text="Cancel" />
+   </children>
+</AnchorPane>

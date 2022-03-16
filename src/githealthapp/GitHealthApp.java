@@ -5,7 +5,12 @@
  */
 package githealthapp;
 
+import java.io.IOException;
 import javafx.application.Application;
+import static javafx.application.Application.launch;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
@@ -15,11 +20,33 @@ import javafx.stage.Stage;
  */
 public class GitHealthApp extends Application {
     
+    
+    public static Stage stg;
+    
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
+
+        stg = primaryStage;
+        stg.setResizable(true);
+        stg.setMaxHeight(900);
+        stg.setMaxWidth(1500);
+        stg.centerOnScreen();
         
+        Parent root1 = FXMLLoader.load(getClass().getResource("FXMLHealth.fxml"));
         
+        Scene scene1 = new Scene(root1);
         
+        primaryStage.setTitle("Your Health App");
+        primaryStage.setScene(scene1);
+        primaryStage.show();
+    }
+    
+    public void changeScene(String fxml) throws IOException{
+        Parent pane =  FXMLLoader.load(getClass().getResource(fxml));
+        stg.getScene().setRoot(pane);
+        stg.setResizable(true);
+        //stg.setMaxHeight(900);
+        //stg.setMaxWidth(1500);
     }
 
     /**
