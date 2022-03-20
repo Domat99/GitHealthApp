@@ -227,6 +227,32 @@ public class controllerHealth {
             System.out.println("An Error Has Occured With Users Update: " + ex.getMessage());
         }
     }
+    
+    protected void createUserTable(TextField username){
+        
+        String user = username.getText().toLowerCase().trim();
+        
+        String sql = "CREATE TABLE IF NOT EXISTS " + user + " (\n"
+                + "	Date text,\n"
+                + "	time text,\n"
+                + "	Heart_Rate integer,\n"
+                + "     Oxygen_Level integer,\n"
+                + "     Calories_In integer,\n"
+                + "     Steps integer,\n"
+                + "     Calories_Out integer,\n"
+                + "     Sleep real\n);";
+        
+        try {
+            
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            
+            pstmt.executeUpdate();
+           
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("An Error Has Occured: " + ex.getMessage());
+        }
+    }
 
     //Checks if the username is already taken. If not, it saves the new user's
     //info using the save() function.
@@ -261,6 +287,7 @@ public class controllerHealth {
                 }
 
                 save(username2, password2, dp2, height2, weight2, lbl2, gender);
+                createUserTable(username2);
                 changeScenes("FXMLHealth.fxml", 500, 800);
             }
 
