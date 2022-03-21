@@ -8,8 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: #B4C7E7;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="githealthapp.controllerHealth">
+<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: #B4C7E7;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
    <children>
       <Text fx:id="txtWelcomeMessage" fill="RED" layoutX="82.0" layoutY="151.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: Rockwell; -fx-font-size: 35; -fx-text-alignment: center;" text="Delete an Account" wrappingWidth="635.0791015625" />
       <Label fx:id="lbl1" layoutX="96.0" layoutY="178.0" prefHeight="30.0" prefWidth="609.0" style="-fx-text-alignment: center; -fx-font-size: 20;" text="Deleting you account will PERMENANTLY delete all your information" textFill="#cd2020" underline="true">
@@ -44,5 +43,10 @@
          </font>
       </Button>
       <Button fx:id="btnCancelDelete" layoutX="549.0" layoutY="411.0" mnemonicParsing="false" onAction="#cancelDeleteClicked" onMouseDragEntered="#mouseEnteredCancel" style="-fx-cursor: hand;" text="Cancel" />
+      <Label fx:id="lblDeleteInfo" layoutX="203.0" layoutY="353.0" prefHeight="27.0" prefWidth="410.0" textFill="RED">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

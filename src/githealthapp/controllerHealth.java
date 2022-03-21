@@ -39,12 +39,12 @@ public class controllerHealth {
     private PasswordField txtFldPassword;
     @FXML
     private Label lblNotFound;
-
+    
     @FXML
     private void logInClicked(ActionEvent event) throws IOException {
         checkLogin();
     }
-
+     
     @FXML
     public void adminBtnClicked(ActionEvent event) throws IOException {
         lblNotFound.setText("Button not working yet.");
@@ -323,9 +323,17 @@ public class controllerHealth {
     private TextField txtFldUsernameDelete;
     @FXML
     private PasswordField txtFldPasswordDelete;
-
     @FXML
-    private void deleteClicked(ActionEvent event) {
+    private Label lblDeleteInfo;
+    
+    
+    
+    @FXML
+    private void deleteClicked(ActionEvent event) throws IOException{
+//        String userToDelete = txtFldUsernameDelete.getText().toLowerCase().trim();
+//        String passwordToDelete = txtFldPasswordDelete.getText().toLowerCase().trim();
+//        importDeleteAccount(userToDelete, passwordToDelete, lblDeleteInfo);
+        
         btnConfrimDelete.setVisible(true);
         btnDeleteAccount.setVisible(false);
     }
@@ -348,5 +356,43 @@ public class controllerHealth {
         Tooltip tt1 = new Tooltip("Cancel and Sign out");
         btn1.setTooltip(tt1);
     }
+    
+//    private Boolean importDeleteAccount(String s1, String s2, Label lbl) throws IOException {
+//
+//        String query = "SELECT Password FROM Users WHERE UserName = ?";
+//
+//        try {
+//            PreparedStatement stmt = connection.prepareStatement(query);
+//
+//            stmt.setString(1, s1);
+//
+//            ResultSet resultSet = stmt.executeQuery();
+//
+//            if (!resultSet.isBeforeFirst()) {
+//                lbl.setText("User not found.");
+//                lbl.setStyle("-fx-text-fill: #FF0000");//Red
+//            } else {
+//                while (resultSet.next()) {
+//                    String retrievePassword = resultSet.getString("Password");
+//                    lbl.setText("Wrong Password");
+//                    lbl.setStyle("-fx-text-fill: #FF0000");//Red
+//
+//                    if (retrievePassword.equals(s2)) {
+//                        lbl.setText("Success!!");
+//                        lbl.setStyle("-fx-text-fill: #00B050");//Green
+//
+//                    }
+//                }
+//
+//            }
+//
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//            System.out.println("An Error Has Occured With PhysycsValues Selecting: " + ex.getMessage());
+//        }
+//        return null;
+//
+//    }
 
+ 
 }
