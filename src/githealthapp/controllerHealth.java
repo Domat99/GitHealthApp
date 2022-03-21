@@ -22,6 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tooltip;
+import java.time.LocalDate;
 
 /**
  *
@@ -119,6 +120,9 @@ public class controllerHealth {
 
     private void checkValues() throws IOException {
 
+        LocalDate date1 = LocalDate.now().minusYears(16);
+        LocalDate birthDate1 = birthDate.getValue();
+        
         if ((txtFldCreateUsername.getText().trim().isEmpty())
                 || (txtFldCreatePassword.getText().trim().isEmpty())
                 || (txtFldConfirmPassword.getText().trim().isEmpty())
@@ -129,7 +133,7 @@ public class controllerHealth {
             messageLabel.setText("Please fill all the fields");
             messageLabel.setStyle("-fx-text-fill: #D05F12");//Orange
         } else if ((txtFldCreatePassword.getText().trim()).equals(txtFldConfirmPassword.getText().trim())) {
-            if (birthDate.getValue().getYear() <= 2005) {  //Change this to age <18 after you learn how to find age///////////////////////                       
+            if (birthDate1.isBefore(date1)){                      
 
                 if ((txtFldCreatePassword.getText().trim().chars().count()) >= (8.00)) {
 
@@ -273,6 +277,9 @@ public class controllerHealth {
             if (resultSet.isBeforeFirst()) {
                 lbl2.setText("The username is already taken, please choose another one");
                 lbl2.setStyle("-fx-text-fill: #FF0000");//Red
+            } else if(username2.getText().toLowerCase().trim().equals("users")){
+                lbl2.setText("This username is not available, please choose another one");
+                lbl2.setStyle("-fx-text-fill: #FF0000");//Red
             } else {
                 lbl2.setText("Success! Welcome to Sehtak Fitness!");
                 lbl2.setStyle("-fx-text-fill: #00B050");//Green
@@ -294,7 +301,6 @@ public class controllerHealth {
         } catch (SQLException ex) {
 
         }
-
     }
 
     protected void changeScenes(String sceneName, int h, int w) throws IOException {
