@@ -23,6 +23,9 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tooltip;
 import java.time.LocalDate;
+import javafx.scene.chart.LineChart;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 
 /**
  *
@@ -73,6 +76,28 @@ public class controllerHealth {
     }
 
     //For the main page after sign in
+    
+    @FXML
+    private LineChart<?, ?> graphSteps;
+
+    @FXML
+    private ProgressIndicator pieSleep;
+
+    @FXML
+    private ProgressBar barWater;
+
+    @FXML
+    private LineChart<?, ?> graphCalories;
+
+    @FXML
+    private LineChart<?, ?> graphHR;
+
+    @FXML
+    private LineChart<?, ?> graphOL;
+    
+    
+    
+    
     @FXML
     private void logOutClicked() throws IOException {
         changeScenes("FXMLHealth.fxml", 525, 800);
