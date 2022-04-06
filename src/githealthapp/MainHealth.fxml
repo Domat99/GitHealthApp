@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
@@ -13,39 +14,14 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-
-<ScrollPane prefHeight="1375.0" prefWidth="1500.0" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
+<ScrollPane prefHeight="1375.0" prefWidth="1500.0" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
    <content>
       <BorderPane maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="1375.0" prefWidth="1500.0">
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #B4C7E7;" BorderPane.alignment="CENTER">
                <children>
-                  <LineChart fx:id="graphSteps" layoutX="49.0" layoutY="24.0" legendVisible="false" prefHeight="310.0" prefWidth="480.0">
-                    <xAxis>
-                      <NumberAxis side="BOTTOM" />
-                    </xAxis>
-                    <yAxis>
-                      <NumberAxis side="LEFT" />
-                    </yAxis>
-                  </LineChart>
                   <ProgressIndicator fx:id="pieSleep" layoutX="554.0" layoutY="23.0" prefHeight="306.0" prefWidth="419.0" progress="0.2" />
                   <ProgressBar fx:id="barWater" layoutX="1085.0" layoutY="118.0" prefHeight="115.0" prefWidth="371.0" progress="0.25" />
-                  <LineChart fx:id="graphCalories" layoutX="49.0" layoutY="417.0" legendVisible="false" prefHeight="310.0" prefWidth="480.0">
-                     <xAxis>
-                        <NumberAxis side="BOTTOM" />
-                     </xAxis>
-                     <yAxis>
-                        <NumberAxis side="LEFT" />
-                     </yAxis>
-                  </LineChart>
-                  <LineChart fx:id="graphHR" layoutX="526.0" layoutY="423.0" legendVisible="false" prefHeight="310.0" prefWidth="480.0">
-                     <xAxis>
-                        <NumberAxis side="BOTTOM" />
-                     </xAxis>
-                     <yAxis>
-                        <NumberAxis side="LEFT" />
-                     </yAxis>
-                  </LineChart>
                   <Label layoutX="227.0" layoutY="339.0" text="Steps">
                      <font>
                         <Font name="Bell MT" size="38.0" />
@@ -81,14 +57,6 @@
                         <Image url="@../healthapplication/Images/Food.png" />
                      </image>
                   </ImageView>
-                  <LineChart fx:id="graphOL" layoutX="990.0" layoutY="418.0" legendVisible="false" prefHeight="310.0" prefWidth="480.0">
-                     <xAxis>
-                        <NumberAxis side="BOTTOM" />
-                     </xAxis>
-                     <yAxis>
-                        <NumberAxis side="LEFT" />
-                     </yAxis>
-                  </LineChart>
                   <Label layoutX="1141.0" layoutY="747.0" text="Oxygen Levels">
                      <font>
                         <Font name="Bell MT" size="38.0" />
@@ -104,6 +72,38 @@
                         <Font name="Bell MT" size="38.0" />
                      </font>
                   </Label>
+                  <LineChart fx:id="graphSteps" layoutX="49.0" layoutY="33.0" prefHeight="314.0" prefWidth="478.0">
+                    <xAxis>
+                      <CategoryAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis side="LEFT" />
+                    </yAxis>
+                  </LineChart>
+                  <LineChart fx:id="graphCalories" layoutX="49.0" layoutY="425.0" prefHeight="296.0" prefWidth="465.0">
+                     <xAxis>
+                        <CategoryAxis side="BOTTOM" />
+                     </xAxis>
+                     <yAxis>
+                        <NumberAxis side="LEFT" />
+                     </yAxis>
+                  </LineChart>
+                  <LineChart fx:id="graphHR" layoutX="544.0" layoutY="432.0" prefHeight="296.0" prefWidth="438.0">
+                     <xAxis>
+                        <CategoryAxis side="BOTTOM" />
+                     </xAxis>
+                     <yAxis>
+                        <NumberAxis side="LEFT" />
+                     </yAxis>
+                  </LineChart>
+                  <LineChart fx:id="graphOL" layoutX="1017.0" layoutY="432.0" prefHeight="296.0" prefWidth="438.0">
+                     <xAxis>
+                        <CategoryAxis side="BOTTOM" />
+                     </xAxis>
+                     <yAxis>
+                        <NumberAxis side="LEFT" />
+                     </yAxis>
+                  </LineChart>
                </children>
             </AnchorPane>
          </center>

@@ -7,6 +7,7 @@ package githealthapp;
 
 import DBConnection.DBConnectionProviderHealth;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -96,6 +97,32 @@ public class controllerHealth {
     private LineChart<?, ?> graphOL;
     
     
+    private int[] setGraphsImport(String userName, String column) throws SQLException{
+        
+        LocalDate today = LocalDate.now();
+        String dateToday = today.toString();
+        int[] results = new int[4];
+        
+        String query = "SELECT " + column + " FROM " + userName + " WHERE Date = \"" + "2022-03-19" + "\"";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            ResultSet resultSet = stmt.executeQuery();
+            int i = 0;
+            int retrieveColumn;
+            while (resultSet.next()){
+                retrieveColumn = resultSet.getInt(column);
+                results[i] = retrieveColumn;
+                i += 1;
+            }  
+        }catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("An Error Has Occured With PhysycsValues Selecting: " + ex.getMessage());
+        }
+        return results;
+
+    }
     
     
     @FXML
@@ -220,6 +247,7 @@ public class controllerHealth {
                         lbl.setText("Success!!");
                         lbl.setStyle("-fx-text-fill: #00B050");//Green
                         //System.out.println("Username: " + s1 + ", password: " + retrievePassword);
+                        setGraphsImport(s1, "Calories_Out");
                         changeScenes("MainHealth.fxml", 950, 1500);
 
                     }
