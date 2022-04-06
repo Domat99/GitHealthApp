@@ -24,7 +24,12 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tooltip;
 import java.time.LocalDate;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 
@@ -77,9 +82,8 @@ public class controllerHealth {
     }
 
     //For the main page after sign in
-    
     @FXML
-    private LineChart<?, ?> graphSteps;
+    private LineChart<String, Number> graphSteps;
 
     @FXML
     private ProgressIndicator pieSleep;
@@ -88,16 +92,17 @@ public class controllerHealth {
     private ProgressBar barWater;
 
     @FXML
-    private LineChart<?, ?> graphCalories;
+    private LineChart<String, Number> graphCalories;
 
     @FXML
-    private LineChart<?, ?> graphHR;
+    private LineChart<String, Number> graphHR;
 
     @FXML
-    private LineChart<?, ?> graphOL;
+    private LineChart<String, Number> graphOL;
     
     
-    private int[] setGraphsImport(String userName, String column) throws SQLException{
+    //Import user data from the user's table in database
+    private void importGraphsDataDashboard(String userName, String column) throws SQLException{
         
         LocalDate today = LocalDate.now();
         String dateToday = today.toString();
@@ -118,12 +123,38 @@ public class controllerHealth {
             }  
         }catch (SQLException ex) {
             ex.printStackTrace();
-            System.out.println("An Error Has Occured With PhysycsValues Selecting: " + ex.getMessage());
+            System.out.println("An Error Has Occured With setGraphsImport Selecting: " + ex.getMessage());
         }
-        return results;
+        
+        plotGraphDashboard(results, column);
 
     }
     
+        
+    //Use the user's data to plot the graphs in the dashboard
+    private void plotGraphDashboard(int[] results, String column){
+        LineChart<String, Number> chart = null;
+        if(column.equals("Steps")){
+            chart = graphSteps;
+        }
+        if(column.equals("Calories_In")){
+            chart = graphCalories;
+        }
+        if(column.equals("Heart_Rate")){
+            chart = graphHR;
+        }
+        if(column.equals("Oxygen_Level")){
+            chart = graphOL;
+        }
+        XYChart.Series series1 = new XYChart.Series();
+        series1.setName("Series 1");
+        series1.getData().add(new XYChart.Data<>("0-6", results[0]));
+        series1.getData().add(new XYChart.Data<>("6-12", results[1]));
+        series1.getData().add(new XYChart.Data<>("12-18", results[2]));
+        series1.getData().add(new XYChart.Data<>("18-24", results[3]));
+
+        chart.getData().addAll(series1);
+    }
     
     @FXML
     private void logOutClicked() throws IOException {
@@ -131,7 +162,7 @@ public class controllerHealth {
     }
 
     @FXML
-    private void deleteAccount2Clicked() throws IOException {
+    private void deleteAccount2Clicked() throws IOException, SQLException {
         changeScenes("DeleteAccount.fxml", 525, 800);
     }
 
@@ -247,15 +278,19 @@ public class controllerHealth {
                         lbl.setText("Success!!");
                         lbl.setStyle("-fx-text-fill: #00B050");//Green
                         //System.out.println("Username: " + s1 + ", password: " + retrievePassword);
-                        setGraphsImport(s1, "Calories_Out");
+                        
                         changeScenes("MainHealth.fxml", 950, 1500);
-
+                        
+                      //importGraphsDataDashboard("ee", "Steps");
+                      //importGraphsDataDashboard(s1, "Calories_In");
+                      //importGraphsDataDashboard(s1, "Heart_Rate");
+                      //importGraphsDataDashboard(s1, "Oxygen_Level");
                     }
                 }
 
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println("An Error Has Occured With PhysycsValues Selecting: " + ex.getMessage());
         }
