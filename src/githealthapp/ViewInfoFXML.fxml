@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #B4C7E7;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="githealthapp.controllerHealth">
+   <children>
+      <BorderPane fx:id="mainPane" prefHeight="800.0" prefWidth="800.0">
+         <top>
+            <AnchorPane prefHeight="139.0" prefWidth="800.0" style="-fx-background-color: #ADB9CA;" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="btnSteps" layoutX="187.0" layoutY="14.0" mnemonicParsing="false" onAction="#stepsBtnClicked" prefHeight="43.0" prefWidth="96.0" style="-fx-background-color: #1d3454;" text="Steps" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnWater" layoutX="518.0" layoutY="14.0" mnemonicParsing="false" onAction="#waterBtnClicked" prefHeight="43.0" prefWidth="96.0" style="-fx-background-color: #1d3454;" text="Water" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnSleep" layoutX="342.0" layoutY="14.0" mnemonicParsing="false" onAction="#sleepBtnClicked" prefHeight="43.0" prefWidth="117.0" style="-fx-background-color: #1d3454;" text="Sleep" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnCalories" layoutX="187.0" layoutY="76.0" mnemonicParsing="false" onAction="#caloriesBtnClicked" prefHeight="43.0" prefWidth="96.0" style="-fx-background-color: #1d3454;" text="Calories" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnHeartRate" layoutX="342.0" layoutY="76.0" mnemonicParsing="false" onAction="#heartRateBtnClicked" prefHeight="43.0" prefWidth="117.0" style="-fx-background-color: #1d3454;" text="Heart Rate" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnOxygen" layoutX="518.0" layoutY="76.0" mnemonicParsing="false" onAction="#oxygenBtnClicked" prefHeight="43.0" prefWidth="96.0" style="-fx-background-color: #1d3454;" text="Oxygen" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
+                  <ImageView fitHeight="94.0" fitWidth="82.0" layoutX="14.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../healthapplication/Images/Picture2.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+         </top>
+      </BorderPane>
+   </children>
+</AnchorPane>

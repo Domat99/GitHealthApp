@@ -7,7 +7,7 @@ package githealthapp;
 
 import DBConnection.DBConnectionProviderHealth;
 import java.io.IOException;
-import java.lang.reflect.Array;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,14 +24,14 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tooltip;
 import java.time.LocalDate;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.chart.CategoryAxis;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 
 /**
  *
@@ -100,6 +100,38 @@ public class controllerHealth {
     @FXML
     private LineChart<String, Number> graphOL;
     
+    @FXML
+    void stepsMouseClicked(MouseEvent event) throws IOException {
+        changeScenes("ViewInfoFXML.fxml", 750, 800);
+    }
+    
+    @FXML
+    void sleepMouseClicked(MouseEvent event) {
+
+    }
+
+    @FXML
+    void waterMouseClicked(MouseEvent event) {
+
+    }
+
+
+    @FXML
+    void caloriesMouseClicked(MouseEvent event) {
+
+    }
+    
+
+    @FXML
+    void heartRateMouseClicked(MouseEvent event) {
+
+    }
+
+    @FXML
+    void oxygenMouseClicked(MouseEvent event) {
+
+    }
+
     
     //Import user data from the user's table in database
     private void importGraphsDataDashboard(String userName, String column) throws SQLException{
@@ -391,15 +423,6 @@ public class controllerHealth {
         }
     }
 
-    protected void changeScenes(String sceneName, int h, int w) throws IOException {
-
-        GitHealthApp m = new GitHealthApp();
-
-        m.changeScene(sceneName);
-        m.stg.setHeight(h);
-        m.stg.setWidth(w);
-        m.stg.centerOnScreen();
-    }
 
     @FXML
     private Button btnDeleteAccount;
@@ -440,6 +463,18 @@ public class controllerHealth {
     private void cancelDeleteClicked(ActionEvent event) {
     }
 
+    
+    protected void changeScenes(String sceneName, int h, int w) throws IOException {
+
+        GitHealthApp m = new GitHealthApp();
+
+        m.changeScene(sceneName);
+        m.stg.setHeight(h);
+        m.stg.setWidth(w);
+        m.stg.centerOnScreen();
+    }
+
+    
     protected void setTooltipButton(Button btn1) {
         Tooltip tt1 = new Tooltip("Cancel and Sign out");
         btn1.setTooltip(tt1);
@@ -482,5 +517,77 @@ public class controllerHealth {
 //
 //    }
 
+    
+    
+    //New Scene (View and edit date)
+    @FXML
+    private BorderPane mainPane;
+    @FXML
+    private Button btnSteps;
+
+    @FXML
+    private Button btnWater;
+
+    @FXML
+    private Button btnSleep;
+
+    @FXML
+    private Button btnCalories;
+
+    @FXML
+    private Button btnHeartRate;
+
+    @FXML
+    private Button btnOxygen;    
  
+    
+    @FXML
+    void stepsBtnClicked(ActionEvent event) {
+        getPane("StepsFXML");
+        controllerHealth object = new controllerHealth();
+        Pane View = object.getPane("StepsFXML");
+        mainPane.setBottom(View);
+        
+    }
+    
+    @FXML
+    void sleepBtnClicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void waterBtnClicked(ActionEvent event) {
+
+    }
+    
+    @FXML
+    void caloriesBtnClicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void heartRateBtnClicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void oxygenBtnClicked(ActionEvent event) {
+
+    }
+
+    private Pane view;
+    
+    public Pane getPane(String fxmlFile){
+    try{
+        URL fileUrl = GitHealthApp.class.getResource("/githealthapp/" + fxmlFile + ".fxml");
+        if(fileUrl == null){
+            throw new java.io.FileNotFoundException("FXML file can not be found.");
+    }
+    view = new FXMLLoader().load(fileUrl);
+    }catch (Exception e){
+        System.out.println("No Page " + fxmlFile + ". Please check file name.");
+    }
+        return view;
+    }
+    
 }
