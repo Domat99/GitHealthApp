@@ -101,8 +101,11 @@ public class controllerHealth {
     private LineChart<String, Number> graphOL;
     
     @FXML
+    private Button btnInfoPage;
+    
+    @FXML
     void stepsMouseClicked(MouseEvent event) throws IOException {
-        changeScenes("ViewInfoFXML.fxml", 750, 800);
+        //changeScenes("ViewInfoFXML.fxml", 750, 800);
     }
     
     @FXML
@@ -129,6 +132,12 @@ public class controllerHealth {
 
     @FXML
     void oxygenMouseClicked(MouseEvent event) {
+
+    }
+    
+    @FXML
+    void infoBtnClicked(ActionEvent event) throws IOException {
+        changeScenes("ViewInfoFXML.fxml", 750, 800);
 
     }
 
@@ -539,40 +548,64 @@ public class controllerHealth {
 
     @FXML
     private Button btnOxygen;    
+    
+    @FXML
+    private Button btnBack;
  
     
     @FXML
     void stepsBtnClicked(ActionEvent event) {
         getPane("StepsFXML");
         controllerHealth object = new controllerHealth();
-        Pane View = object.getPane("StepsFXML");
-        mainPane.setBottom(View);
+        Pane View1 = object.getPane("StepsFXML");
+        mainPane.setCenter(View1);
         
     }
     
     @FXML
     void sleepBtnClicked(ActionEvent event) {
-
+        getPane("SleepFXML");
+        controllerHealth object = new controllerHealth();
+        Pane View2 = object.getPane("SleepFXML");
+        mainPane.setCenter(View2);
     }
 
     @FXML
     void waterBtnClicked(ActionEvent event) {
-
+        getPane("WaterFXML");
+        controllerHealth object = new controllerHealth();
+        Pane View2 = object.getPane("WaterFXML");
+        mainPane.setCenter(View2);
     }
     
     @FXML
     void caloriesBtnClicked(ActionEvent event) {
-
+        getPane("CaloriesFXML");
+        controllerHealth object = new controllerHealth();
+        Pane View2 = object.getPane("CaloriesFXML");
+        mainPane.setCenter(View2);
     }
 
     @FXML
     void heartRateBtnClicked(ActionEvent event) {
+        getPane("HeartRateFXML");
+        controllerHealth object = new controllerHealth();
+        Pane View2 = object.getPane("HeartRateFXML");
+        mainPane.setCenter(View2);
 
     }
 
     @FXML
     void oxygenBtnClicked(ActionEvent event) {
-
+        getPane("OxygenFXML");
+        controllerHealth object = new controllerHealth();
+        Pane View2 = object.getPane("OxygenFXML");
+        mainPane.setCenter(View2);
+    }
+    
+    @FXML
+    void backToDashboardBtnClicked(ActionEvent event) throws IOException {
+        changeScenes("MainHealth.fxml", 950, 1500);
     }
 
     private Pane view;
