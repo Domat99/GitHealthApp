@@ -332,7 +332,7 @@ public class controllerHealth {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            System.out.println("An Error Has Occured With PhysycsValues Selecting: " + ex.getMessage());
+            System.out.println("An Error Has Occured With importData Selecting: " + ex.getMessage());
         }
 
     }
@@ -465,7 +465,8 @@ public class controllerHealth {
     }
 
     @FXML
-    private void cancelDeleteClicked(ActionEvent event) {
+    private void cancelDeleteClicked(ActionEvent event) throws IOException {
+        changeScenes("MainHealth.fxml", 950, 1500);
     }
 
     protected void changeScenes(String sceneName, int h, int w) throws IOException {
@@ -514,11 +515,12 @@ public class controllerHealth {
 //
 //        } catch (SQLException ex) {
 //            ex.printStackTrace();
-//            System.out.println("An Error Has Occured With PhysycsValues Selecting: " + ex.getMessage());
+//            System.out.println("An Error Has Occured With importDeleteAccount Selecting: " + ex.getMessage());
 //        }
 //        return null;
 //
 //    }
+    
     //New Scene (View and edit date)
     @FXML
     private BorderPane mainPane;
