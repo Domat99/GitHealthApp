@@ -57,7 +57,7 @@
          <font>
             <Font name="Impact" size="28.0" />
          </font></Label>
-      <TextField fx:id="txtFldUsername" layoutX="274.0" layoutY="244.0" prefHeight="31.0" prefWidth="329.0" promptText="Type your Username here!">
+      <TextField fx:id="txtFldUsername" layoutX="274.0" layoutY="244.0" onAction="#logInClicked" prefHeight="31.0" prefWidth="329.0" promptText="Type your Username here!">
          <font>
             <Font size="20.0" />
          </font></TextField>
@@ -65,7 +65,7 @@
          <font>
             <Font name="Impact" size="28.0" />
          </font></Label>
-      <PasswordField fx:id="txtFldPassword" layoutX="274.0" layoutY="301.0" prefHeight="31.0" prefWidth="329.0" promptText="Enter your Password here!">
+      <PasswordField fx:id="txtFldPassword" layoutX="274.0" layoutY="301.0" onAction="#logInClicked" prefHeight="31.0" prefWidth="329.0" promptText="Enter your Password here!">
          <font>
             <Font size="20.0" />
          </font></PasswordField>

@@ -24,11 +24,14 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tooltip;
 import java.time.LocalDate;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -53,7 +56,7 @@ public class controllerHealth {
     private void logInClicked(ActionEvent event) throws IOException {
         checkLogin();
     }
-     
+
     @FXML
     public void adminBtnClicked(ActionEvent event) throws IOException {
         lblNotFound.setText("Button not working yet.");
@@ -99,15 +102,15 @@ public class controllerHealth {
 
     @FXML
     private LineChart<String, Number> graphOL;
-    
+
     @FXML
     private Button btnInfoPage;
-    
+
     @FXML
     void stepsMouseClicked(MouseEvent event) throws IOException {
         //changeScenes("ViewInfoFXML.fxml", 750, 800);
     }
-    
+
     @FXML
     void sleepMouseClicked(MouseEvent event) {
 
@@ -118,12 +121,10 @@ public class controllerHealth {
 
     }
 
-
     @FXML
     void caloriesMouseClicked(MouseEvent event) {
 
     }
-    
 
     @FXML
     void heartRateMouseClicked(MouseEvent event) {
@@ -134,21 +135,20 @@ public class controllerHealth {
     void oxygenMouseClicked(MouseEvent event) {
 
     }
-    
+
     @FXML
     void infoBtnClicked(ActionEvent event) throws IOException {
         changeScenes("ViewInfoFXML.fxml", 750, 800);
 
     }
 
-    
     //Import user data from the user's table in database
-    private void importGraphsDataDashboard(String userName, String column) throws SQLException{
-        
+    private void importGraphsDataDashboard(String userName, String column) throws SQLException {
+
         LocalDate today = LocalDate.now();
         String dateToday = today.toString();
         int[] results = new int[4];
-        
+
         String query = "SELECT " + column + " FROM " + userName + " WHERE Date = \"" + "2022-03-19" + "\"";
 
         try {
@@ -157,34 +157,33 @@ public class controllerHealth {
             ResultSet resultSet = stmt.executeQuery();
             int i = 0;
             int retrieveColumn;
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 retrieveColumn = resultSet.getInt(column);
                 results[i] = retrieveColumn;
                 i += 1;
-            }  
-        }catch (SQLException ex) {
+            }
+        } catch (SQLException ex) {
             ex.printStackTrace();
             System.out.println("An Error Has Occured With setGraphsImport Selecting: " + ex.getMessage());
         }
-        
+
         plotGraphDashboard(results, column);
 
     }
-    
-        
+
     //Use the user's data to plot the graphs in the dashboard
-    private void plotGraphDashboard(int[] results, String column){
+    private void plotGraphDashboard(int[] results, String column) {
         LineChart<String, Number> chart = null;
-        if(column.equals("Steps")){
+        if (column.equals("Steps")) {
             chart = graphSteps;
         }
-        if(column.equals("Calories_In")){
+        if (column.equals("Calories_In")) {
             chart = graphCalories;
         }
-        if(column.equals("Heart_Rate")){
+        if (column.equals("Heart_Rate")) {
             chart = graphHR;
         }
-        if(column.equals("Oxygen_Level")){
+        if (column.equals("Oxygen_Level")) {
             chart = graphOL;
         }
         XYChart.Series series1 = new XYChart.Series();
@@ -196,7 +195,7 @@ public class controllerHealth {
 
         chart.getData().addAll(series1);
     }
-    
+
     @FXML
     private void logOutClicked() throws IOException {
         changeScenes("FXMLHealth.fxml", 525, 800);
@@ -246,7 +245,7 @@ public class controllerHealth {
 
         LocalDate date1 = LocalDate.now().minusYears(16);
         LocalDate birthDate1 = birthDate.getValue();
-        
+
         if ((txtFldCreateUsername.getText().trim().isEmpty())
                 || (txtFldCreatePassword.getText().trim().isEmpty())
                 || (txtFldConfirmPassword.getText().trim().isEmpty())
@@ -257,7 +256,7 @@ public class controllerHealth {
             messageLabel.setText("Please fill all the fields");
             messageLabel.setStyle("-fx-text-fill: #D05F12");//Orange
         } else if ((txtFldCreatePassword.getText().trim()).equals(txtFldConfirmPassword.getText().trim())) {
-            if (birthDate1.isBefore(date1)){                      
+            if (birthDate1.isBefore(date1)) {
 
                 if ((txtFldCreatePassword.getText().trim().chars().count()) >= (8.00)) {
 
@@ -319,13 +318,13 @@ public class controllerHealth {
                         lbl.setText("Success!!");
                         lbl.setStyle("-fx-text-fill: #00B050");//Green
                         //System.out.println("Username: " + s1 + ", password: " + retrievePassword);
-                        
+
                         changeScenes("MainHealth.fxml", 950, 1500);
-                        
-                      //importGraphsDataDashboard("ee", "Steps");
-                      //importGraphsDataDashboard(s1, "Calories_In");
-                      //importGraphsDataDashboard(s1, "Heart_Rate");
-                      //importGraphsDataDashboard(s1, "Oxygen_Level");
+
+                        //importGraphsDataDashboard("ee", "Steps");
+                        //importGraphsDataDashboard(s1, "Calories_In");
+                        //importGraphsDataDashboard(s1, "Heart_Rate");
+                        //importGraphsDataDashboard(s1, "Oxygen_Level");
                     }
                 }
 
@@ -360,11 +359,11 @@ public class controllerHealth {
             System.out.println("An Error Has Occured With Users Update: " + ex.getMessage());
         }
     }
-    
-    protected void createUserTable(TextField username){
-        
+
+    protected void createUserTable(TextField username) {
+
         String user = username.getText().toLowerCase().trim();
-        
+
         String sql = "CREATE TABLE IF NOT EXISTS " + user + " (\n"
                 + "	Date text,\n"
                 + "	time text,\n"
@@ -374,13 +373,13 @@ public class controllerHealth {
                 + "     Steps integer,\n"
                 + "     Calories_Out integer,\n"
                 + "     Sleep real\n);";
-        
+
         try {
-            
+
             PreparedStatement pstmt = connection.prepareStatement(sql);
-            
+
             pstmt.executeUpdate();
-           
+
         } catch (SQLException ex) {
             ex.printStackTrace();
             System.out.println("An Error Has Occured: " + ex.getMessage());
@@ -406,7 +405,7 @@ public class controllerHealth {
             if (resultSet.isBeforeFirst()) {
                 lbl2.setText("The username is already taken, please choose another one");
                 lbl2.setStyle("-fx-text-fill: #FF0000");//Red
-            } else if(username2.getText().toLowerCase().trim().equals("users")){
+            } else if (username2.getText().toLowerCase().trim().equals("users")) {
                 lbl2.setText("This username is not available, please choose another one");
                 lbl2.setStyle("-fx-text-fill: #FF0000");//Red
             } else {
@@ -432,7 +431,6 @@ public class controllerHealth {
         }
     }
 
-
     @FXML
     private Button btnDeleteAccount;
     @FXML
@@ -445,15 +443,13 @@ public class controllerHealth {
     private PasswordField txtFldPasswordDelete;
     @FXML
     private Label lblDeleteInfo;
-    
-    
-    
+
     @FXML
-    private void deleteClicked(ActionEvent event) throws IOException{
+    private void deleteClicked(ActionEvent event) throws IOException {
 //        String userToDelete = txtFldUsernameDelete.getText().toLowerCase().trim();
 //        String passwordToDelete = txtFldPasswordDelete.getText().toLowerCase().trim();
 //        importDeleteAccount(userToDelete, passwordToDelete, lblDeleteInfo);
-        
+
         btnConfrimDelete.setVisible(true);
         btnDeleteAccount.setVisible(false);
     }
@@ -472,7 +468,6 @@ public class controllerHealth {
     private void cancelDeleteClicked(ActionEvent event) {
     }
 
-    
     protected void changeScenes(String sceneName, int h, int w) throws IOException {
 
         GitHealthApp m = new GitHealthApp();
@@ -483,12 +478,11 @@ public class controllerHealth {
         m.stg.centerOnScreen();
     }
 
-    
     protected void setTooltipButton(Button btn1) {
         Tooltip tt1 = new Tooltip("Cancel and Sign out");
         btn1.setTooltip(tt1);
     }
-    
+
 //    private Boolean importDeleteAccount(String s1, String s2, Label lbl) throws IOException {
 //
 //        String query = "SELECT Password FROM Users WHERE UserName = ?";
@@ -525,9 +519,6 @@ public class controllerHealth {
 //        return null;
 //
 //    }
-
-    
-    
     //New Scene (View and edit date)
     @FXML
     private BorderPane mainPane;
@@ -547,21 +538,20 @@ public class controllerHealth {
     private Button btnHeartRate;
 
     @FXML
-    private Button btnOxygen;    
-    
+    private Button btnOxygen;
+
     @FXML
     private Button btnBack;
- 
-    
+
     @FXML
     void stepsBtnClicked(ActionEvent event) {
         getPane("StepsFXML");
         controllerHealth object = new controllerHealth();
         Pane View1 = object.getPane("StepsFXML");
         mainPane.setCenter(View1);
-        
+
     }
-    
+
     @FXML
     void sleepBtnClicked(ActionEvent event) {
         getPane("SleepFXML");
@@ -577,7 +567,7 @@ public class controllerHealth {
         Pane View2 = object.getPane("WaterFXML");
         mainPane.setCenter(View2);
     }
-    
+
     @FXML
     void caloriesBtnClicked(ActionEvent event) {
         getPane("CaloriesFXML");
@@ -602,25 +592,25 @@ public class controllerHealth {
         Pane View2 = object.getPane("OxygenFXML");
         mainPane.setCenter(View2);
     }
-    
+
     @FXML
     void backToDashboardBtnClicked(ActionEvent event) throws IOException {
         changeScenes("MainHealth.fxml", 950, 1500);
     }
 
     private Pane view;
-    
-    public Pane getPane(String fxmlFile){
-    try{
-        URL fileUrl = GitHealthApp.class.getResource("/githealthapp/" + fxmlFile + ".fxml");
-        if(fileUrl == null){
-            throw new java.io.FileNotFoundException("FXML file can not be found.");
-    }
-    view = new FXMLLoader().load(fileUrl);
-    }catch (Exception e){
-        System.out.println("No Page " + fxmlFile + ". Please check file name.");
-    }
+
+    public Pane getPane(String fxmlFile) {
+        try {
+            URL fileUrl = GitHealthApp.class.getResource("/githealthapp/" + fxmlFile + ".fxml");
+            if (fileUrl == null) {
+                throw new java.io.FileNotFoundException("FXML file can not be found.");
+            }
+            view = new FXMLLoader().load(fileUrl);
+        } catch (Exception e) {
+            System.out.println("No Page " + fxmlFile + ". Please check file name.");
+        }
         return view;
     }
-    
+
 }
