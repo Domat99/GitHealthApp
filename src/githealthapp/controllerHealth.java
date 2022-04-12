@@ -51,7 +51,7 @@ public class controllerHealth {
     private PasswordField txtFldPassword;
     @FXML
     private Label lblNotFound;
-    
+
     @FXML
     private void logInClicked(ActionEvent event) throws IOException {
         checkLogin();
@@ -80,7 +80,14 @@ public class controllerHealth {
             lblNotFound.setText("Please type in both the username and password");
             lblNotFound.setStyle("-fx-text-fill: #D05F12");//Orange
         } else {
-            importData(test1, test2, lblNotFound);
+            boolean data = importData(test1, test2, lblNotFound);
+            if (data == true) {
+                changeScenes("MainHealth.fxml", 950, 1500);
+                //importGraphsDataDashboard("ee", "Steps");
+                //importGraphsDataDashboard(s1, "Calories_In");
+                //importGraphsDataDashboard(s1, "Heart_Rate");
+                //importGraphsDataDashboard(s1, "Oxygen_Level");
+            }
         }
     }
 
@@ -294,16 +301,17 @@ public class controllerHealth {
 
     //NOT DONE YET!
     //Gets the users info to use for the sign in.
-    private void importData(String s1, String s2, Label lbl) throws IOException {
+    private Boolean importData(String s1, String s2, Label lbl) throws IOException {
 
         String query = "SELECT Password FROM Users WHERE UserName = ?";
-
+        PreparedStatement stmt = null;
+        ResultSet resultSet = null;
         try {
-            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt = connection.prepareStatement(query);
 
             stmt.setString(1, s1);
 
-            ResultSet resultSet = stmt.executeQuery();
+            resultSet = stmt.executeQuery();
 
             if (!resultSet.isBeforeFirst()) {
                 lbl.setText("User not found.");
@@ -317,14 +325,8 @@ public class controllerHealth {
                     if (retrievePassword.equals(s2)) {
                         lbl.setText("Success!!");
                         lbl.setStyle("-fx-text-fill: #00B050");//Green
-                        //System.out.println("Username: " + s1 + ", password: " + retrievePassword);
+                        return true;
 
-                        changeScenes("MainHealth.fxml", 950, 1500);
-
-                        //importGraphsDataDashboard("ee", "Steps");
-                        //importGraphsDataDashboard(s1, "Calories_In");
-                        //importGraphsDataDashboard(s1, "Heart_Rate");
-                        //importGraphsDataDashboard(s1, "Oxygen_Level");
                     }
                 }
 
@@ -334,6 +336,21 @@ public class controllerHealth {
             ex.printStackTrace();
             System.out.println("An Error Has Occured With importData Selecting: " + ex.getMessage());
         }
+
+        
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+            }
+        }
+        if (resultSet != null) {
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+            }
+        }
+        return false;
 
     }
 
@@ -388,7 +405,7 @@ public class controllerHealth {
 
     //Checks if the username is already taken. If not, it saves the new user's
     //info using the save() function.
-    protected void checkUsername(TextField username2, PasswordField password2, RadioButton rb1, RadioButton rb2,
+    protected void checkUsername(TextField username2, PasswordField password2, RadioButton rb1, RadioButton rb2, 
             DatePicker dp2, TextField height2, TextField weight2, Label lbl2) throws IOException {
 
         String gender = "";
@@ -446,16 +463,62 @@ public class controllerHealth {
 
     @FXML
     private void deleteClicked(ActionEvent event) throws IOException {
-//        String userToDelete = txtFldUsernameDelete.getText().toLowerCase().trim();
-//        String passwordToDelete = txtFldPasswordDelete.getText().toLowerCase().trim();
-//        importDeleteAccount(userToDelete, passwordToDelete, lblDeleteInfo);
 
-        btnConfrimDelete.setVisible(true);
-        btnDeleteAccount.setVisible(false);
+        String userName = txtFldUsernameDelete.getText().trim().toLowerCase();
+        String password = txtFldPasswordDelete.getText().trim();
+
+        if ((password.isEmpty()) || (userName.isEmpty())) {
+            lblDeleteInfo.setText("Please type in both the username and password");
+            lblDeleteInfo.setStyle("-fx-text-fill: #D05F12");//Orange
+        } else {
+            boolean data = importData(userName, password, lblDeleteInfo);
+            if (data == true) {
+                btnConfrimDelete.setText("Please confirm delete");
+                btnConfrimDelete.setStyle("-fx-text-fill: #FF0000");//Red
+                btnConfrimDelete.setVisible(true);
+                btnDeleteAccount.setVisible(false);
+                txtFldUsernameDelete.setEditable(false);
+                txtFldPasswordDelete.setEditable(false);
+            }
+        }
+
     }
 
     @FXML
     private void confirmDeleteClicked(ActionEvent event) {
+
+        String userName = txtFldUsernameDelete.getText().trim().toLowerCase();
+
+        String sql = "DELETE FROM Users WHERE UserName = ?";
+        
+        try {
+
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            
+            pstmt.setString(1, userName);
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("An Error Has Occured while deleting the account from the users data: " + ex.getMessage());
+        }
+        String sql2 = "DROP TABLE " + userName;
+
+        try {
+
+            PreparedStatement pstmt = connection.prepareStatement(sql2);
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("An Error Has Occured while deleting the account table: " + ex.getMessage());
+        }
+
+        lblDeleteInfo.setText("User has been deleted succesfully!");
+        lblDeleteInfo.setStyle("-fx-text-fill: #D05F12");//Orange
+
     }
 
     //THIS FUNCTION IS NOT WORKING, YOU NEED TO FIX IT
@@ -484,43 +547,6 @@ public class controllerHealth {
         btn1.setTooltip(tt1);
     }
 
-//    private Boolean importDeleteAccount(String s1, String s2, Label lbl) throws IOException {
-//
-//        String query = "SELECT Password FROM Users WHERE UserName = ?";
-//
-//        try {
-//            PreparedStatement stmt = connection.prepareStatement(query);
-//
-//            stmt.setString(1, s1);
-//
-//            ResultSet resultSet = stmt.executeQuery();
-//
-//            if (!resultSet.isBeforeFirst()) {
-//                lbl.setText("User not found.");
-//                lbl.setStyle("-fx-text-fill: #FF0000");//Red
-//            } else {
-//                while (resultSet.next()) {
-//                    String retrievePassword = resultSet.getString("Password");
-//                    lbl.setText("Wrong Password");
-//                    lbl.setStyle("-fx-text-fill: #FF0000");//Red
-//
-//                    if (retrievePassword.equals(s2)) {
-//                        lbl.setText("Success!!");
-//                        lbl.setStyle("-fx-text-fill: #00B050");//Green
-//
-//                    }
-//                }
-//
-//            }
-//
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//            System.out.println("An Error Has Occured With importDeleteAccount Selecting: " + ex.getMessage());
-//        }
-//        return null;
-//
-//    }
-    
     //New Scene (View and edit date)
     @FXML
     private BorderPane mainPane;
