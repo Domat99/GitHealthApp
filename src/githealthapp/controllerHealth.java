@@ -40,6 +40,7 @@ import javafx.scene.layout.Pane;
 public class controllerHealth {
 
     DBConnectionProviderHealth connectionProvider = new DBConnectionProviderHealth();
+    static String userName = "";
 
     @FXML
     private TextField txtFldUsername;
@@ -78,13 +79,9 @@ public class controllerHealth {
         } else {
             boolean data = importData(test1, test2, lblNotFound);
             if (data == true) {
-
+                userName = test1;
                 changeScenes("MainHealth.fxml", 950, 1500);
-                //importGraphsDataDashboard("ee", "Steps");
-                
-//                importGraphsDataDashboard(test1, "Calories_In");
-//                importGraphsDataDashboard(test1, "Heart_Rate");
-//                importGraphsDataDashboard(test1, "Oxygen_Level");
+
             }
         }
     }
@@ -148,21 +145,26 @@ public class controllerHealth {
         changeScenes("ViewInfoFXML.fxml", 750, 800);
 
     }
-    
+
     @FXML
-    void loadGraphsBtnClicked(ActionEvent event) throws IOException {
-        
+    void loadGraphsBtnClicked(ActionEvent event) throws IOException, SQLException {
+       
+        importGraphsDataDashboard(userName, "Steps");
+        importGraphsDataDashboard(userName, "Calories_In");
+        importGraphsDataDashboard(userName, "Heart_Rate");
+        importGraphsDataDashboard(userName, "Oxygen_Level");
+        getSleepData(userName);
+
     }
 
-
     //Import user data from the user's table in database
-    private void importGraphsDataDashboard(String userName, String column) throws SQLException {
+    private void importGraphsDataDashboard(String name, String column) throws SQLException {
 
         LocalDate today = LocalDate.now();
         String dateToday = today.toString();
         int[] results = new int[4];
         Connection connection = connectionProvider.getConnection();
-        String query = "SELECT " + column + " FROM " + userName + " WHERE Date = \"" + "2022-03-19" + "\"";
+        String query = "SELECT " + column + " FROM " + name + " WHERE Date = \"" + "2022-03-19" + "\"";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
@@ -209,14 +211,62 @@ public class controllerHealth {
 
         chart.getData().addAll(series1);
     }
+    
+    private void getSleepData(String name){
+        
+        Connection connection = connectionProvider.getConnection();
+        LocalDate today = LocalDate.now();
+        String dateToday = today.toString();
+        Double[] results = new Double[4];
+        String query = "SELECT Sleep FROM " + name + " WHERE Date = \"" + "2022-03-19" + "\" AND time = \"18-24\"";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            ResultSet resultSet = stmt.executeQuery();
+            
+            results[0] = resultSet.getDouble("Sleep");
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("An Error Has Occured With setGraphsImport Selecting: " + ex.getMessage());
+        }
+        String query2 = "SELECT Sleep FROM " + name + " WHERE Date = \"" + "2022-03-20" + "\" AND time = \"0-6\" OR Date = \"" + "2022-03-20" + "\" AND time = \"6-12\""
+                + " OR Date = \"" + "2022-03-20" + "\" AND time = \"12-18\"";
+        try {
+            PreparedStatement stmt2 = connection.prepareStatement(query2);
+
+            ResultSet resultSet = stmt2.executeQuery();
+            int i = 1;
+            Double retrieveColumn;
+            while (resultSet.next()) {
+                retrieveColumn = resultSet.getDouble("Sleep");
+                results[i] = retrieveColumn;
+                i += 1;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("An Error Has Occured With setGraphsImport Selecting: " + ex.getMessage());
+        }
+        Double sleepTime = 0.0;
+        for(int j = 0; j < results.length; j++){
+            sleepTime += results[j];
+        }
+        
+        Double sleepPercentage = sleepTime / 24.0;
+        
+        pieSleep.setProgress(sleepPercentage);
+        
+    }
 
     @FXML
     private void logOutClicked() throws IOException {
+        userName = "";
         changeScenes("FXMLHealth.fxml", 525, 800);
     }
 
     @FXML
     private void deleteAccount2Clicked() throws IOException, SQLException {
+
         changeScenes("DeleteAccount.fxml", 525, 800);
     }
 
@@ -280,14 +330,6 @@ public class controllerHealth {
                     checkUsername(txtFldCreateUsername, txtFldCreatePassword, rbMale,
                             rbFemale, birthDate, txtFldHeight, txtFldWeight, messageLabel);
 
-//                    txtFldCreateUsername.clear();
-//                    txtFldCreatePassword.clear();
-//                    txtFldConfirmPassword.clear();
-//                    rbMale.setSelected(false);
-//                    rbFemale.setSelected(false);
-//                    birthDate.getEditor().clear();
-//                    txtFldHeight.clear();
-//                    txtFldWeight.clear();
                 } else {
                     messageLabel.setText("Please use at least 8 Characters for the password");
                     messageLabel.setStyle("-fx-text-fill: #FF0000");//Red
@@ -477,21 +519,27 @@ public class controllerHealth {
     @FXML
     private void deleteClicked(ActionEvent event) throws IOException, SQLException {
 
-        String userName = txtFldUsernameDelete.getText().trim().toLowerCase();
+        String name = txtFldUsernameDelete.getText().trim().toLowerCase();
         String password = txtFldPasswordDelete.getText().trim();
 
-        if ((password.isEmpty()) || (userName.isEmpty())) {
+        if ((password.isEmpty()) || (name.isEmpty())) {
             lblDeleteInfo.setText("Please type in both the username and password");
             lblDeleteInfo.setStyle("-fx-text-fill: #D05F12");//Orange
         } else {
-            boolean data = importData(userName, password, lblDeleteInfo);
+            boolean data = importData(name, password, lblDeleteInfo);
             if (data == true) {
-                btnConfrimDelete.setText("Please confirm delete");
-                btnConfrimDelete.setStyle("-fx-text-fill: #FF0000");//Red
-                btnConfrimDelete.setVisible(true);
-                btnDeleteAccount.setVisible(false);
-                txtFldUsernameDelete.setEditable(false);
-                txtFldPasswordDelete.setEditable(false);
+                if (name != userName) {
+                    btnConfrimDelete.setText("Please enter the user name that you have used to sign in");
+                    btnConfrimDelete.setStyle("-fx-text-fill: #FF0000");//Red
+                } else {
+
+                    btnConfrimDelete.setText("Please confirm delete");
+                    btnConfrimDelete.setStyle("-fx-text-fill: #FF0000");//Red
+                    btnConfrimDelete.setVisible(true);
+                    btnDeleteAccount.setVisible(false);
+                    txtFldUsernameDelete.setEditable(false);
+                    txtFldPasswordDelete.setEditable(false);
+                }
             }
         }
 
@@ -525,6 +573,7 @@ public class controllerHealth {
 
             lblDeleteInfo.setText("User has been deleted succesfully!");
             lblDeleteInfo.setStyle("-fx-text-fill: #D05F12");//Orange
+            userName = "";
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -582,7 +631,7 @@ public class controllerHealth {
 
     @FXML
     private Button btnBack;
-    
+
     @FXML
     private Button btnLoad;
 
@@ -640,13 +689,12 @@ public class controllerHealth {
     void backToDashboardBtnClicked(ActionEvent event) throws IOException {
         changeScenes("MainHealth.fxml", 950, 1500);
     }
-    
+
     @FXML
     void loadBtnClicked(ActionEvent event) {
-        
+
     }
 
-            
     private Pane view;
 
     public Pane getPane(String fxmlFile) {
