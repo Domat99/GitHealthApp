@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: #B4C7E7;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
+<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: #B4C7E7;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
    <children>
       <Text fx:id="txtWelcomeMessage" fill="RED" layoutX="82.0" layoutY="151.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: Rockwell; -fx-font-size: 35; -fx-text-alignment: center;" text="Delete an Account" wrappingWidth="635.0791015625" />
       <Label fx:id="lbl1" layoutX="96.0" layoutY="178.0" prefHeight="30.0" prefWidth="609.0" style="-fx-text-alignment: center; -fx-font-size: 20;" text="Deleting you account will PERMENANTLY delete all your information" textFill="#cd2020" underline="true">
@@ -21,7 +21,7 @@
             <Font name="Impact" size="28.0" />
          </font>
       </Label>
-      <TextField fx:id="txtFldUsernameDelete" layoutX="284.0" layoutY="233.0" prefHeight="31.0" prefWidth="329.0" promptText="Type your Username here!">
+      <TextField fx:id="txtFldUsernameDelete" layoutX="284.0" layoutY="233.0" onAction="#deleteClicked" prefHeight="31.0" prefWidth="329.0" promptText="Type your Username here!">
          <font>
             <Font size="20.0" />
          </font>
@@ -31,7 +31,7 @@
             <Font name="Impact" size="28.0" />
          </font>
       </Label>
-      <PasswordField fx:id="txtFldPasswordDelete" layoutX="284.0" layoutY="290.0" prefHeight="31.0" prefWidth="329.0" promptText="Enter your Password here!">
+      <PasswordField fx:id="txtFldPasswordDelete" layoutX="284.0" layoutY="290.0" onAction="#deleteClicked" prefHeight="31.0" prefWidth="329.0" promptText="Enter your Password here!">
          <font>
             <Font size="20.0" />
          </font>

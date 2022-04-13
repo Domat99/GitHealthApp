@@ -24,14 +24,11 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tooltip;
 import java.time.LocalDate;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -43,7 +40,6 @@ import javafx.scene.layout.Pane;
 public class controllerHealth {
 
     DBConnectionProviderHealth connectionProvider = new DBConnectionProviderHealth();
-    Connection connection = connectionProvider.getConnection();
 
     @FXML
     private TextField txtFldUsername;
@@ -53,7 +49,7 @@ public class controllerHealth {
     private Label lblNotFound;
 
     @FXML
-    private void logInClicked(ActionEvent event) throws IOException {
+    private void logInClicked(ActionEvent event) throws IOException, SQLException {
         checkLogin();
     }
 
@@ -72,7 +68,7 @@ public class controllerHealth {
 
     }
 
-    private void checkLogin() throws IOException {
+    private void checkLogin() throws IOException, SQLException {
         String test1 = txtFldUsername.getText().trim().toLowerCase();
         String test2 = txtFldPassword.getText().trim();
 
@@ -82,11 +78,13 @@ public class controllerHealth {
         } else {
             boolean data = importData(test1, test2, lblNotFound);
             if (data == true) {
+
                 changeScenes("MainHealth.fxml", 950, 1500);
                 //importGraphsDataDashboard("ee", "Steps");
-                //importGraphsDataDashboard(s1, "Calories_In");
-                //importGraphsDataDashboard(s1, "Heart_Rate");
-                //importGraphsDataDashboard(s1, "Oxygen_Level");
+                
+//                importGraphsDataDashboard(test1, "Calories_In");
+//                importGraphsDataDashboard(test1, "Heart_Rate");
+//                importGraphsDataDashboard(test1, "Oxygen_Level");
             }
         }
     }
@@ -155,7 +153,7 @@ public class controllerHealth {
         LocalDate today = LocalDate.now();
         String dateToday = today.toString();
         int[] results = new int[4];
-
+        Connection connection = connectionProvider.getConnection();
         String query = "SELECT " + column + " FROM " + userName + " WHERE Date = \"" + "2022-03-19" + "\"";
 
         try {
@@ -173,6 +171,7 @@ public class controllerHealth {
             ex.printStackTrace();
             System.out.println("An Error Has Occured With setGraphsImport Selecting: " + ex.getMessage());
         }
+        connection.close();
 
         plotGraphDashboard(results, column);
 
@@ -244,11 +243,11 @@ public class controllerHealth {
     }
 
     @FXML
-    private void createClicked(ActionEvent event) throws IOException {
+    private void createClicked(ActionEvent event) throws IOException, SQLException {
         checkValues();
     }
 
-    private void checkValues() throws IOException {
+    private void checkValues() throws IOException, SQLException {
 
         LocalDate date1 = LocalDate.now().minusYears(16);
         LocalDate birthDate1 = birthDate.getValue();
@@ -301,8 +300,8 @@ public class controllerHealth {
 
     //NOT DONE YET!
     //Gets the users info to use for the sign in.
-    private Boolean importData(String s1, String s2, Label lbl) throws IOException {
-
+    private Boolean importData(String s1, String s2, Label lbl) throws IOException, SQLException {
+        Connection connection = connectionProvider.getConnection();
         String query = "SELECT Password FROM Users WHERE UserName = ?";
         PreparedStatement stmt = null;
         ResultSet resultSet = null;
@@ -321,12 +320,11 @@ public class controllerHealth {
                     String retrievePassword = resultSet.getString("Password");
                     lbl.setText("Wrong Password");
                     lbl.setStyle("-fx-text-fill: #FF0000");//Red
-
                     if (retrievePassword.equals(s2)) {
                         lbl.setText("Success!!");
                         lbl.setStyle("-fx-text-fill: #00B050");//Green
+                        connection.close();
                         return true;
-
                     }
                 }
 
@@ -337,7 +335,6 @@ public class controllerHealth {
             System.out.println("An Error Has Occured With importData Selecting: " + ex.getMessage());
         }
 
-        
         if (stmt != null) {
             try {
                 stmt.close();
@@ -350,14 +347,17 @@ public class controllerHealth {
             } catch (SQLException e) {
             }
         }
+
+        connection.close();
+
         return false;
 
     }
 
     //Takes the user's info and creates an account.
     protected void save(TextField username, PasswordField password, DatePicker dp,
-            TextField height, TextField weight, Label lbl1, String st1) {
-
+            TextField height, TextField weight, Label lbl1, String st1) throws SQLException {
+        Connection connection = connectionProvider.getConnection();
         String query = "INSERT INTO Users (UserName, Password, Gender,DOB,Height,Weight) VALUES(?,?,?,?,?,?) ";
 
         try {
@@ -375,9 +375,11 @@ public class controllerHealth {
         } catch (SQLException ex) {
             System.out.println("An Error Has Occured With Users Update: " + ex.getMessage());
         }
+        connection.close();
     }
 
-    protected void createUserTable(TextField username) {
+    protected void createUserTable(TextField username) throws SQLException {
+        Connection connection = connectionProvider.getConnection();
 
         String user = username.getText().toLowerCase().trim();
 
@@ -401,13 +403,15 @@ public class controllerHealth {
             ex.printStackTrace();
             System.out.println("An Error Has Occured: " + ex.getMessage());
         }
+        connection.close();
     }
 
     //Checks if the username is already taken. If not, it saves the new user's
     //info using the save() function.
-    protected void checkUsername(TextField username2, PasswordField password2, RadioButton rb1, RadioButton rb2, 
-            DatePicker dp2, TextField height2, TextField weight2, Label lbl2) throws IOException {
+    protected void checkUsername(TextField username2, PasswordField password2, RadioButton rb1, RadioButton rb2,
+            DatePicker dp2, TextField height2, TextField weight2, Label lbl2) throws IOException, SQLException {
 
+        Connection connection = connectionProvider.getConnection();
         String gender = "";
 
         String query = "SELECT * FROM Users WHERE UserName = ?;";
@@ -446,6 +450,7 @@ public class controllerHealth {
         } catch (SQLException ex) {
 
         }
+        connection.close();
     }
 
     @FXML
@@ -462,7 +467,7 @@ public class controllerHealth {
     private Label lblDeleteInfo;
 
     @FXML
-    private void deleteClicked(ActionEvent event) throws IOException {
+    private void deleteClicked(ActionEvent event) throws IOException, SQLException {
 
         String userName = txtFldUsernameDelete.getText().trim().toLowerCase();
         String password = txtFldPasswordDelete.getText().trim();
@@ -486,15 +491,15 @@ public class controllerHealth {
 
     @FXML
     private void confirmDeleteClicked(ActionEvent event) {
-
+        Connection connection = connectionProvider.getConnection();
         String userName = txtFldUsernameDelete.getText().trim().toLowerCase();
 
         String sql = "DELETE FROM Users WHERE UserName = ?";
-        
+
         try {
 
             PreparedStatement pstmt = connection.prepareStatement(sql);
-            
+
             pstmt.setString(1, userName);
 
             pstmt.executeUpdate();
@@ -508,16 +513,15 @@ public class controllerHealth {
         try {
 
             PreparedStatement pstmt = connection.prepareStatement(sql2);
-
             pstmt.executeUpdate();
+
+            lblDeleteInfo.setText("User has been deleted succesfully!");
+            lblDeleteInfo.setStyle("-fx-text-fill: #D05F12");//Orange
 
         } catch (SQLException ex) {
             ex.printStackTrace();
             System.out.println("An Error Has Occured while deleting the account table: " + ex.getMessage());
         }
-
-        lblDeleteInfo.setText("User has been deleted succesfully!");
-        lblDeleteInfo.setStyle("-fx-text-fill: #D05F12");//Orange
 
     }
 
