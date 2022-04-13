@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1375.0" prefWidth="1500.0" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1375.0" prefWidth="1500.0" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
    <content>
       <BorderPane maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="1375.0" prefWidth="1500.0">
          <center>
@@ -54,7 +54,7 @@
                   </Label>
                   <ImageView fitHeight="238.0" fitWidth="291.0" layoutX="902.0" layoutY="875.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../healthapplication/Images/Food.png" />
+                        <Image url="@Images/Food.png" />
                      </image>
                   </ImageView>
                   <Label layoutX="1141.0" layoutY="747.0" text="Oxygen Levels">
@@ -64,7 +64,7 @@
                   </Label>
                   <ImageView fitHeight="229.0" fitWidth="269.0" layoutX="443.0" layoutY="882.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../healthapplication/Images/Sports.png" />
+                        <Image url="@Images/Sports.png" />
                      </image>
                   </ImageView>
                   <Label layoutX="397.0" layoutY="1123.0" text="Physical Activity">
@@ -112,7 +112,7 @@
                <children>
                   <ImageView fitHeight="54.0" fitWidth="26.0" layoutX="42.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../healthapplication/Images/Picture2.png" />
+                        <Image url="@Images/Picture2.png" />
                      </image>
                   </ImageView>
                   <Button fx:id="btnLogOut" layoutX="1356.0" layoutY="36.0" mnemonicParsing="false" onAction="#logOutClicked" style="-fx-cursor: hand; -fx-background-color: red;" text="Log Out" textFill="WHITE">
@@ -135,12 +135,17 @@
                         <Font size="18.0" />
                      </font>
                   </Button>
-                  <Label layoutX="606.0" layoutY="1.0" text="Label">
+                  <Label layoutX="726.0" text="Label">
                      <font>
                         <Font name="Californian FB Italic" size="96.0" />
                      </font>
                   </Label>
-                  <Button fx:id="btnInfoPage" layoutX="379.0" layoutY="37.0" mnemonicParsing="false" onAction="#infoBtnClicked" prefHeight="43.0" prefWidth="117.0" style="-fx-background-color: #1d3454; -fx-cursor: hand;" text="More Info" textFill="WHITE">
+                  <Button fx:id="btnInfoPage" layoutX="349.0" layoutY="37.0" mnemonicParsing="false" onAction="#infoBtnClicked" prefHeight="43.0" prefWidth="117.0" style="-fx-background-color: #1d3454; -fx-cursor: hand;" text="More Info" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnLoadGraphs" layoutX="509.0" layoutY="37.0" mnemonicParsing="false" onAction="#loadGraphsBtnClicked" prefHeight="43.0" prefWidth="143.0" style="-fx-background-color: #1d3454; -fx-cursor: hand;" text="Load Graphs" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>

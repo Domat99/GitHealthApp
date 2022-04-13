@@ -42,7 +42,7 @@
       <Text fx:id="txtWelcomeMessage" layoutX="98.0" layoutY="183.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: Rockwell; -fx-font-size: 35; -fx-fill: red; -fx-text-alignment: center;" text="Welcome to Sehtak Fitness application!" wrappingWidth="635.0791015625" />
       <ImageView fitHeight="111.0" fitWidth="102.0" layoutX="-2.0" layoutY="-2.0" preserveRatio="true">
          <image>
-            <Image url="@../healthapplication/Images/Picture1.png" />
+            <Image url="@Images/Picture1.png" />
          </image>
       </ImageView>
       <Label fx:id="lbl1" layoutX="223.0" layoutY="208.0" prefHeight="28.0" prefWidth="218.0" text="New to Sehtak Fitness?">

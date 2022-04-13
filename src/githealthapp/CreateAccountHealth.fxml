@@ -38,7 +38,7 @@
       </MenuBar>
       <ImageView fitHeight="111.0" fitWidth="102.0" preserveRatio="true">
          <image>
-            <Image url="@../healthapplication/Images/Picture1.png" />
+            <Image url="@Images/Picture1.png" />
          </image>
       </ImageView>
       <Button fx:id="btnBack" layoutX="707.0" layoutY="40.0" mnemonicParsing="false" onAction="#backClicked" style="-fx-cursor: hand;" text="Back" />

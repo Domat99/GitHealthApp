@@ -110,6 +110,8 @@ public class controllerHealth {
 
     @FXML
     private Button btnInfoPage;
+    @FXML
+    private Button btnLoadGraphs;
 
     @FXML
     void stepsMouseClicked(MouseEvent event) throws IOException {
@@ -146,6 +148,12 @@ public class controllerHealth {
         changeScenes("ViewInfoFXML.fxml", 750, 800);
 
     }
+    
+    @FXML
+    void loadGraphsBtnClicked(ActionEvent event) throws IOException {
+        
+    }
+
 
     //Import user data from the user's table in database
     private void importGraphsDataDashboard(String userName, String column) throws SQLException {
@@ -574,6 +582,9 @@ public class controllerHealth {
 
     @FXML
     private Button btnBack;
+    
+    @FXML
+    private Button btnLoad;
 
     @FXML
     void stepsBtnClicked(ActionEvent event) {
@@ -629,7 +640,13 @@ public class controllerHealth {
     void backToDashboardBtnClicked(ActionEvent event) throws IOException {
         changeScenes("MainHealth.fxml", 950, 1500);
     }
+    
+    @FXML
+    void loadBtnClicked(ActionEvent event) {
+        
+    }
 
+            
     private Pane view;
 
     public Pane getPane(String fxmlFile) {

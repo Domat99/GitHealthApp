@@ -20,7 +20,7 @@ import javafx.stage.Stage;
  */
 public class GitHealthApp extends Application {
 
-    Image logo = new Image(GitHealthApp.class.getResourceAsStream("Images/Picture2.png")); 
+    Image logo = new Image(GitHealthApp.class.getResourceAsStream("Images/Picture3.png")); 
 
     public static Stage stg;
 
