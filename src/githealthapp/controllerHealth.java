@@ -24,6 +24,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tooltip;
 import java.time.LocalDate;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
@@ -154,6 +155,7 @@ public class controllerHealth {
         importGraphsDataDashboard(userName, "Heart_Rate");
         importGraphsDataDashboard(userName, "Oxygen_Level");
         getSleepData(userName);
+        getWaterData(userName);
 
     }
 
@@ -204,6 +206,9 @@ public class controllerHealth {
         }
         XYChart.Series series1 = new XYChart.Series();
         series1.setName("Series 1");
+        chart.getXAxis().setAnimated(false);
+        chart.getYAxis().setAnimated(true);
+        chart.setAnimated(true);
         series1.getData().add(new XYChart.Data<>("0-6", results[0]));
         series1.getData().add(new XYChart.Data<>("6-12", results[1]));
         series1.getData().add(new XYChart.Data<>("12-18", results[2]));
@@ -212,7 +217,7 @@ public class controllerHealth {
         chart.getData().addAll(series1);
     }
     
-    private void getSleepData(String name){
+    private void getSleepData(String name) throws SQLException{
         
         Connection connection = connectionProvider.getConnection();
         LocalDate today = LocalDate.now();
@@ -251,11 +256,43 @@ public class controllerHealth {
         for(int j = 0; j < results.length; j++){
             sleepTime += results[j];
         }
-        
+        connection.close();
         Double sleepPercentage = sleepTime / 24.0;
-        
         pieSleep.setProgress(sleepPercentage);
+    }
+    
+    private void getWaterData(String name){
+        Connection connection = connectionProvider.getConnection();
+        int[] results = new int[4];
+        String query = "SELECT Water FROM " + name + " WHERE Date = \"" + "2022-03-19" + "\"";
         
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            ResultSet resultSet = stmt.executeQuery();
+            int i = 0;
+            int retrieveColumn;
+            while (resultSet.next()) {
+                retrieveColumn = resultSet.getInt("Water");
+                results[i] = retrieveColumn;
+                i += 1;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("An Error Has Occured With setGraphsImport Selecting: " + ex.getMessage());
+        }
+        
+        int waterAmount = 0;
+        for(int j = 0; j < results.length; j++){
+            waterAmount += results[j];
+        }
+        if(waterAmount >= 10){
+            barWater.setProgress(1);
+        }
+        else{
+            Double waterPercentage = waterAmount / 10.0;
+            barWater.setProgress(waterPercentage);
+        }
     }
 
     @FXML
@@ -380,8 +417,7 @@ public class controllerHealth {
 
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (SQLException ex) {
             System.out.println("An Error Has Occured With importData Selecting: " + ex.getMessage());
         }
 
@@ -441,7 +477,8 @@ public class controllerHealth {
                 + "     Calories_In integer,\n"
                 + "     Steps integer,\n"
                 + "     Calories_Out integer,\n"
-                + "     Sleep real\n);";
+                + "     Sleep real,\n"
+                + "     Water integer\n);";
 
         try {
 
