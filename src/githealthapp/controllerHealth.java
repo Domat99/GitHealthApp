@@ -670,9 +670,6 @@ public class controllerHealth {
     private Button btnBack;
 
     @FXML
-    private Button btnLoad;
-
-    @FXML
     void stepsBtnClicked(ActionEvent event) {
         getPane("StepsFXML");
         controllerHealth object = new controllerHealth();
@@ -727,10 +724,6 @@ public class controllerHealth {
         changeScenes("MainHealth.fxml", 950, 1500);
     }
 
-    @FXML
-    void loadBtnClicked(ActionEvent event) {
-
-    }
 
     private Pane view;
 
@@ -746,6 +739,82 @@ public class controllerHealth {
         }
         return view;
     }
+    
+    
+    
+    
+    //
+    //
+    //Classes in View Info
+    //
+    //
+    
+    //
+    //Steps
+    //
+    @FXML
+    private Button btnLoadSteps;
+
+    @FXML
+    void loadStepsBtnClicked(ActionEvent event) {
+
+    }
+    
+    //
+    //Sleep
+    //
+    @FXML
+    private Button btnSleepLoad;
+
+    @FXML
+    void loadSleepBtnClicked(ActionEvent event) {
+
+    }
+    
+    //
+    //Water
+    //
+    @FXML
+    private Button btnLoadWater;
+
+    @FXML
+    void loadWaterBtnClicked(ActionEvent event) {
+
+    }    
+    
+    //
+    //Calories
+    //
+    @FXML
+    private Button btnCaloriesLoad;
+
+    @FXML
+    void loadCaloriesBtnClicked(ActionEvent event) {
+
+    }
+    
+    //
+    //Heart Rate
+    //
+    @FXML
+    private Button btnHeartRateLoad;
+
+    @FXML
+    void loadHeartRateBtnClicked(ActionEvent event) {
+
+    }    
+    
+    //
+    //Oxygen
+    //
+    @FXML
+    private Button btnOxygenLoad;
+
+    @FXML
+    void loadOxygenBtnClicked(ActionEvent event) {
+
+    }    
+    
  
 }
 
