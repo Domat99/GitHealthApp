@@ -24,7 +24,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tooltip;
 import java.time.LocalDate;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
@@ -149,24 +148,23 @@ public class controllerHealth {
 
     @FXML
     void loadGraphsBtnClicked(ActionEvent event) throws IOException, SQLException {
-       
-        importGraphsDataDashboard(userName, "Steps");
-        importGraphsDataDashboard(userName, "Calories_In");
-        importGraphsDataDashboard(userName, "Heart_Rate");
-        importGraphsDataDashboard(userName, "Oxygen_Level");
-        getSleepData(userName);
-        getWaterData(userName);
+        LocalDate today = LocalDate.of(2022, 03, 26);
+        plotGraphDashboard(getGraphsData(userName, "Steps", today), "Steps");
+        plotGraphDashboard(getGraphsData(userName, "Calories_In", today), "Calories_In");
+        plotGraphDashboard(getGraphsData(userName, "Heart_Rate", today), "Heart_Rate");
+        plotGraphDashboard(getGraphsData(userName, "Oxygen_Level", today), "Oxygen_Level");
+        plotSleepGraphDashboard(getSleepData(userName, today));
+        plotWaterGraphDashboard(getGraphsData(userName, "Water", today));
 
     }
 
     //Import user data from the user's table in database
-    private void importGraphsDataDashboard(String name, String column) throws SQLException {
+    private int[] getGraphsData(String name, String column, LocalDate today) throws SQLException {
 
-        LocalDate today = LocalDate.now();
         String dateToday = today.toString();
         int[] results = new int[4];
         Connection connection = connectionProvider.getConnection();
-        String query = "SELECT " + column + " FROM " + name + " WHERE Date = \"" + "2022-03-19" + "\"";
+        String query = "SELECT " + column + " FROM " + name + " WHERE Date = \"" + dateToday + "\"";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
@@ -180,32 +178,33 @@ public class controllerHealth {
                 i += 1;
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
             System.out.println("An Error Has Occured With setGraphsImport Selecting: " + ex.getMessage());
         }
         connection.close();
-
-        plotGraphDashboard(results, column);
+        return results;
 
     }
 
     //Use the user's data to plot the graphs in the dashboard
     private void plotGraphDashboard(int[] results, String column) {
         LineChart<String, Number> chart = null;
-        if (column.equals("Steps")) {
-            chart = graphSteps;
-        }
-        if (column.equals("Calories_In")) {
-            chart = graphCalories;
-        }
-        if (column.equals("Heart_Rate")) {
-            chart = graphHR;
-        }
-        if (column.equals("Oxygen_Level")) {
-            chart = graphOL;
+        switch (column) {
+            case "Steps":
+                chart = graphSteps;
+                break;
+            case "Calories_In":
+                chart = graphCalories;
+                break;
+            case "Heart_Rate":
+                chart = graphHR;
+                break;
+            case "Oxygen_Level":
+                chart = graphOL;
+                break;
+            default:
+                break;
         }
         XYChart.Series series1 = new XYChart.Series();
-        series1.setName("Series 1");
         chart.getXAxis().setAnimated(false);
         chart.getYAxis().setAnimated(true);
         chart.setAnimated(true);
@@ -216,27 +215,30 @@ public class controllerHealth {
 
         chart.getData().addAll(series1);
     }
-    
-    private void getSleepData(String name) throws SQLException{
-        
+
+    private Double[] getSleepData(String name, LocalDate today) throws SQLException {
+
         Connection connection = connectionProvider.getConnection();
-        LocalDate today = LocalDate.now();
+
         String dateToday = today.toString();
+
+        LocalDate yesterday = today.minusDays(1);
+        String yesterdayString = yesterday.toString();
+
         Double[] results = new Double[4];
-        String query = "SELECT Sleep FROM " + name + " WHERE Date = \"" + "2022-03-19" + "\" AND time = \"18-24\"";
+        String query = "SELECT Sleep FROM " + name + " WHERE Date = \"" + dateToday + "\" AND time = \"18-24\"";
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
 
             ResultSet resultSet = stmt.executeQuery();
-            
+
             results[0] = resultSet.getDouble("Sleep");
-            
+
         } catch (SQLException ex) {
-            ex.printStackTrace();
             System.out.println("An Error Has Occured With setGraphsImport Selecting: " + ex.getMessage());
         }
-        String query2 = "SELECT Sleep FROM " + name + " WHERE Date = \"" + "2022-03-20" + "\" AND time = \"0-6\" OR Date = \"" + "2022-03-20" + "\" AND time = \"6-12\""
-                + " OR Date = \"" + "2022-03-20" + "\" AND time = \"12-18\"";
+        String query2 = "SELECT Sleep FROM " + name + " WHERE Date = \"" + yesterdayString + "\" AND time = \"0-6\" OR Date = \"" + yesterdayString + "\" AND time = \"6-12\""
+                + " OR Date = \"" + yesterdayString + "\" AND time = \"12-18\"";
         try {
             PreparedStatement stmt2 = connection.prepareStatement(query2);
 
@@ -249,47 +251,32 @@ public class controllerHealth {
                 i += 1;
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
             System.out.println("An Error Has Occured With setGraphsImport Selecting: " + ex.getMessage());
-        }
-        Double sleepTime = 0.0;
-        for(int j = 0; j < results.length; j++){
-            sleepTime += results[j];
         }
         connection.close();
+
+        return results;
+    }
+
+    private void plotSleepGraphDashboard(Double[] results) {
+        Double sleepTime = 0.0;
+        for (Double result : results) {
+            sleepTime += result;
+        }
+
         Double sleepPercentage = sleepTime / 24.0;
         pieSleep.setProgress(sleepPercentage);
-    }
-    
-    private void getWaterData(String name){
-        Connection connection = connectionProvider.getConnection();
-        int[] results = new int[4];
-        String query = "SELECT Water FROM " + name + " WHERE Date = \"" + "2022-03-19" + "\"";
-        
-        try {
-            PreparedStatement stmt = connection.prepareStatement(query);
 
-            ResultSet resultSet = stmt.executeQuery();
-            int i = 0;
-            int retrieveColumn;
-            while (resultSet.next()) {
-                retrieveColumn = resultSet.getInt("Water");
-                results[i] = retrieveColumn;
-                i += 1;
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            System.out.println("An Error Has Occured With setGraphsImport Selecting: " + ex.getMessage());
-        }
-        
+    }
+
+    private void plotWaterGraphDashboard(int[] results) {
         int waterAmount = 0;
-        for(int j = 0; j < results.length; j++){
+        for (int j = 0; j < results.length; j++) {
             waterAmount += results[j];
         }
-        if(waterAmount >= 10){
+        if (waterAmount >= 10) {
             barWater.setProgress(1);
-        }
-        else{
+        } else {
             Double waterPercentage = waterAmount / 10.0;
             barWater.setProgress(waterPercentage);
         }
@@ -487,7 +474,6 @@ public class controllerHealth {
             pstmt.executeUpdate();
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
             System.out.println("An Error Has Occured: " + ex.getMessage());
         }
         connection.close();
@@ -585,7 +571,7 @@ public class controllerHealth {
     @FXML
     private void confirmDeleteClicked(ActionEvent event) {
         Connection connection = connectionProvider.getConnection();
-        String userName = txtFldUsernameDelete.getText().trim().toLowerCase();
+        String name = txtFldUsernameDelete.getText().trim().toLowerCase();
 
         String sql = "DELETE FROM Users WHERE UserName = ?";
 
@@ -593,15 +579,14 @@ public class controllerHealth {
 
             PreparedStatement pstmt = connection.prepareStatement(sql);
 
-            pstmt.setString(1, userName);
+            pstmt.setString(1, name);
 
             pstmt.executeUpdate();
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
             System.out.println("An Error Has Occured while deleting the account from the users data: " + ex.getMessage());
         }
-        String sql2 = "DROP TABLE " + userName;
+        String sql2 = "DROP TABLE " + name;
 
         try {
 
@@ -610,10 +595,9 @@ public class controllerHealth {
 
             lblDeleteInfo.setText("User has been deleted succesfully!");
             lblDeleteInfo.setStyle("-fx-text-fill: #D05F12");//Orange
-            userName = "";
+            name = "";
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
             System.out.println("An Error Has Occured while deleting the account table: " + ex.getMessage());
         }
 
@@ -724,7 +708,6 @@ public class controllerHealth {
         changeScenes("MainHealth.fxml", 950, 1500);
     }
 
-
     private Pane view;
 
     public Pane getPane(String fxmlFile) {
@@ -734,88 +717,189 @@ public class controllerHealth {
                 throw new java.io.FileNotFoundException("FXML file can not be found.");
             }
             view = new FXMLLoader().load(fileUrl);
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println("No Page " + fxmlFile + ". Please check file name.");
         }
         return view;
     }
-    
-    
-    
-    
+
     //
     //
-    //Classes in View Info
+    //Scenes in View Info
     //
     //
-    
     //
     //Steps
     //
     @FXML
+    private LineChart<String, Number> graphStepsInfo;
+
+    @FXML
     private Button btnLoadSteps;
 
     @FXML
-    void loadStepsBtnClicked(ActionEvent event) {
-
+    void loadStepsBtnClicked(ActionEvent event) throws SQLException {
+        plotGraphInfo("Steps");
     }
-    
+
     //
     //Sleep
     //
     @FXML
+    private LineChart<String, Number> graphSleepInfo;
+
+    @FXML
     private Button btnSleepLoad;
 
     @FXML
-    void loadSleepBtnClicked(ActionEvent event) {
-
+    void loadSleepBtnClicked(ActionEvent event) throws SQLException {
+        plotGraphInfo("Sleep");
     }
-    
+
     //
     //Water
     //
     @FXML
+    private LineChart<String, Number> graphWaterInfo;
+
+    @FXML
     private Button btnLoadWater;
 
     @FXML
-    void loadWaterBtnClicked(ActionEvent event) {
+    void loadWaterBtnClicked(ActionEvent event) throws SQLException {
+        plotGraphInfo("Water");
+    }
 
-    }    
-    
     //
     //Calories
     //
     @FXML
+    private LineChart<String, Number> graphCaloriesInfo;
+
+    @FXML
     private Button btnCaloriesLoad;
 
     @FXML
-    void loadCaloriesBtnClicked(ActionEvent event) {
-
+    void loadCaloriesBtnClicked(ActionEvent event) throws SQLException {
+        plotGraphInfo("Calories_In");
+        plotGraphInfo("Calories_Out");
     }
-    
+
     //
     //Heart Rate
     //
     @FXML
+    private LineChart<String, Number> graphHRInfo;
+
+    @FXML
     private Button btnHeartRateLoad;
 
     @FXML
-    void loadHeartRateBtnClicked(ActionEvent event) {
+    void loadHeartRateBtnClicked(ActionEvent event) throws SQLException {
+        plotGraphInfo("Heart_Rate");
+    }
 
-    }    
-    
     //
     //Oxygen
     //
     @FXML
+    private LineChart<String, Number> graphOLInfo;
+
+    @FXML
     private Button btnOxygenLoad;
 
     @FXML
-    void loadOxygenBtnClicked(ActionEvent event) {
+    void loadOxygenBtnClicked(ActionEvent event) throws SQLException {
+        plotGraphInfo("Oxygen_Level");
+    }
 
-    }    
-    
- 
+    private void plotGraphInfo(String column) throws SQLException {
+        LocalDate day = LocalDate.of(2022, 03, 26);
+
+        if (column.equals("Sleep")) {
+            plotSleepGraphInfo(day);
+        } else {
+            int[] totResults = new int[7];
+            int[] dayResults = new int[4];
+            int results;
+            for (int i = 0; i < totResults.length; i++) {
+                results = 0;
+                dayResults = getGraphsData(userName, column, day);
+                for (int j = 0; j < dayResults.length; j++) {
+                    results += dayResults[j];
+                }
+                if (column.equals("Heart_Rate") || column.equals("Oxygen_Level")) {
+                    results /= 4;
+                }
+                totResults[i] = results;
+                day = day.minusDays(1);
+            }
+
+            LineChart<String, Number> chart = null;
+            switch (column) {
+                case "Steps":
+                    chart = graphStepsInfo;
+                    break;
+                case "Water":
+                    chart = graphWaterInfo;
+                    break;
+                case "Heart_Rate":
+                    chart = graphHRInfo;
+                    break;
+                case "Oxygen_Level":
+                    chart = graphOLInfo;
+                    break;
+                case "Calories_In":
+                    chart = graphCaloriesInfo;
+                    break;
+                case "Calories_Out":
+                    chart = graphCaloriesInfo;
+                    break;
+                default:
+                    break;
+            }
+            XYChart.Series series1 = new XYChart.Series();
+            if (column.equals("Calories_In")) {
+                series1.setName("Calories In");
+            }
+            if (column.equals("Calories_Out")) {
+                series1.setName("Calories Out");
+            }
+            chart.getXAxis().setAnimated(false);
+            chart.getYAxis().setAnimated(true);
+            chart.setAnimated(true);
+            day = day.plusDays(1);
+            for (int k = 6; k >= 0; k--) {
+                series1.getData().add(new XYChart.Data<>(day.toString(), totResults[k]));
+                day = day.plusDays(1);
+            }
+            chart.getData().addAll(series1);
+        }
+    }
+
+    private void plotSleepGraphInfo(LocalDate day) throws SQLException {
+        Double[] totResults = new Double[7];
+        Double[] dayResults = new Double[4];
+        Double results;
+        for (int i = 0; i < totResults.length; i++) {
+            results = 0.0;
+            dayResults = getSleepData(userName, day);
+            for (Double dayResult : dayResults) {
+                results += dayResult;
+            }
+            totResults[i] = results;
+            day = day.minusDays(1);
+        }
+        XYChart.Series series1 = new XYChart.Series();
+        graphSleepInfo.getXAxis().setAnimated(false);
+        graphSleepInfo.getYAxis().setAnimated(true);
+        graphSleepInfo.setAnimated(true);
+        day = day.plusDays(1);
+        for (int k = 6; k >= 0; k--) {
+            series1.getData().add(new XYChart.Data<>(day.toString(), totResults[k]));
+            day = day.plusDays(1);
+        }
+        graphSleepInfo.getData().addAll(series1);
+
+    }
 }
-
-
