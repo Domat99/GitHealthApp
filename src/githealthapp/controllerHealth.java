@@ -654,6 +654,13 @@ public class controllerHealth {
     private Button btnBack;
 
     @FXML
+    private Button btnActivity;
+
+    @FXML
+    private Button btnFood;
+
+    
+    @FXML
     void stepsBtnClicked(ActionEvent event) {
         getPane("StepsFXML");
         controllerHealth object = new controllerHealth();
@@ -703,6 +710,23 @@ public class controllerHealth {
         mainPane.setCenter(View2);
     }
 
+    @FXML
+    void activityBtnClicked(ActionEvent event) {
+        getPane("ActivityFXML");
+        controllerHealth object = new controllerHealth();
+        Pane View2 = object.getPane("ActivityFXML");
+        mainPane.setCenter(View2);
+    }
+    
+    @FXML
+    void foodBtnClicked(ActionEvent event) {
+        getPane("FoodFXML");
+        controllerHealth object = new controllerHealth();
+        Pane View2 = object.getPane("FoodFXML");
+        mainPane.setCenter(View2);
+    }
+    
+    
     @FXML
     void backToDashboardBtnClicked(ActionEvent event) throws IOException {
         changeScenes("MainHealth.fxml", 950, 1500);
@@ -902,4 +926,31 @@ public class controllerHealth {
         graphSleepInfo.getData().addAll(series1);
 
     }
+    
+    
+    //
+    //Activity
+    //
+    @FXML
+    private Button btnActivityLoad;
+
+    @FXML
+    void loadActivityBtnClicked(ActionEvent event) {
+
+    }
+    
+    
+    //
+    //Food
+    //
+    @FXML
+    private Button btnFoodLoad;
+
+    @FXML
+    void loadFoodBtnClicked(ActionEvent event) {
+
+    }
+    
+    
+    
 }
