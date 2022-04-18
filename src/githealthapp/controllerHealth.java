@@ -760,10 +760,19 @@ public class controllerHealth {
 
     @FXML
     private Button btnLoadSteps;
+    
+    @FXML
+    private Button btnAddSteps;
+
 
     @FXML
     void loadStepsBtnClicked(ActionEvent event) throws SQLException {
         plotGraphInfo("Steps");
+    }
+    
+    @FXML
+    void addStepsBtnClicked(ActionEvent event) {
+
     }
 
     //
@@ -774,12 +783,21 @@ public class controllerHealth {
 
     @FXML
     private Button btnSleepLoad;
-
+    
+    @FXML
+    private Button btnAddSleep;
+    
     @FXML
     void loadSleepBtnClicked(ActionEvent event) throws SQLException {
         plotGraphInfo("Sleep");
     }
+    
+    @FXML
+    void addSleepBtnClicked(ActionEvent event) {
 
+    }
+
+    
     //
     //Water
     //
@@ -790,10 +808,18 @@ public class controllerHealth {
     private Button btnLoadWater;
 
     @FXML
+    private Button btnAddWater;
+
+    @FXML
     void loadWaterBtnClicked(ActionEvent event) throws SQLException {
         plotGraphInfo("Water");
     }
 
+    @FXML
+    void addWaterBtnClicked(ActionEvent event) {
+
+    }    
+    
     //
     //Calories
     //
@@ -802,13 +828,21 @@ public class controllerHealth {
 
     @FXML
     private Button btnCaloriesLoad;
-
+    
+    @FXML
+    private Button btnAddCalories;
+    
     @FXML
     void loadCaloriesBtnClicked(ActionEvent event) throws SQLException {
         plotGraphInfo("Calories_In");
         plotGraphInfo("Calories_Out");
     }
 
+    @FXML
+    void addCaloriesBtnClicked(ActionEvent event) {
+
+    }
+    
     //
     //Heart Rate
     //
@@ -817,10 +851,18 @@ public class controllerHealth {
 
     @FXML
     private Button btnHeartRateLoad;
+    
+    @FXML
+    private Button btnAddHeart;
 
     @FXML
     void loadHeartRateBtnClicked(ActionEvent event) throws SQLException {
         plotGraphInfo("Heart_Rate");
+    }
+    
+    @FXML
+    void addHeartBtnClicked(ActionEvent event) {
+
     }
 
     //
@@ -831,12 +873,20 @@ public class controllerHealth {
 
     @FXML
     private Button btnOxygenLoad;
-
+    
+    @FXML
+    private Button btnAddOxygen;
+    
     @FXML
     void loadOxygenBtnClicked(ActionEvent event) throws SQLException {
         plotGraphInfo("Oxygen_Level");
     }
+    
+    @FXML
+    void addOxygenBtnClicked(ActionEvent event) {
 
+    }
+    
     private void plotGraphInfo(String column) throws SQLException {
         LocalDate day = LocalDate.of(2022, 03, 26);
 
@@ -933,24 +983,46 @@ public class controllerHealth {
     //
     @FXML
     private Button btnActivityLoad;
-
+    
     @FXML
+    private Button btnAddActivity;
+
+   @FXML
     void loadActivityBtnClicked(ActionEvent event) {
 
     }
     
+    @FXML
+    void addActivityBtnClicked(ActionEvent event) {
+
+    }     
+        
     
     //
     //Food
     //
     @FXML
     private Button btnFoodLoad;
-
+    
+    @FXML
+    private Button btnAddFood;
+    
     @FXML
     void loadFoodBtnClicked(ActionEvent event) {
 
     }
     
-    
+    @FXML
+    void addFoodBtnClicked(ActionEvent event) {
+
+    }    
+
+
+
+
+
+
+
+
     
 }

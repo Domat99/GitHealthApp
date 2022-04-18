@@ -43,5 +43,10 @@
             <Font name="System Bold" size="20.0" />
          </font>
       </Button>
+      <Button fx:id="btnAddHeart" layoutX="679.0" layoutY="522.0" mnemonicParsing="false" onAction="#addHeartBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #d47a9c; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #1d3454; -fx-border-radius: 100;" text="Add" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
