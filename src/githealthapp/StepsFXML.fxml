@@ -27,17 +27,17 @@
           <NumberAxis side="LEFT" />
         </yAxis>
       </LineChart>
-      <DatePicker layoutX="70.0" layoutY="561.0" />
-      <MenuButton layoutX="314.0" layoutY="561.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Time">
+      <DatePicker fx:id="stepsDatePicker" layoutX="70.0" layoutY="561.0" />
+      <MenuButton fx:id="menuTimePeriodSteps" layoutX="314.0" layoutY="561.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Time">
         <items>
-          <MenuItem mnemonicParsing="false" text="0:00-5:59" />
-          <MenuItem mnemonicParsing="false" text="6:00-11:59" />
-            <MenuItem mnemonicParsing="false" text="12:00-17:59" />
-            <MenuItem mnemonicParsing="false" text="18:00-23:59" />
+          <MenuItem fx:id="zeroToSixAmStepsTime" mnemonicParsing="false" onAction="#getZeroToSixAmStepsTime" text="0:00-5:59" />
+          <MenuItem fx:id="sixToTwelveAmStepsTime" mnemonicParsing="false" onAction="#getsixToTwelveAmStepsTime" text="6:00-11:59" />
+            <MenuItem fx:id="zeroToSixPmStepsTime" mnemonicParsing="false" onAction="#getzeroToSixPmStepsTime" text="12:00-17:59" />
+            <MenuItem fx:id="sixToTwelvePmStepsTime" mnemonicParsing="false" onAction="#getsixToTwelvePmStepsTime" text="18:00-23:59" />
         </items>
       </MenuButton>
-      <TextField layoutX="441.0" layoutY="561.0" />
-      <Label layoutX="651.0" layoutY="566.0" text="Label" />
+      <TextField fx:id="TBoxSteps" layoutX="441.0" layoutY="561.0" />
+      <Label fx:id="lblStepsAdded" layoutX="390.0" layoutY="632.0" prefHeight="17.0" prefWidth="389.0" text="Enter how many Kelometer(s) you have walked (you may enter decimal)" />
       <Button fx:id="btnLoadSteps" layoutX="651.0" layoutY="82.0" mnemonicParsing="false" onAction="#loadStepsBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #d47a9c; -fx-border-radius: 100;" text="Load" textFill="WHITE">
          <font>
             <Font name="System Bold" size="20.0" />

@@ -27,17 +27,17 @@
             <NumberAxis side="LEFT" />
          </yAxis>
       </LineChart>
-      <DatePicker layoutX="80.0" layoutY="571.0" />
-      <MenuButton layoutX="324.0" layoutY="571.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Time">
+      <DatePicker fx:id="HRDatePicker" layoutX="80.0" layoutY="571.0" />
+      <MenuButton fx:id="menuTimePeriodHR" layoutX="324.0" layoutY="571.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Time">
          <items>
-            <MenuItem mnemonicParsing="false" text="0:00-5:59" />
-            <MenuItem mnemonicParsing="false" text="6:00-11:59" />
-            <MenuItem mnemonicParsing="false" text="12:00-17:59" />
-            <MenuItem mnemonicParsing="false" text="18:00-23:59" />
+            <MenuItem fx:id="zeroToSixAmHRTime" mnemonicParsing="false" onAction="#getZeroToSixAmHRTime" text="0:00-5:59" />
+            <MenuItem fx:id="sixToTwelveAmHRTime" mnemonicParsing="false" onAction="#getsixToTwelveAmHRTime" text="6:00-11:59" />
+            <MenuItem fx:id="zeroToSixPmHRTime" mnemonicParsing="false" onAction="#getzeroToSixPmHRTime" text="12:00-17:59" />
+            <MenuItem fx:id="sixToTwelvePmHRTime" mnemonicParsing="false" onAction="#getsixToTwelvePmHRTime" text="18:00-23:59" />
          </items>
       </MenuButton>
-      <TextField layoutX="451.0" layoutY="571.0" />
-      <Label layoutX="661.0" layoutY="576.0" text="Label" />
+      <TextField fx:id="TBoxHR" layoutX="451.0" layoutY="571.0" />
+      <Label fx:id="lblHRAdded" layoutX="435.0" layoutY="627.0" prefHeight="17.0" prefWidth="211.0" text="Enter the Heart Rate as integers" />
       <Button fx:id="btnHeartRateLoad" layoutX="646.0" layoutY="75.0" mnemonicParsing="false" onAction="#loadHeartRateBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #d47a9c; -fx-border-radius: 100;" text="Load" textFill="WHITE">
          <font>
             <Font name="System Bold" size="20.0" />

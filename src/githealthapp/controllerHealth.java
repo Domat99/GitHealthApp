@@ -27,6 +27,8 @@ import java.time.LocalDate;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.input.MouseEvent;
@@ -40,7 +42,11 @@ import javafx.scene.layout.Pane;
 public class controllerHealth {
 
     DBConnectionProviderHealth connectionProvider = new DBConnectionProviderHealth();
-    static String userName = "";
+
+    static Double MET = 0.0;
+    static String timeSlot = "";
+    static User user;
+    static Double CPG = 0.0;
 
     @FXML
     private TextField txtFldUsername;
@@ -79,11 +85,37 @@ public class controllerHealth {
         } else {
             boolean data = importData(test1, test2, lblNotFound);
             if (data == true) {
-                userName = test1;
+                user = getUserObject(test1);
                 changeScenes("MainHealth.fxml", 950, 1500);
 
             }
         }
+    }
+
+    private User getUserObject(String userName) throws SQLException {
+        Connection connection = connectionProvider.getConnection();
+
+        User u1 = null;
+        String query = "SELECT Password, Gender, DOB, Height, Weight FROM Users WHERE UserName = \"" + userName + "\"";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            ResultSet resultSet = stmt.executeQuery();
+
+            String password = resultSet.getString("Password");
+            String gender = resultSet.getString("Gender");
+            String DOB = resultSet.getString("DOB");
+            int height = resultSet.getInt("Height");
+            int weight = resultSet.getInt("Weight");
+
+            u1 = new User(userName, password, gender, DOB, height, weight);
+
+        } catch (SQLException ex) {
+            System.out.println("An Error Has Occured With setGraphsImport Selecting: " + ex.getMessage());
+        }
+        connection.close();
+        return u1;
+
     }
 
     //For the main page after sign in
@@ -149,12 +181,12 @@ public class controllerHealth {
     @FXML
     void loadGraphsBtnClicked(ActionEvent event) throws IOException, SQLException {
         LocalDate today = LocalDate.of(2022, 03, 26);
-        plotGraphDashboard(getGraphsData(userName, "Steps", today), "Steps");
-        plotGraphDashboard(getGraphsData(userName, "Calories_In", today), "Calories_In");
-        plotGraphDashboard(getGraphsData(userName, "Heart_Rate", today), "Heart_Rate");
-        plotGraphDashboard(getGraphsData(userName, "Oxygen_Level", today), "Oxygen_Level");
-        plotSleepGraphDashboard(getSleepData(userName, today));
-        plotWaterGraphDashboard(getGraphsData(userName, "Water", today));
+        plotGraphDashboard(getGraphsData(user.getUserName(), "Steps", today), "Steps");
+        plotGraphDashboard(getGraphsData(user.getUserName(), "Calories_In", today), "Calories_In");
+        plotGraphDashboard(getGraphsData(user.getUserName(), "Heart_Rate", today), "Heart_Rate");
+        plotGraphDashboard(getGraphsData(user.getUserName(), "Oxygen_Level", today), "Oxygen_Level");
+        plotSleepGraphDashboard(getSleepData(user.getUserName(), today));
+        plotWaterGraphDashboard(getGraphsData(user.getUserName(), "Water", today));
 
     }
 
@@ -212,7 +244,7 @@ public class controllerHealth {
         series1.getData().add(new XYChart.Data<>("6-12", results[1]));
         series1.getData().add(new XYChart.Data<>("12-18", results[2]));
         series1.getData().add(new XYChart.Data<>("18-24", results[3]));
-
+        chart.getData().clear();
         chart.getData().addAll(series1);
     }
 
@@ -284,7 +316,9 @@ public class controllerHealth {
 
     @FXML
     private void logOutClicked() throws IOException {
-        userName = "";
+        user = null;
+        timeSlot = "";
+        MET = 0.0;
         changeScenes("FXMLHealth.fxml", 525, 800);
     }
 
@@ -551,7 +585,7 @@ public class controllerHealth {
         } else {
             boolean data = importData(name, password, lblDeleteInfo);
             if (data == true) {
-                if (name != userName) {
+                if (name != user.getUserName()) {
                     btnConfrimDelete.setText("Please enter the user name that you have used to sign in");
                     btnConfrimDelete.setStyle("-fx-text-fill: #FF0000");//Red
                 } else {
@@ -595,7 +629,9 @@ public class controllerHealth {
 
             lblDeleteInfo.setText("User has been deleted succesfully!");
             lblDeleteInfo.setStyle("-fx-text-fill: #D05F12");//Orange
-            name = "";
+            user = null;
+            timeSlot = "";
+            MET = 0.0;
 
         } catch (SQLException ex) {
             System.out.println("An Error Has Occured while deleting the account table: " + ex.getMessage());
@@ -659,7 +695,6 @@ public class controllerHealth {
     @FXML
     private Button btnFood;
 
-    
     @FXML
     void stepsBtnClicked(ActionEvent event) {
         getPane("StepsFXML");
@@ -717,7 +752,7 @@ public class controllerHealth {
         Pane View2 = object.getPane("ActivityFXML");
         mainPane.setCenter(View2);
     }
-    
+
     @FXML
     void foodBtnClicked(ActionEvent event) {
         getPane("FoodFXML");
@@ -725,8 +760,7 @@ public class controllerHealth {
         Pane View2 = object.getPane("FoodFXML");
         mainPane.setCenter(View2);
     }
-    
-    
+
     @FXML
     void backToDashboardBtnClicked(ActionEvent event) throws IOException {
         changeScenes("MainHealth.fxml", 950, 1500);
@@ -760,19 +794,81 @@ public class controllerHealth {
 
     @FXML
     private Button btnLoadSteps;
-    
+
     @FXML
     private Button btnAddSteps;
 
+    @FXML
+    private DatePicker stepsDatePicker;
+
+    @FXML
+    private MenuButton menuTimePeriodSteps;
+
+    @FXML
+    private MenuItem zeroToSixAmStepsTime;
+
+    @FXML
+    private MenuItem sixToTwelveAmStepsTime;
+
+    @FXML
+    private MenuItem zeroToSixPmStepsTime;
+
+    @FXML
+    private MenuItem sixToTwelvePmStepsTime;
+
+    @FXML
+    private TextField TBoxSteps;
+
+    @FXML
+    private Label lblStepsAdded;
+
+    @FXML
+    void getZeroToSixAmStepsTime(ActionEvent event) {
+        timeSlot = "0-6";
+        menuTimePeriodSteps.setText("0:00-5:59");
+    }
+
+    @FXML
+    void getsixToTwelveAmStepsTime(ActionEvent event) {
+        timeSlot = "6-12";
+        menuTimePeriodSteps.setText("6:00-11:59");
+    }
+
+    @FXML
+    void getzeroToSixPmStepsTime(ActionEvent event) {
+        timeSlot = "12-18";
+        menuTimePeriodSteps.setText("12:00-17:59");
+    }
+
+    @FXML
+    void getsixToTwelvePmStepsTime(ActionEvent event) {
+        timeSlot = "18-24";
+        menuTimePeriodSteps.setText("18:00-23:59");
+    }
 
     @FXML
     void loadStepsBtnClicked(ActionEvent event) throws SQLException {
         plotGraphInfo("Steps");
     }
-    
-    @FXML
-    void addStepsBtnClicked(ActionEvent event) {
 
+    @FXML
+    void addStepsBtnClicked(ActionEvent event) throws SQLException {
+        if (TBoxSteps.getText() != "" || stepsDatePicker.getValue() != null
+                || timeSlot != "") {
+            String date = stepsDatePicker.getValue().toString();
+            Double distance = Double.parseDouble(TBoxSteps.getText());
+            int time = (int) ((distance / 4.9) * 60);
+            int steps = distanceToSteps(distance);
+            MET = 3.5;
+            int calBurned = caloriesBurnedActivity(time);
+            MET = 0.0;
+            String slot = timeSlot;
+            addDataFromInfo("Steps", date, timeSlot, steps);
+            addDataFromInfo("Calories_Out", date, slot, calBurned);
+            lblStepsAdded.setText("Steps value has been updated Successfully!");
+            menuTimePeriodSteps.setText("Time");
+            TBoxSteps.setText("");
+        }
     }
 
     //
@@ -783,21 +879,83 @@ public class controllerHealth {
 
     @FXML
     private Button btnSleepLoad;
-    
+
     @FXML
     private Button btnAddSleep;
-    
+
+    @FXML
+    private DatePicker sleepDatePicker;
+
+    @FXML
+    private MenuButton menuTimePeriodSleep;
+
+    @FXML
+    private MenuItem zeroToSixAmSleepTime;
+
+    @FXML
+    private MenuItem sixToTwelveAmSleepTime;
+
+    @FXML
+    private MenuItem zeroToSixPmSleepTime;
+
+    @FXML
+    private MenuItem sixToTwelvePmSleepTime;
+
+    @FXML
+    private TextField TBoxSleep;
+
+    @FXML
+    private Label lblSleepAdded;
+
+    @FXML
+    void getZeroToSixAmSleepTime(ActionEvent event) {
+        timeSlot = "0-6";
+        menuTimePeriodSleep.setText("0:00-5:59");
+    }
+
+    @FXML
+    void getsixToTwelveAmSleepTime(ActionEvent event) {
+        timeSlot = "6-12";
+        menuTimePeriodSleep.setText("6:00-11:59");
+    }
+
+    @FXML
+    void getzeroToSixPmSleepTime(ActionEvent event) {
+        timeSlot = "12-18";
+        menuTimePeriodSleep.setText("12:00-17:59");
+    }
+
+    @FXML
+    void getsixToTwelvePmSleepTime(ActionEvent event) {
+        timeSlot = "18-24";
+        menuTimePeriodSleep.setText("18:00-23:59");
+    }
+
     @FXML
     void loadSleepBtnClicked(ActionEvent event) throws SQLException {
         plotGraphInfo("Sleep");
     }
-    
-    @FXML
-    void addSleepBtnClicked(ActionEvent event) {
 
+    @FXML
+    void addSleepBtnClicked(ActionEvent event) throws SQLException {
+        if (TBoxSleep.getText() != "" || sleepDatePicker.getValue() != null
+                || timeSlot != "") {
+            String date = sleepDatePicker.getValue().toString();
+            Double newSleep = Double.parseDouble(TBoxSleep.getText());
+            Double tot = addSleepFromInfo(date, timeSlot, newSleep);
+            if (tot <= 6.0) {
+                lblSleepAdded.setText("Sleep hours has been updated Successfully!");
+            } else {
+                tot -= newSleep;
+                lblSleepAdded.setText("Sleep hours Cannot be updated since you already\n"
+                        + "have slept for " + tot + "hours");
+            }
+            menuTimePeriodSleep.setText("Time");
+            TBoxSleep.setText("");
+
+        }
     }
 
-    
     //
     //Water
     //
@@ -811,15 +969,71 @@ public class controllerHealth {
     private Button btnAddWater;
 
     @FXML
+    private DatePicker waterDatePicker;
+
+    @FXML
+    private MenuButton menuTimePeriodWater;
+
+    @FXML
+    private MenuItem zeroToSixAmWaterTime;
+
+    @FXML
+    private MenuItem sixToTwelveAmWaterTime;
+
+    @FXML
+    private MenuItem zeroToSixPmWaterTime;
+
+    @FXML
+    private MenuItem sixToTwelvePmWaterTime;
+
+    @FXML
+    private TextField TBoxWater;
+
+    @FXML
+    private Label lblWaterAdded;
+
+    @FXML
+    void getZeroToSixAmWaterTime(ActionEvent event) {
+        timeSlot = "0-6";
+        menuTimePeriodWater.setText("0:00-5:59");
+    }
+
+    @FXML
+    void getsixToTwelveAmWaterTime(ActionEvent event) {
+        timeSlot = "6-12";
+        menuTimePeriodWater.setText("6:00-11:59");
+    }
+
+    @FXML
+    void getzeroToSixPmWaterTime(ActionEvent event) {
+        timeSlot = "12-18";
+        menuTimePeriodWater.setText("12:00-17:59");
+    }
+
+    @FXML
+    void getsixToTwelvePmWaterTime(ActionEvent event) {
+        timeSlot = "18-24";
+        menuTimePeriodWater.setText("18:00-23:59");
+    }
+
+    @FXML
     void loadWaterBtnClicked(ActionEvent event) throws SQLException {
         plotGraphInfo("Water");
     }
 
     @FXML
-    void addWaterBtnClicked(ActionEvent event) {
+    void addWaterBtnClicked(ActionEvent event) throws SQLException {
+        if (TBoxWater.getText() != "" || waterDatePicker.getValue() != null
+                || timeSlot != "") {
+            String date = waterDatePicker.getValue().toString();
+            int newWater = Integer.parseInt(TBoxWater.getText());
+            addDataFromInfo("Water", date, timeSlot, newWater);
+            lblWaterAdded.setText("Water value has been updated Successfully!");
+            menuTimePeriodWater.setText("Time");
+            TBoxWater.setText("");
+        }
+    }
 
-    }    
-    
     //
     //Calories
     //
@@ -828,10 +1042,10 @@ public class controllerHealth {
 
     @FXML
     private Button btnCaloriesLoad;
-    
+
     @FXML
     private Button btnAddCalories;
-    
+
     @FXML
     void loadCaloriesBtnClicked(ActionEvent event) throws SQLException {
         plotGraphInfo("Calories_In");
@@ -842,7 +1056,7 @@ public class controllerHealth {
     void addCaloriesBtnClicked(ActionEvent event) {
 
     }
-    
+
     //
     //Heart Rate
     //
@@ -851,18 +1065,74 @@ public class controllerHealth {
 
     @FXML
     private Button btnHeartRateLoad;
-    
+
     @FXML
     private Button btnAddHeart;
+
+    @FXML
+    private DatePicker HRDatePicker;
+
+    @FXML
+    private MenuButton menuTimePeriodHR;
+
+    @FXML
+    private MenuItem zeroToSixAmHRTime;
+
+    @FXML
+    private MenuItem sixToTwelveAmHRTime;
+
+    @FXML
+    private MenuItem zeroToSixPmHRTime;
+
+    @FXML
+    private MenuItem sixToTwelvePmHRTime;
+
+    @FXML
+    private TextField TBoxHR;
+
+    @FXML
+    private Label lblHRAdded;
+
+    @FXML
+    void getZeroToSixAmHRTime(ActionEvent event) {
+        timeSlot = "0-6";
+        menuTimePeriodHR.setText("0:00-5:59");
+    }
+
+    @FXML
+    void getsixToTwelveAmHRTime(ActionEvent event) {
+        timeSlot = "6-12";
+        menuTimePeriodHR.setText("6:00-11:59");
+    }
+
+    @FXML
+    void getzeroToSixPmHRTime(ActionEvent event) {
+        timeSlot = "12-18";
+        menuTimePeriodHR.setText("12:00-17:59");
+    }
+
+    @FXML
+    void getsixToTwelvePmHRTime(ActionEvent event) {
+        timeSlot = "18-24";
+        menuTimePeriodHR.setText("18:00-23:59");
+    }
 
     @FXML
     void loadHeartRateBtnClicked(ActionEvent event) throws SQLException {
         plotGraphInfo("Heart_Rate");
     }
-    
-    @FXML
-    void addHeartBtnClicked(ActionEvent event) {
 
+    @FXML
+    void addHeartBtnClicked(ActionEvent event) throws SQLException {
+        if (TBoxHR.getText() != "" || HRDatePicker.getValue() != null
+                || timeSlot != "") {
+            String date = HRDatePicker.getValue().toString();
+            int newHR = Integer.parseInt(TBoxHR.getText());
+            addDataFromInfo("Heart_Rate", date, timeSlot, newHR);
+            lblHRAdded.setText("Heart Rate value has been updated Successfully!");
+            menuTimePeriodOL.setText("Time");
+            TBoxHR.setText("");
+        }
     }
 
     //
@@ -873,20 +1143,76 @@ public class controllerHealth {
 
     @FXML
     private Button btnOxygenLoad;
-    
+
     @FXML
     private Button btnAddOxygen;
-    
+
+    @FXML
+    private DatePicker OLDatePicker;
+
+    @FXML
+    private MenuButton menuTimePeriodOL;
+
+    @FXML
+    private MenuItem zeroToSixAmOLTime;
+
+    @FXML
+    private MenuItem sixToTwelveAmOLTime;
+
+    @FXML
+    private MenuItem zeroToSixPmOLTime;
+
+    @FXML
+    private MenuItem sixToTwelvePmOLTime;
+
+    @FXML
+    private TextField TBoxOL;
+
+    @FXML
+    private Label lblOLAdded;
+
+    @FXML
+    void getZeroToSixAmOLTime(ActionEvent event) {
+        timeSlot = "0-6";
+        menuTimePeriodOL.setText("0:00-5:59");
+    }
+
+    @FXML
+    void getsixToTwelveAmOLTime(ActionEvent event) {
+        timeSlot = "6-12";
+        menuTimePeriodOL.setText("6:00-11:59");
+    }
+
+    @FXML
+    void getzeroToSixPmOLTime(ActionEvent event) {
+        timeSlot = "12-18";
+        menuTimePeriodOL.setText("12:00-17:59");
+    }
+
+    @FXML
+    void getsixToTwelvePmOLTime(ActionEvent event) {
+        timeSlot = "18-24";
+        menuTimePeriodOL.setText("18:00-23:59");
+    }
+
     @FXML
     void loadOxygenBtnClicked(ActionEvent event) throws SQLException {
         plotGraphInfo("Oxygen_Level");
     }
-    
-    @FXML
-    void addOxygenBtnClicked(ActionEvent event) {
 
+    @FXML
+    void addOxygenBtnClicked(ActionEvent event) throws SQLException {
+        if (TBoxOL.getText() != "" || OLDatePicker.getValue() != null
+                || timeSlot != "") {
+            String date = OLDatePicker.getValue().toString();
+            int newOL = Integer.parseInt(TBoxOL.getText());
+            addDataFromInfo("Oxygen_Level", date, timeSlot, newOL);
+            lblOLAdded.setText("Oxygen Level value has been updated Successfully!");
+            menuTimePeriodOL.setText("Time");
+            TBoxOL.setText("");
+        }
     }
-    
+
     private void plotGraphInfo(String column) throws SQLException {
         LocalDate day = LocalDate.of(2022, 03, 26);
 
@@ -898,7 +1224,7 @@ public class controllerHealth {
             int results;
             for (int i = 0; i < totResults.length; i++) {
                 results = 0;
-                dayResults = getGraphsData(userName, column, day);
+                dayResults = getGraphsData(user.getUserName(), column, day);
                 for (int j = 0; j < dayResults.length; j++) {
                     results += dayResults[j];
                 }
@@ -947,6 +1273,10 @@ public class controllerHealth {
                 series1.getData().add(new XYChart.Data<>(day.toString(), totResults[k]));
                 day = day.plusDays(1);
             }
+            if (!column.equals("Calories_Out")) {
+                chart.getData().clear();
+            }
+
             chart.getData().addAll(series1);
         }
     }
@@ -957,7 +1287,7 @@ public class controllerHealth {
         Double results;
         for (int i = 0; i < totResults.length; i++) {
             results = 0.0;
-            dayResults = getSleepData(userName, day);
+            dayResults = getSleepData(user.getUserName(), day);
             for (Double dayResult : dayResults) {
                 results += dayResult;
             }
@@ -973,56 +1303,354 @@ public class controllerHealth {
             series1.getData().add(new XYChart.Data<>(day.toString(), totResults[k]));
             day = day.plusDays(1);
         }
+        graphSleepInfo.getData().clear();
         graphSleepInfo.getData().addAll(series1);
 
     }
-    
-    
+
+    private int distanceToSteps(Double distance) {
+        int steps = 0;
+        if (user.getGender().equals("male")) {
+            steps = (int) ((int) (distance * 1000.0) / 0.762);
+        } else {
+            steps = (int) ((int) (distance * 1000.0) / 0.6604);
+        }
+        return steps;
+    }
+
     //
     //Activity
     //
     @FXML
+    private DatePicker activityDatePicker;
+
+    @FXML
+    private MenuButton menuTimePeriodActivity;
+
+    @FXML
+    private MenuItem zeroToSixAmActTime;
+
+    @FXML
+    private MenuItem sixToTwelveAmActTime;
+
+    @FXML
+    private MenuItem zeroToSixPmActTime;
+
+    @FXML
+    private MenuItem sixToTwelvePmActTime;
+
+    @FXML
     private Button btnActivityLoad;
-    
+
     @FXML
     private Button btnAddActivity;
 
-   @FXML
+    @FXML
+    private MenuButton menuActivity;
+
+    @FXML
+    private MenuItem runningActivity;
+
+    @FXML
+    private MenuItem soccerActivity;
+
+    @FXML
+    private MenuItem basketballActivity;
+
+    @FXML
+    private MenuItem walkingActivity;
+
+    @FXML
+    private TextField TBoxActivityTime;
+
+    @FXML
+    private Label lblActivityAdded;
+
+    @FXML
     void loadActivityBtnClicked(ActionEvent event) {
 
     }
-    
-    @FXML
-    void addActivityBtnClicked(ActionEvent event) {
 
-    }     
-        
-    
+    @FXML
+    void addActivityBtnClicked(ActionEvent event) throws SQLException {
+        if (TBoxActivityTime.getText() != "" || activityDatePicker.getValue() != null || MET != 0.0
+                || timeSlot != "") {
+            String date = activityDatePicker.getValue().toString();
+            int time = Integer.parseInt(TBoxActivityTime.getText());
+            int calBurned = caloriesBurnedActivity(time);
+            addDataFromInfo("Calories_Out", date, timeSlot, calBurned);
+            lblActivityAdded.setText("Activity has been added Successfully!");
+            MET = 0.0;
+            menuTimePeriodActivity.setText("Time");
+            TBoxActivityTime.setText("");
+        }
+    }
+
+    @FXML
+    void getBasketballValue(ActionEvent event) {
+        MET = 8.0;
+        menuActivity.setText("Basketball");
+    }
+
+    @FXML
+    void getRunningValue(ActionEvent event) {
+        MET = 13.5;
+        menuActivity.setText("Running");
+    }
+
+    @FXML
+    void getSoccerValue(ActionEvent event) {
+        MET = 7.0;
+        menuActivity.setText("Soccer");
+    }
+
+    @FXML
+    void getWalkingValue(ActionEvent event) {
+        MET = 3.5;
+        menuActivity.setText("Walking");
+    }
+
+    @FXML
+    void getZeroToSixAmActTime(ActionEvent event) {
+        timeSlot = "0-6";
+        menuTimePeriodActivity.setText("0:00-5:59");
+    }
+
+    @FXML
+    void getsixToTwelveAmActTime(ActionEvent event) {
+        timeSlot = "6-12";
+        menuTimePeriodActivity.setText("6:00-11:59");
+    }
+
+    @FXML
+    void getzeroToSixPmActTime(ActionEvent event) {
+        timeSlot = "12-18";
+        menuTimePeriodActivity.setText("12:00-17:59");
+    }
+
+    @FXML
+    void getsixToTwelvePmActTime(ActionEvent event) {
+        timeSlot = "18-24";
+        menuTimePeriodActivity.setText("18:00-23:59");
+    }
+
     //
     //Food
     //
     @FXML
+    private MenuButton menuTimePeriodFood;
+
+    @FXML
+    private MenuItem zeroToSixAmFoodTime;
+
+    @FXML
+    private MenuItem sixToTwelveAmFoodTime;
+
+    @FXML
+    private MenuItem zeroToSixPmFoodTime;
+
+    @FXML
+    private MenuItem sixToTwelvePmFoodTime;
+
+    @FXML
+    private MenuButton menuFood;
+
+    @FXML
+    private MenuItem appleFood;
+
+    @FXML
+    private MenuItem bananaFood;
+
+    @FXML
+    private MenuItem saladeFood;
+
+    @FXML
+    private MenuItem chickenFood;
+
+    @FXML
+    private MenuItem beefFood;
+
+    @FXML
+    private MenuItem fishFood;
+
+    @FXML
+    private TextField TBoxFood;
+
+    @FXML
+    private Label lblFoodAdded;
+
+    @FXML
+    private DatePicker foodDatePicker;
+
+    @FXML
     private Button btnFoodLoad;
-    
+
     @FXML
     private Button btnAddFood;
+
+    @FXML
+    void getAppleValue(ActionEvent event) {
+        CPG = 0.52;
+        menuFood.setText("Apple");
+    }
+
+    @FXML
+    void getBananaValue(ActionEvent event) {
+        CPG = 0.89;
+        menuFood.setText("Banana");
+    }
+
+    @FXML
+    void getBeefValue(ActionEvent event) {
+        CPG = 2.5;
+        menuFood.setText("Beef");
+    }
+
+    @FXML
+    void getChickenValue(ActionEvent event) {
+        CPG = 2.39;
+        menuFood.setText("Chicken");
+    }
+
+    @FXML
+    void getFishValue(ActionEvent event) {
+        CPG = 2.06;
+        menuFood.setText("Fish");
+    }
+
+    @FXML
+    void getSaladeValue(ActionEvent event) {
+        CPG = 0.64;
+        menuFood.setText("Home Salade");
+    }
+
+    @FXML
+    void getZeroToSixAmFoodTime(ActionEvent event) {
+        timeSlot = "0-6";
+        menuTimePeriodFood.setText("0:00-5:59");
+    }
+
+    @FXML
+    void getsixToTwelveAmFoodTime(ActionEvent event) {
+        timeSlot = "6-12";
+        menuTimePeriodFood.setText("6:00-11:59");
+    }
     
+    @FXML
+    void getzeroToSixPmFoodTime(ActionEvent event) {
+        timeSlot = "12-18";
+        menuTimePeriodFood.setText("12:00-17:59");
+    }
+    
+    @FXML
+    void getsixToTwelvePmFoodTime(ActionEvent event) {
+        timeSlot = "18-24";
+        menuTimePeriodFood.setText("18:00-23:59");
+    }
+
     @FXML
     void loadFoodBtnClicked(ActionEvent event) {
 
     }
-    
+
     @FXML
-    void addFoodBtnClicked(ActionEvent event) {
+    void addFoodBtnClicked(ActionEvent event) throws SQLException {
+        if (TBoxFood.getText() != "" || foodDatePicker.getValue() != null || CPG != 0.0
+                || timeSlot != "") {
+            String date = foodDatePicker.getValue().toString();
+            int grams = Integer.parseInt(TBoxFood.getText());
+            int calEaten = (int) (grams * CPG);
+            addDataFromInfo("Calories_In", date, timeSlot, calEaten);
+            lblFoodAdded.setText("Food has been added Successfully!");
+            CPG = 0.0;
+            menuTimePeriodFood.setText("Time");
+            TBoxFood.setText("");
+        }
+    }
 
-    }    
+    private int caloriesBurnedActivity(int time) {
+        int cal = (int) (time * ((MET * 3.5 * user.getWeight()) / 200));
+        return cal;
+    }
 
+    private void addDataFromInfo(String col, String date, String time, int difference) throws SQLException {
+        Connection connection = connectionProvider.getConnection();
+        int newResult = 0;
+        String query = "SELECT " + col + " FROM " + user.getUserName() + " WHERE Date = \"" + date + "\" AND time = \"" + time + "\"";
 
+        int oldResult = 0;
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
 
+            ResultSet resultSet = stmt.executeQuery();
 
+            oldResult = resultSet.getInt(col);
 
+        } catch (SQLException ex) {
+            System.out.println("An Error Has Occured With addDataFromInfo Selecting: " + ex.getMessage());
+        }
 
+        if (col.equals("Calories_In") || col.equals("Calories_Out") || col.equals("Steps") || col.equals("Water")) {
+            newResult = oldResult + difference;
+        } else {
+            newResult = (oldResult + difference) / 2;
+        }
 
+        String query2 = "UPDATE " + user.getUserName() + " SET " + col + " = " + newResult + " WHERE Date = \"" + date + "\" AND time = \"" + time + "\"";
 
-    
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query2);
+
+            stmt.executeUpdate();
+
+            timeSlot = "";
+
+        } catch (SQLException ex) {
+            System.out.println("An Error Has Occured With addDataFromInfo Updating: " + ex.getMessage());
+        }
+        connection.close();
+    }
+
+    private Double addSleepFromInfo(String date, String time, Double difference) throws SQLException {
+        Connection connection = connectionProvider.getConnection();
+        Double newResult = 0.0;
+        String query = "SELECT Sleep FROM " + user.getUserName() + " WHERE Date = \"" + date + "\" AND time = \"" + time + "\"";
+
+        Double oldResult = 0.0;
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            ResultSet resultSet = stmt.executeQuery();
+
+            oldResult = resultSet.getDouble("Sleep");
+
+        } catch (SQLException ex) {
+            System.out.println("An Error Has Occured With addSleepFromInfo Selecting: " + ex.getMessage());
+        }
+
+        connection.close();
+        newResult = oldResult + difference;
+
+        if (newResult > 6.0) {
+            timeSlot = "";
+            return newResult;
+        } else {
+            Connection connection2 = connectionProvider.getConnection();
+            String query2 = "UPDATE " + user.getUserName() + " SET Sleep = " + newResult + " WHERE Date = \"" + date + "\" AND time = \"" + time + "\"";
+
+            try {
+                PreparedStatement stmt = connection2.prepareStatement(query2);
+
+                stmt.executeUpdate();
+
+                timeSlot = "";
+
+            } catch (SQLException ex) {
+                System.out.println("An Error Has Occured With addSleepFromInfo Updating: " + ex.getMessage());
+            }
+            connection2.close();
+            return newResult;
+        }
+    }
+
 }

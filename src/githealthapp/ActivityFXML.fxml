@@ -12,45 +12,45 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #B4C7E7;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
-   <children>
-      <Label layoutX="371.0" layoutY="66.0" text="Activity">
-         <font>
-            <Font size="33.0" />
-         </font>
-      </Label>
-      <MenuButton layoutX="324.0" layoutY="381.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Time">
-         <items>
-            <MenuItem mnemonicParsing="false" text="0:00-5:59" />
-            <MenuItem mnemonicParsing="false" text="6:00-11:59" />
-            <MenuItem mnemonicParsing="false" text="12:00-17:59" />
-            <MenuItem mnemonicParsing="false" text="18:00-23:59" />
-         </items>
-      </MenuButton>
-      <MenuButton layoutX="324.0" layoutY="263.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Activity">
-         <items>
-            <MenuItem mnemonicParsing="false" text="Activity 1" />
-            <MenuItem mnemonicParsing="false" text="Activity 2" />
-            <MenuItem mnemonicParsing="false" text="Activity 3" />
-            <MenuItem mnemonicParsing="false" text="Activity 4" />
-         </items>
-      </MenuButton>
-      <TextField layoutX="451.0" layoutY="381.0" />
-      <Label layoutX="661.0" layoutY="386.0" text="Label" />
-      <DatePicker layoutX="80.0" layoutY="381.0" />
-      <ImageView fitHeight="110.0" fitWidth="133.0" layoutX="165.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@Images/Sports.png" />
-         </image>
-      </ImageView>
-      <Button fx:id="btnActivityLoad" layoutX="676.0" layoutY="104.0" mnemonicParsing="false" onAction="#loadActivityBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #d47a9c; -fx-border-radius: 100;" text="Load" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="20.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnAddActivity" layoutX="676.0" layoutY="305.0" mnemonicParsing="false" onAction="#addActivityBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #d47a9c; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #1d3454; -fx-border-radius: 100;" text="Add" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="20.0" />
-         </font>
-      </Button>
-   </children>
+    <children>
+        <Label layoutX="371.0" layoutY="66.0" text="Activity">
+            <font>
+                <Font size="33.0" />
+            </font>
+        </Label>
+        <MenuButton fx:id="menuTimePeriodActivity" layoutX="324.0" layoutY="381.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Time">
+            <items>
+                <MenuItem fx:id="zeroToSixAmActTime" mnemonicParsing="false" onAction="#getZeroToSixAmActTime" text="0:00-5:59" />
+                <MenuItem fx:id="sixToTwelveAmActTime" mnemonicParsing="false" onAction="#getsixToTwelveAmActTime" text="6:00-11:59" />
+                <MenuItem fx:id="zeroToSixPmActTime" mnemonicParsing="false" onAction="#getzeroToSixPmActTime" text="12:00-17:59" />
+                <MenuItem fx:id="sixToTwelvePmActTime" mnemonicParsing="false" onAction="#getsixToTwelvePmActTime" text="18:00-23:59" />
+            </items>
+        </MenuButton>
+        <MenuButton fx:id="menuActivity" layoutX="324.0" layoutY="263.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Activity">
+            <items>
+                <MenuItem fx:id="runningActivity" mnemonicParsing="false" onAction="#getRunningValue" text="Running" />
+                <MenuItem fx:id="soccerActivity" mnemonicParsing="false" onAction="#getSoccerValue" text="Soccer" />
+                <MenuItem fx:id="basketballActivity" mnemonicParsing="false" onAction="#getBasketballValue" text="Basketball" />
+                <MenuItem fx:id="walkingActivity" mnemonicParsing="false" onAction="#getWalkingValue" text="Walking" />
+            </items>
+        </MenuButton>
+        <TextField fx:id="TBoxActivityTime" layoutX="451.0" layoutY="381.0" />
+        <DatePicker fx:id="activityDatePicker" layoutX="80.0" layoutY="381.0" />
+        <ImageView fitHeight="110.0" fitWidth="133.0" layoutX="165.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@Images/Sports.png" />
+            </image>
+        </ImageView>
+        <Button fx:id="btnActivityLoad" layoutX="676.0" layoutY="104.0" mnemonicParsing="false" onAction="#loadActivityBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #d47a9c; -fx-border-radius: 100;" text="Load" textFill="WHITE">
+            <font>
+                <Font name="System Bold" size="20.0" />
+            </font>
+        </Button>
+        <Button fx:id="btnAddActivity" layoutX="676.0" layoutY="305.0" mnemonicParsing="false" onAction="#addActivityBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #d47a9c; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #1d3454; -fx-border-radius: 100;" text="Add" textFill="WHITE">
+            <font>
+                <Font name="System Bold" size="20.0" />
+            </font>
+        </Button>
+      <Label fx:id="lblActivityAdded" layoutX="352.0" layoutY="442.0" prefHeight="31.0" prefWidth="347.0" text="Enter how many minutes you have spent performing this activity" />
+    </children>
 </AnchorPane>
