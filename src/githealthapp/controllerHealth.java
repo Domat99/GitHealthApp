@@ -1045,6 +1045,10 @@ public class controllerHealth {
 
     @FXML
     private Button btnAddCalories;
+    @FXML
+    private RadioButton rbCaloriesIn;
+    @FXML
+    private RadioButton rbCaloriesOut;
 
     @FXML
     void loadCaloriesBtnClicked(ActionEvent event) throws SQLException {

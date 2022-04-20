@@ -8,7 +8,9 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
@@ -48,5 +50,18 @@
             <Font name="System Bold" size="20.0" />
          </font>
       </Button>
+      <RadioButton fx:id="rbCaloriesIn" layoutX="335.0" layoutY="531.0" mnemonicParsing="false" text="Calories In">
+         <font>
+            <Font name="Verdana" size="18.0" />
+         </font>
+         <toggleGroup>
+            <ToggleGroup fx:id="caloriesGroup" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="rbCaloriesOut" layoutX="489.0" layoutY="533.0" mnemonicParsing="false" text="Calories Out" toggleGroup="$caloriesGroup">
+         <font>
+            <Font name="Verdana" size="18.0" />
+         </font>
+      </RadioButton>
    </children>
 </AnchorPane>
