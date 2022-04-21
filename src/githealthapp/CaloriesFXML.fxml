@@ -29,17 +29,17 @@
             <NumberAxis side="LEFT" />
          </yAxis>
       </LineChart>
-      <DatePicker layoutX="80.0" layoutY="571.0" />
-      <MenuButton layoutX="324.0" layoutY="571.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Time">
+      <DatePicker fx:id="calDatePicker" layoutX="80.0" layoutY="571.0" />
+      <MenuButton fx:id="menuTimePeriodCal" layoutX="324.0" layoutY="571.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Time">
          <items>
-            <MenuItem mnemonicParsing="false" text="0:00-5:59" />
-            <MenuItem mnemonicParsing="false" text="6:00-11:59" />
-            <MenuItem mnemonicParsing="false" text="12:00-17:59" />
-            <MenuItem mnemonicParsing="false" text="18:00-23:59" />
+            <MenuItem fx:id="zeroToSixAmCalTime" mnemonicParsing="false" onAction="#getZeroToSixAmCalTime" text="0:00-5:59" />
+            <MenuItem fx:id="sixToTwelveAmCalTime" mnemonicParsing="false" onAction="#getsixToTwelveAmCalTime" text="6:00-11:59" />
+            <MenuItem fx:id="zeroToSixPmCalTime" mnemonicParsing="false" onAction="#getzeroToSixPmCalTime" text="12:00-17:59" />
+            <MenuItem fx:id="sixToTwelvePmCalTime" mnemonicParsing="false" onAction="#getsixToTwelvePmCalTime" text="18:00-23:59" />
          </items>
       </MenuButton>
-      <TextField layoutX="451.0" layoutY="571.0" />
-      <Label layoutX="661.0" layoutY="576.0" text="Label" />
+      <TextField fx:id="TBoxCal" layoutX="451.0" layoutY="571.0" />
+      <Label fx:id="lblCalAdded" layoutX="367.0" layoutY="633.0" prefHeight="17.0" prefWidth="367.0" text="Enter how many calories you have burned or consumed as integers" />
       <Button fx:id="btnCaloriesLoad" layoutX="661.0" layoutY="70.0" mnemonicParsing="false" onAction="#loadCaloriesBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #d47a9c; -fx-border-radius: 100;" text="Load" textFill="WHITE">
          <font>
             <Font name="System Bold" size="20.0" />

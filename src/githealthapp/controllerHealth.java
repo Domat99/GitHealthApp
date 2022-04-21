@@ -1051,15 +1051,83 @@ public class controllerHealth {
     private RadioButton rbCaloriesOut;
 
     @FXML
+    private DatePicker calDatePicker;
+
+    @FXML
+    private MenuButton menuTimePeriodCal;
+
+    @FXML
+    private MenuItem zeroToSixAmCalTime;
+
+    @FXML
+    private MenuItem sixToTwelveAmCalTime;
+
+    @FXML
+    private MenuItem zeroToSixPmCalTime;
+
+    @FXML
+    private MenuItem sixToTwelvePmCalTime;
+
+    @FXML
+    private TextField TBoxCal;
+
+    @FXML
+    private Label lblCalAdded;
+
+    @FXML
+    void getZeroToSixAmCalTime(ActionEvent event) {
+        timeSlot = "0-6";
+        menuTimePeriodCal.setText("0:00-5:59");
+    }
+
+    @FXML
+    void getsixToTwelveAmCalTime(ActionEvent event) {
+        timeSlot = "6-12";
+        menuTimePeriodCal.setText("6:00-11:59");
+    }
+    
+    @FXML
+    void getzeroToSixPmCalTime(ActionEvent event) {
+        timeSlot = "12-18";
+        menuTimePeriodCal.setText("12:00-17:59");
+    }
+    
+    @FXML
+    void getsixToTwelvePmCalTime(ActionEvent event) {
+        timeSlot = "18-24";
+        menuTimePeriodCal.setText("18:00-23:59");
+    }
+
+    @FXML
     void loadCaloriesBtnClicked(ActionEvent event) throws SQLException {
         plotGraphInfo("Calories_In");
         plotGraphInfo("Calories_Out");
     }
 
     @FXML
-    void addCaloriesBtnClicked(ActionEvent event) {
+    void addCaloriesBtnClicked(ActionEvent event) throws SQLException {
+        if (TBoxCal.getText() != "" || calDatePicker.getValue() != null
+                || timeSlot != "") {
+            String date = calDatePicker.getValue().toString();
+            int newCal = Integer.parseInt(TBoxCal.getText());
+            if (rbCaloriesIn.isSelected()) {
+                addDataFromInfo("Calories_In", date, timeSlot, newCal);
+                lblCalAdded.setText("Calories intake value has been updated Successfully!");
+                menuTimePeriodCal.setText("Time");
+                TBoxCal.setText("");
+            } else if (rbCaloriesOut.isSelected()) {
+                addDataFromInfo("Calories_Out", date, timeSlot, newCal);
+                lblCalAdded.setText("Calories burned value has been updated Successfully!");
+                menuTimePeriodCal.setText("Time");
+                TBoxCal.setText("");
+            }
+            else{
+                lblCalAdded.setText("Please select if the entered value is an intake or bured calories");
+            }
 
+        }
     }
+    
 
     //
     //Heart Rate
@@ -1539,13 +1607,13 @@ public class controllerHealth {
         timeSlot = "6-12";
         menuTimePeriodFood.setText("6:00-11:59");
     }
-    
+
     @FXML
     void getzeroToSixPmFoodTime(ActionEvent event) {
         timeSlot = "12-18";
         menuTimePeriodFood.setText("12:00-17:59");
     }
-    
+
     @FXML
     void getsixToTwelvePmFoodTime(ActionEvent event) {
         timeSlot = "18-24";
