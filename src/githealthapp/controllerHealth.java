@@ -24,6 +24,8 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tooltip;
 import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
@@ -86,6 +88,8 @@ public class controllerHealth {
             boolean data = importData(test1, test2, lblNotFound);
             if (data == true) {
                 user = getUserObject(test1);
+                checkEmptyDays();
+                deleteOldData();
                 changeScenes("MainHealth.fxml", 950, 1500);
 
             }
@@ -180,7 +184,7 @@ public class controllerHealth {
 
     @FXML
     void loadGraphsBtnClicked(ActionEvent event) throws IOException, SQLException {
-        LocalDate today = LocalDate.of(2022, 03, 26);
+        LocalDate today = LocalDate.of(2022, 03, 26); //MODIFY TO LocaDate.now
         plotGraphDashboard(getGraphsData(user.getUserName(), "Steps", today), "Steps");
         plotGraphDashboard(getGraphsData(user.getUserName(), "Calories_In", today), "Calories_In");
         plotGraphDashboard(getGraphsData(user.getUserName(), "Heart_Rate", today), "Heart_Rate");
@@ -319,6 +323,7 @@ public class controllerHealth {
         user = null;
         timeSlot = "";
         MET = 0.0;
+        CPG = 0.0;
         changeScenes("FXMLHealth.fxml", 525, 800);
     }
 
@@ -406,7 +411,6 @@ public class controllerHealth {
         }
     }
 
-    //NOT DONE YET!
     //Gets the users info to use for the sign in.
     private Boolean importData(String s1, String s2, Label lbl) throws IOException, SQLException {
         Connection connection = connectionProvider.getConnection();
@@ -508,9 +512,126 @@ public class controllerHealth {
             pstmt.executeUpdate();
 
         } catch (SQLException ex) {
-            System.out.println("An Error Has Occured: " + ex.getMessage());
+            System.out.println("An Error Has Occured while creating a user table: " + ex.getMessage());
         }
         connection.close();
+    }
+
+    private void checkEmptyDays() throws SQLException {
+        LocalDate today = LocalDate.of(2022, 03, 26); //MODIFY TO LocalDate.now
+        Connection connection = connectionProvider.getConnection();
+        String query = "SELECT Date FROM " + user.getUserName();
+        int minDiff = 8;
+        try {
+
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            ResultSet resultSet = stmt.executeQuery();
+
+            while (resultSet.next()) {
+                String testDayString = resultSet.getString("Date");
+                LocalDate testDay = LocalDate.parse(testDayString);
+                Period period = Period.between(testDay, today);
+                if (period.getDays() >= 0 && period.getDays() < minDiff) {
+                    minDiff = period.getDays();
+                }
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("An Error Has Occured With checkEmptyDays Selecting: " + ex.getMessage());
+        }
+        connection.close();
+        if (minDiff != 0) {
+            lastSevenDaysInsertEmptyData(user.getUserName(), minDiff);
+        }
+
+    }
+
+    private void lastSevenDaysInsertEmptyData(String userName, int missingDays) throws SQLException {
+        LocalDate day = LocalDate.of(2022, 03, 27); //CHOOSE ONE DAY AFTER THE LocalDate.now
+        String dayString = day.toString();
+        String twelveToSixAM = "0-6";
+        String sixToTwelveAM = "6-12";
+        String twelveToSixPM = "12-18";
+        String sixToTwelvePM = "18-24";
+        for (int i = 0; i < missingDays; i++) {
+            day = day.minusDays(1);
+            dayString = day.toString();
+            for (int j = 0; j < 4; j++) {
+                Connection connection = connectionProvider.getConnection();
+                String query = "INSERT INTO " + userName + " (Date, time, Heart_Rate, Oxygen_Level, Calories_In, Steps, Calories_Out, Sleep, Water) VALUES(?,?,?,?,?,?,?,?,?) ";
+                try {
+                    PreparedStatement pstmt = connection.prepareStatement(query);
+
+                    pstmt.setString(1, dayString);
+                    if (j == 0) {
+                        pstmt.setString(2, twelveToSixAM);
+                    } else if (j == 1) {
+                        pstmt.setString(2, sixToTwelveAM);
+                    } else if (j == 2) {
+                        pstmt.setString(2, twelveToSixPM);
+                    } else if (j == 3) {
+                        pstmt.setString(2, sixToTwelvePM);
+                    }
+                    pstmt.setInt(3, 0);
+                    pstmt.setInt(4, 0);
+                    pstmt.setInt(5, 0);
+                    pstmt.setInt(6, 0);
+                    pstmt.setInt(7, 0);
+                    pstmt.setDouble(8, 0.0);
+                    pstmt.setInt(9, 0);
+
+                    pstmt.executeUpdate();
+
+                } catch (SQLException ex) {
+                    System.out.println("An Error Has Occured With adding empty data to user while creating: " + ex.getMessage());
+                }
+                connection.close();
+            }
+        }
+    }
+
+    private void deleteOldData() throws SQLException {
+        LocalDate today = LocalDate.of(2022, 03, 26); //MODIFY TO LocalDate.now
+        Connection connection = connectionProvider.getConnection();
+        String query = "SELECT Date FROM " + user.getUserName();
+        ArrayList<String> oldDays = new ArrayList();
+        try {
+
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            ResultSet resultSet = stmt.executeQuery();
+
+            while (resultSet.next()) {
+                String testDayString = resultSet.getString("Date");
+                LocalDate testDay = LocalDate.parse(testDayString);
+                Period period = Period.between(testDay, today);
+                if (period.getDays() >= 8) {
+                    if (oldDays.contains(testDayString) == false) {
+                        oldDays.add(testDayString);
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println("An Error Has Occured With checkEmptyDays Selecting: " + ex.getMessage());
+        }
+        connection.close();
+        if (oldDays.size() > 0) {
+            for (int i = 0; i < oldDays.size(); i++) {
+                Connection connection2 = connectionProvider.getConnection();
+                String query2 = "DELETE FROM " + user.getUserName() + " WHERE Date = \"" + oldDays.get(i) + "\"";
+                try {
+
+                    PreparedStatement pstmt = connection2.prepareStatement(query2);
+
+                    pstmt.executeUpdate();
+
+                } catch (SQLException ex) {
+                    System.out.println("An Error Has Occured while deleting the account from the users data: " + ex.getMessage());
+                }
+                connection2.close();
+            }
+        }
     }
 
     //Checks if the username is already taken. If not, it saves the new user's
@@ -551,6 +672,7 @@ public class controllerHealth {
 
                 save(username2, password2, dp2, height2, weight2, lbl2, gender);
                 createUserTable(username2);
+                lastSevenDaysInsertEmptyData(username2.getText().trim().toLowerCase(), 8);
                 changeScenes("FXMLHealth.fxml", 500, 800);
             }
 
@@ -632,6 +754,7 @@ public class controllerHealth {
             user = null;
             timeSlot = "";
             MET = 0.0;
+            CPG = 0.0;
 
         } catch (SQLException ex) {
             System.out.println("An Error Has Occured while deleting the account table: " + ex.getMessage());
@@ -1085,13 +1208,13 @@ public class controllerHealth {
         timeSlot = "6-12";
         menuTimePeriodCal.setText("6:00-11:59");
     }
-    
+
     @FXML
     void getzeroToSixPmCalTime(ActionEvent event) {
         timeSlot = "12-18";
         menuTimePeriodCal.setText("12:00-17:59");
     }
-    
+
     @FXML
     void getsixToTwelvePmCalTime(ActionEvent event) {
         timeSlot = "18-24";
@@ -1120,14 +1243,12 @@ public class controllerHealth {
                 lblCalAdded.setText("Calories burned value has been updated Successfully!");
                 menuTimePeriodCal.setText("Time");
                 TBoxCal.setText("");
-            }
-            else{
+            } else {
                 lblCalAdded.setText("Please select if the entered value is an intake or bured calories");
             }
 
         }
     }
-    
 
     //
     //Heart Rate
@@ -1202,7 +1323,7 @@ public class controllerHealth {
             int newHR = Integer.parseInt(TBoxHR.getText());
             addDataFromInfo("Heart_Rate", date, timeSlot, newHR);
             lblHRAdded.setText("Heart Rate value has been updated Successfully!");
-            menuTimePeriodOL.setText("Time");
+            menuTimePeriodHR.setText("Time");
             TBoxHR.setText("");
         }
     }
@@ -1286,7 +1407,7 @@ public class controllerHealth {
     }
 
     private void plotGraphInfo(String column) throws SQLException {
-        LocalDate day = LocalDate.of(2022, 03, 26);
+        LocalDate day = LocalDate.of(2022, 03, 26); //MODIFY TO LocalDate.now
 
         if (column.equals("Sleep")) {
             plotSleepGraphInfo(day);
@@ -1294,14 +1415,22 @@ public class controllerHealth {
             int[] totResults = new int[7];
             int[] dayResults = new int[4];
             int results;
+            int addedDays;
             for (int i = 0; i < totResults.length; i++) {
                 results = 0;
+                addedDays = 0;
                 dayResults = getGraphsData(user.getUserName(), column, day);
                 for (int j = 0; j < dayResults.length; j++) {
-                    results += dayResults[j];
+                    if (dayResults[j] != 0) {
+                        results += dayResults[j];
+                        addedDays += 1;
+                    }
                 }
                 if (column.equals("Heart_Rate") || column.equals("Oxygen_Level")) {
-                    results /= 4;
+                    if (addedDays == 0) {
+                        addedDays = 1;
+                    }
+                    results /= addedDays;
                 }
                 totResults[i] = results;
                 day = day.minusDays(1);
@@ -1665,7 +1794,11 @@ public class controllerHealth {
         if (col.equals("Calories_In") || col.equals("Calories_Out") || col.equals("Steps") || col.equals("Water")) {
             newResult = oldResult + difference;
         } else {
-            newResult = (oldResult + difference) / 2;
+            if (oldResult != 0) {
+                newResult = (oldResult + difference) / 2;
+            } else {
+                newResult = difference;
+            }
         }
 
         String query2 = "UPDATE " + user.getUserName() + " SET " + col + " = " + newResult + " WHERE Date = \"" + date + "\" AND time = \"" + time + "\"";
