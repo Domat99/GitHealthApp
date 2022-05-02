@@ -37,6 +37,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -92,7 +93,7 @@ public class controllerHealth {
                 checkEmptyDays();
                 deleteOldData();
                 changeScenes("MainHealth.fxml", 950, 1500);
-                
+
             }
         }
     }
@@ -144,29 +145,22 @@ public class controllerHealth {
 
     @FXML
     private Button btnInfoPage;
-   
+
     @FXML
     private Button btnLoadGraphs;
-    
+
     @FXML
     private Label lblUsernameDashboard;
-    
-    /////////////////////////
-    //NEW STUFF FOR BMI 
-    //
-    //The Functions For The Buttons Clicked Are In Line 233 after loadGraphsBtnClicked
-    //
-    //******DELETE THOSE LINES (The comments)******
-    //////////
+
     @FXML
     private Label lblHeight;
 
     @FXML
     private TextField txtFieldUpdateHeight;
-    
+
     @FXML
     private Button btnUpdateHeight;
-    
+
     @FXML
     private Label lblWeight;
 
@@ -174,18 +168,17 @@ public class controllerHealth {
     private TextField txtFieldUpdateWeight;
 
     @FXML
-    private Button btnUpdateWeight;  
-    
+    private Button btnUpdateWeight;
+
     @FXML
     private Label lblBmi;
 
     @FXML
     private Label lblBmiInfo;
 
-    
     @FXML
     void stepsMouseClicked(MouseEvent event) throws IOException {
-        
+
     }
 
     @FXML
@@ -228,25 +221,107 @@ public class controllerHealth {
         plotGraphDashboard(getGraphsData(user.getUserName(), "Oxygen_Level", today), "Oxygen_Level");
         plotSleepGraphDashboard(getSleepData(user.getUserName(), today));
         plotWaterGraphDashboard(getGraphsData(user.getUserName(), "Water", today));
-
-        //
         lblHeight.setText(Integer.toString(user.getHeight()));
         lblWeight.setText(Integer.toString(user.getWeight()));
-        
     }
+
     
-    ///////////////
-    //NEW FUNCTIONS FOR BMI
-    //////////
     @FXML
-    void updateHeightBtnClicked(ActionEvent event) {
+    void updateHeightBtnClicked(ActionEvent event) throws SQLException {
+        boolean isInteger = true;
+        int height = 0;
+        try {
+            height = Integer.parseInt(txtFieldUpdateHeight.getText());
+
+        } catch (NumberFormatException ex) {
+            System.out.println("An Error Has Occured With updateHeightBtnClicked: " + ex.getMessage());
+            lblBmiInfo.setText("Please enter the values as integers");
+            lblBmiInfo.setTextFill(Color.RED);
+            isInteger = false;
+        }
+        if (isInteger == true) {
+            Connection connection = connectionProvider.getConnection();
+            String query2 = "UPDATE Users SET Height = " + height + " WHERE UserName = \"" + user.getUserName() + "\"";
+
+            try {
+                PreparedStatement stmt = connection.prepareStatement(query2);
+
+                stmt.executeUpdate();
+
+                user.setHeight(height);
+
+                lblHeight.setText(Integer.toString(height));
+                lblBmi.setText(Integer.toString(calBMI(user.getHeight(), user.getWeight())));
+                txtFieldUpdateHeight.setText("");
+
+            } catch (SQLException ex) {
+                System.out.println("An Error Has Occured With User Height Updating: " + ex.getMessage());
+            }
+            connection.close();
+        }
 
     }
 
     @FXML
-    void updateWeightBtnClicked(ActionEvent event) {
+    void updateWeightBtnClicked(ActionEvent event) throws SQLException {
+        boolean isInteger = true;
+        int weight = 0;
+        try {
+            weight = Integer.parseInt(txtFieldUpdateWeight.getText());
 
-    }    
+        } catch (NumberFormatException ex) {
+            System.out.println("An Error Has Occured With updateWeightBtnClicked: " + ex.getMessage());
+            lblBmiInfo.setText("Please enter the values as integers");
+            lblBmiInfo.setTextFill(Color.RED);
+            isInteger = false;
+        }
+
+        if (isInteger == true) {
+            Connection connection = connectionProvider.getConnection();
+            String query2 = "UPDATE Users SET Weight = " + weight + " WHERE UserName = \"" + user.getUserName() + "\"";
+
+            try {
+                PreparedStatement stmt = connection.prepareStatement(query2);
+
+                stmt.executeUpdate();
+
+                user.setWeight(weight);
+
+                lblWeight.setText(Integer.toString(weight));
+                lblBmi.setText(Integer.toString(calBMI(user.getHeight(), user.getWeight())));
+                txtFieldUpdateWeight.setText("");
+
+            } catch (SQLException ex) {
+                System.out.println("An Error Has Occured With User Weight Updating: " + ex.getMessage());
+            }
+            connection.close();
+        }
+    }
+
+    private int calBMI(int height, int weight) {
+        double doubleHeight = height / 100.0;
+        int BMI = (int) (weight / Math.pow(doubleHeight, 2));
+        String BMIStat = "";
+        if (BMI < 18) {
+            BMIStat = "You are Underweight! You should eat more!";
+            lblBmiInfo.setTextFill(Color.DARKTURQUOISE);
+        } else if (BMI >= 18 && BMI < 25) {
+            BMIStat = "You are Healthy! Keep it up!";
+            lblBmiInfo.setTextFill(Color.GREEN);
+        } else if (BMI >= 25 && BMI < 30) {
+            BMIStat = "You are Overweight! You should start eating healthier!";
+            lblBmiInfo.setTextFill(Color.ORANGE);
+        } else if (BMI >= 30 && BMI < 40) {
+            BMIStat = "You are Obese! You should follow a strict diet!";
+            lblBmiInfo.setTextFill(Color.ORANGERED);
+        } else if (BMI >= 40) {
+            BMIStat = "You are Extremely Obese! You should Consult a doctor!";
+            lblBmiInfo.setTextFill(Color.RED);
+        }
+        lblBmiInfo.setText(BMIStat);
+        return BMI;
+
+    }
 
     //Import user data from the user's table in database
     private int[] getGraphsData(String name, String column, LocalDate today) throws SQLException {
@@ -761,13 +836,13 @@ public class controllerHealth {
         } else {
             boolean data = importData(name, password, lblDeleteInfo);
             if (data == true) {
-                if (name != user.getUserName()) {
-                    btnConfrimDelete.setText("Please enter the user name that you have used to sign in");
-                    btnConfrimDelete.setStyle("-fx-text-fill: #FF0000");//Red
+                if (!name.equals(user.getUserName())) {
+                    lblDeleteInfo.setText("Please enter the user name that you have used to sign in");
+                    lblDeleteInfo.setStyle("-fx-text-fill: #FF0000");//Red
                 } else {
 
-                    btnConfrimDelete.setText("Please confirm delete");
-                    btnConfrimDelete.setStyle("-fx-text-fill: #FF0000");//Red
+                    lblDeleteInfo.setText("Please confirm delete");
+                    lblDeleteInfo.setStyle("-fx-text-fill: #FF0000");//Red
                     btnConfrimDelete.setVisible(true);
                     btnDeleteAccount.setVisible(false);
                     txtFldUsernameDelete.setEditable(false);
@@ -845,10 +920,10 @@ public class controllerHealth {
     //New Scene (View and edit date)
     @FXML
     private BorderPane mainPane;
-    
+
     @FXML
     private ImageView imageLogoViewInfo;
-    
+
     @FXML
     private Button btnSteps;
 
@@ -876,12 +951,11 @@ public class controllerHealth {
     @FXML
     private Button btnFood;
 
-    
     @FXML
     void logoViewInfoClicked(MouseEvent event) throws IOException {
         changeScenes("MainHealth.fxml", 950, 1500);
     }
-    
+
     @FXML
     void stepsBtnClicked(ActionEvent event) {
         getPane("StepsFXML");
@@ -976,6 +1050,35 @@ public class controllerHealth {
     //
     //Steps
     //
+    private boolean checkEnteredDataInfo(String c, LocalDate choosenDate, TextField tf) {
+        if (c.equals("Steps") || c.equals("Sleep")) {
+            Double doubleX = 0.0;
+            try {
+                doubleX = Double.parseDouble(tf.getText());
+
+            } catch (NumberFormatException ex) {
+                System.out.println("An Error Has Occured With checking double values: " + ex.getMessage());
+                return false;
+            }
+        } else {
+            int intX = 0;
+            try {
+                intX = Integer.parseInt(tf.getText());
+
+            } catch (NumberFormatException ex) {
+                System.out.println("An Error Has Occured With checking integer values: " + ex.getMessage());
+                return false;
+            }
+        }
+
+        LocalDate today = LocalDate.of(2022, 03, 26); //CHANGE TO LocalDate.now()
+        LocalDate oldDate = today.minusDays(8);
+        if (!((choosenDate.isBefore(today) && choosenDate.isAfter(oldDate)) || choosenDate.equals(today))) {
+            return false;
+        }
+        return true;
+    }
+
     @FXML
     private LineChart<String, Number> graphStepsInfo;
 
@@ -1042,19 +1145,26 @@ public class controllerHealth {
     void addStepsBtnClicked(ActionEvent event) throws SQLException {
         if (TBoxSteps.getText() != "" || stepsDatePicker.getValue() != null
                 || timeSlot != "") {
-            String date = stepsDatePicker.getValue().toString();
-            Double distance = Double.parseDouble(TBoxSteps.getText());
-            int time = (int) ((distance / 4.9) * 60);
-            int steps = distanceToSteps(distance);
-            MET = 3.5;
-            int calBurned = caloriesBurnedActivity(time);
-            MET = 0.0;
-            String slot = timeSlot;
-            addDataFromInfo("Steps", date, timeSlot, steps);
-            addDataFromInfo("Calories_Out", date, slot, calBurned);
-            lblStepsAdded.setText("Steps value has been updated Successfully!");
-            menuTimePeriodSteps.setText("Time");
-            TBoxSteps.setText("");
+            boolean isValid = checkEnteredDataInfo("Steps", stepsDatePicker.getValue(), TBoxSteps);
+            if (isValid == true) {
+                Double distance = Double.parseDouble(TBoxSteps.getText());
+                String date = stepsDatePicker.getValue().toString();
+                int time = (int) ((distance / 4.9) * 60);
+                int steps = distanceToSteps(distance);
+                MET = 3.5;
+                int calBurned = caloriesBurnedActivity(time);
+                MET = 0.0;
+                String slot = timeSlot;
+                addDataFromInfo("Steps", date, timeSlot, steps);
+                addDataFromInfo("Calories_Out", date, slot, calBurned);
+                lblStepsAdded.setText("Steps value has been updated Successfully!");
+                lblStepsAdded.setTextFill(Color.GREEN);
+                menuTimePeriodSteps.setText("Time");
+                TBoxSteps.setText("");
+            } else {
+                lblStepsAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                lblStepsAdded.setTextFill(Color.RED);
+            }
         }
     }
 
@@ -1127,19 +1237,26 @@ public class controllerHealth {
     void addSleepBtnClicked(ActionEvent event) throws SQLException {
         if (TBoxSleep.getText() != "" || sleepDatePicker.getValue() != null
                 || timeSlot != "") {
-            String date = sleepDatePicker.getValue().toString();
-            Double newSleep = Double.parseDouble(TBoxSleep.getText());
-            Double tot = addSleepFromInfo(date, timeSlot, newSleep);
-            if (tot <= 6.0) {
-                lblSleepAdded.setText("Sleep hours has been updated Successfully!");
+            boolean isValid = checkEnteredDataInfo("Sleep", sleepDatePicker.getValue(), TBoxSleep);
+            if (isValid == true) {
+                String date = sleepDatePicker.getValue().toString();
+                Double newSleep = Double.parseDouble(TBoxSleep.getText());
+                Double tot = addSleepFromInfo(date, timeSlot, newSleep);
+                if (tot <= 6.0) {
+                    lblSleepAdded.setText("Sleep hours has been updated Successfully!");
+                    lblSleepAdded.setTextFill(Color.GREEN);
+                } else {
+                    tot -= newSleep;
+                    lblSleepAdded.setText("Sleep hours Cannot be updated since you already\n"
+                            + "have slept for " + tot + "hours");
+                    lblSleepAdded.setTextFill(Color.RED);
+                }
+                menuTimePeriodSleep.setText("Time");
+                TBoxSleep.setText("");
             } else {
-                tot -= newSleep;
-                lblSleepAdded.setText("Sleep hours Cannot be updated since you already\n"
-                        + "have slept for " + tot + "hours");
+                lblSleepAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                lblSleepAdded.setTextFill(Color.RED);
             }
-            menuTimePeriodSleep.setText("Time");
-            TBoxSleep.setText("");
-
         }
     }
 
@@ -1180,25 +1297,29 @@ public class controllerHealth {
     private Label lblWaterAdded;
 
     @FXML
-    void getZeroToSixAmWaterTime(ActionEvent event) {
+    void getZeroToSixAmWaterTime(ActionEvent event
+    ) {
         timeSlot = "0-6";
         menuTimePeriodWater.setText("0:00-5:59");
     }
 
     @FXML
-    void getsixToTwelveAmWaterTime(ActionEvent event) {
+    void getsixToTwelveAmWaterTime(ActionEvent event
+    ) {
         timeSlot = "6-12";
         menuTimePeriodWater.setText("6:00-11:59");
     }
 
     @FXML
-    void getzeroToSixPmWaterTime(ActionEvent event) {
+    void getzeroToSixPmWaterTime(ActionEvent event
+    ) {
         timeSlot = "12-18";
         menuTimePeriodWater.setText("12:00-17:59");
     }
 
     @FXML
-    void getsixToTwelvePmWaterTime(ActionEvent event) {
+    void getsixToTwelvePmWaterTime(ActionEvent event
+    ) {
         timeSlot = "18-24";
         menuTimePeriodWater.setText("18:00-23:59");
     }
@@ -1212,12 +1333,19 @@ public class controllerHealth {
     void addWaterBtnClicked(ActionEvent event) throws SQLException {
         if (TBoxWater.getText() != "" || waterDatePicker.getValue() != null
                 || timeSlot != "") {
-            String date = waterDatePicker.getValue().toString();
-            int newWater = Integer.parseInt(TBoxWater.getText());
-            addDataFromInfo("Water", date, timeSlot, newWater);
-            lblWaterAdded.setText("Water value has been updated Successfully!");
-            menuTimePeriodWater.setText("Time");
-            TBoxWater.setText("");
+            boolean isValid = checkEnteredDataInfo("Water", waterDatePicker.getValue(), TBoxWater);
+            if (isValid == true) {
+                String date = waterDatePicker.getValue().toString();
+                int newWater = Integer.parseInt(TBoxWater.getText());
+                addDataFromInfo("Water", date, timeSlot, newWater);
+                lblWaterAdded.setText("Water value has been updated Successfully!");
+                lblWaterAdded.setTextFill(Color.GREEN);
+                menuTimePeriodWater.setText("Time");
+                TBoxWater.setText("");
+            } else {
+                lblWaterAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                lblWaterAdded.setTextFill(Color.RED);
+            }
         }
     }
 
@@ -1262,25 +1390,29 @@ public class controllerHealth {
     private Label lblCalAdded;
 
     @FXML
-    void getZeroToSixAmCalTime(ActionEvent event) {
+    void getZeroToSixAmCalTime(ActionEvent event
+    ) {
         timeSlot = "0-6";
         menuTimePeriodCal.setText("0:00-5:59");
     }
 
     @FXML
-    void getsixToTwelveAmCalTime(ActionEvent event) {
+    void getsixToTwelveAmCalTime(ActionEvent event
+    ) {
         timeSlot = "6-12";
         menuTimePeriodCal.setText("6:00-11:59");
     }
 
     @FXML
-    void getzeroToSixPmCalTime(ActionEvent event) {
+    void getzeroToSixPmCalTime(ActionEvent event
+    ) {
         timeSlot = "12-18";
         menuTimePeriodCal.setText("12:00-17:59");
     }
 
     @FXML
-    void getsixToTwelvePmCalTime(ActionEvent event) {
+    void getsixToTwelvePmCalTime(ActionEvent event
+    ) {
         timeSlot = "18-24";
         menuTimePeriodCal.setText("18:00-23:59");
     }
@@ -1295,22 +1427,31 @@ public class controllerHealth {
     void addCaloriesBtnClicked(ActionEvent event) throws SQLException {
         if (TBoxCal.getText() != "" || calDatePicker.getValue() != null
                 || timeSlot != "") {
-            String date = calDatePicker.getValue().toString();
-            int newCal = Integer.parseInt(TBoxCal.getText());
-            if (rbCaloriesIn.isSelected()) {
-                addDataFromInfo("Calories_In", date, timeSlot, newCal);
-                lblCalAdded.setText("Calories intake value has been updated Successfully!");
-                menuTimePeriodCal.setText("Time");
-                TBoxCal.setText("");
-            } else if (rbCaloriesOut.isSelected()) {
-                addDataFromInfo("Calories_Out", date, timeSlot, newCal);
-                lblCalAdded.setText("Calories burned value has been updated Successfully!");
-                menuTimePeriodCal.setText("Time");
-                TBoxCal.setText("");
-            } else {
-                lblCalAdded.setText("Please select if the entered value is an intake or bured calories");
-            }
+            boolean isValid = checkEnteredDataInfo("Calories", calDatePicker.getValue(), TBoxCal);
+            if (isValid == true) {
+                String date = calDatePicker.getValue().toString();
+                int newCal = Integer.parseInt(TBoxCal.getText());
+                if (rbCaloriesIn.isSelected()) {
+                    addDataFromInfo("Calories_In", date, timeSlot, newCal);
+                    lblCalAdded.setText("Calories intake value has been updated Successfully!");
+                    lblCalAdded.setTextFill(Color.GREEN);
+                    menuTimePeriodCal.setText("Time");
+                    TBoxCal.setText("");
+                } else if (rbCaloriesOut.isSelected()) {
+                    addDataFromInfo("Calories_Out", date, timeSlot, newCal);
+                    lblCalAdded.setText("Calories burned value has been updated Successfully!");
+                    lblCalAdded.setTextFill(Color.GREEN);
+                    menuTimePeriodCal.setText("Time");
+                    TBoxCal.setText("");
+                } else {
+                    lblCalAdded.setText("Please select if the entered value is an intake or burned calories");
+                    lblCalAdded.setTextFill(Color.RED);
+                }
 
+            } else {
+                lblCalAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                lblCalAdded.setTextFill(Color.RED);
+            }
         }
     }
 
@@ -1351,25 +1492,29 @@ public class controllerHealth {
     private Label lblHRAdded;
 
     @FXML
-    void getZeroToSixAmHRTime(ActionEvent event) {
+    void getZeroToSixAmHRTime(ActionEvent event
+    ) {
         timeSlot = "0-6";
         menuTimePeriodHR.setText("0:00-5:59");
     }
 
     @FXML
-    void getsixToTwelveAmHRTime(ActionEvent event) {
+    void getsixToTwelveAmHRTime(ActionEvent event
+    ) {
         timeSlot = "6-12";
         menuTimePeriodHR.setText("6:00-11:59");
     }
 
     @FXML
-    void getzeroToSixPmHRTime(ActionEvent event) {
+    void getzeroToSixPmHRTime(ActionEvent event
+    ) {
         timeSlot = "12-18";
         menuTimePeriodHR.setText("12:00-17:59");
     }
 
     @FXML
-    void getsixToTwelvePmHRTime(ActionEvent event) {
+    void getsixToTwelvePmHRTime(ActionEvent event
+    ) {
         timeSlot = "18-24";
         menuTimePeriodHR.setText("18:00-23:59");
     }
@@ -1383,12 +1528,19 @@ public class controllerHealth {
     void addHeartBtnClicked(ActionEvent event) throws SQLException {
         if (TBoxHR.getText() != "" || HRDatePicker.getValue() != null
                 || timeSlot != "") {
-            String date = HRDatePicker.getValue().toString();
-            int newHR = Integer.parseInt(TBoxHR.getText());
-            addDataFromInfo("Heart_Rate", date, timeSlot, newHR);
-            lblHRAdded.setText("Heart Rate value has been updated Successfully!");
-            menuTimePeriodHR.setText("Time");
-            TBoxHR.setText("");
+            boolean isValid = checkEnteredDataInfo("HR", HRDatePicker.getValue(), TBoxHR);
+            if (isValid == true) {
+                String date = HRDatePicker.getValue().toString();
+                int newHR = Integer.parseInt(TBoxHR.getText());
+                addDataFromInfo("Heart_Rate", date, timeSlot, newHR);
+                lblHRAdded.setText("Heart Rate value has been updated Successfully!");
+                lblHRAdded.setTextFill(Color.GREEN);
+                menuTimePeriodHR.setText("Time");
+                TBoxHR.setText("");
+            } else {
+                lblHRAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                lblHRAdded.setTextFill(Color.RED);
+            }
         }
     }
 
@@ -1429,25 +1581,29 @@ public class controllerHealth {
     private Label lblOLAdded;
 
     @FXML
-    void getZeroToSixAmOLTime(ActionEvent event) {
+    void getZeroToSixAmOLTime(ActionEvent event
+    ) {
         timeSlot = "0-6";
         menuTimePeriodOL.setText("0:00-5:59");
     }
 
     @FXML
-    void getsixToTwelveAmOLTime(ActionEvent event) {
+    void getsixToTwelveAmOLTime(ActionEvent event
+    ) {
         timeSlot = "6-12";
         menuTimePeriodOL.setText("6:00-11:59");
     }
 
     @FXML
-    void getzeroToSixPmOLTime(ActionEvent event) {
+    void getzeroToSixPmOLTime(ActionEvent event
+    ) {
         timeSlot = "12-18";
         menuTimePeriodOL.setText("12:00-17:59");
     }
 
     @FXML
-    void getsixToTwelvePmOLTime(ActionEvent event) {
+    void getsixToTwelvePmOLTime(ActionEvent event
+    ) {
         timeSlot = "18-24";
         menuTimePeriodOL.setText("18:00-23:59");
     }
@@ -1461,12 +1617,19 @@ public class controllerHealth {
     void addOxygenBtnClicked(ActionEvent event) throws SQLException {
         if (TBoxOL.getText() != "" || OLDatePicker.getValue() != null
                 || timeSlot != "") {
-            String date = OLDatePicker.getValue().toString();
-            int newOL = Integer.parseInt(TBoxOL.getText());
-            addDataFromInfo("Oxygen_Level", date, timeSlot, newOL);
-            lblOLAdded.setText("Oxygen Level value has been updated Successfully!");
-            menuTimePeriodOL.setText("Time");
-            TBoxOL.setText("");
+            boolean isValid = checkEnteredDataInfo("OL", OLDatePicker.getValue(), TBoxOL);
+            if (isValid == true) {
+                String date = OLDatePicker.getValue().toString();
+                int newOL = Integer.parseInt(TBoxOL.getText());
+                addDataFromInfo("Oxygen_Level", date, timeSlot, newOL);
+                lblOLAdded.setText("Oxygen Level value has been updated Successfully!");
+                lblOLAdded.setTextFill(Color.GREEN);
+                menuTimePeriodOL.setText("Time");
+                TBoxOL.setText("");
+            } else {
+                lblOLAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                lblOLAdded.setTextFill(Color.RED);
+            }
         }
     }
 
@@ -1640,14 +1803,21 @@ public class controllerHealth {
     void addActivityBtnClicked(ActionEvent event) throws SQLException {
         if (TBoxActivityTime.getText() != "" || activityDatePicker.getValue() != null || MET != 0.0
                 || timeSlot != "") {
-            String date = activityDatePicker.getValue().toString();
-            int time = Integer.parseInt(TBoxActivityTime.getText());
-            int calBurned = caloriesBurnedActivity(time);
-            addDataFromInfo("Calories_Out", date, timeSlot, calBurned);
-            lblActivityAdded.setText("Activity has been added Successfully!");
-            MET = 0.0;
-            menuTimePeriodActivity.setText("Time");
-            TBoxActivityTime.setText("");
+            boolean isValid = checkEnteredDataInfo("Activity", activityDatePicker.getValue(), TBoxActivityTime);
+            if (isValid == true) {
+                String date = activityDatePicker.getValue().toString();
+                int time = Integer.parseInt(TBoxActivityTime.getText());
+                int calBurned = caloriesBurnedActivity(time);
+                addDataFromInfo("Calories_Out", date, timeSlot, calBurned);
+                lblActivityAdded.setText("Activity has been added Successfully!");
+                lblActivityAdded.setTextFill(Color.GREEN);
+                MET = 0.0;
+                menuTimePeriodActivity.setText("Time");
+                TBoxActivityTime.setText("");
+            } else {
+                lblActivityAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                lblActivityAdded.setTextFill(Color.RED);
+            }
         }
     }
 
@@ -1822,14 +1992,21 @@ public class controllerHealth {
     void addFoodBtnClicked(ActionEvent event) throws SQLException {
         if (TBoxFood.getText() != "" || foodDatePicker.getValue() != null || CPG != 0.0
                 || timeSlot != "") {
-            String date = foodDatePicker.getValue().toString();
-            int grams = Integer.parseInt(TBoxFood.getText());
-            int calEaten = (int) (grams * CPG);
-            addDataFromInfo("Calories_In", date, timeSlot, calEaten);
-            lblFoodAdded.setText("Food has been added Successfully!");
-            CPG = 0.0;
-            menuTimePeriodFood.setText("Time");
-            TBoxFood.setText("");
+            boolean isValid = checkEnteredDataInfo("Food", foodDatePicker.getValue(), TBoxFood);
+            if (isValid == true) {
+                String date = foodDatePicker.getValue().toString();
+                int grams = Integer.parseInt(TBoxFood.getText());
+                int calEaten = (int) (grams * CPG);
+                addDataFromInfo("Calories_In", date, timeSlot, calEaten);
+                lblFoodAdded.setText("Food has been added Successfully!");
+                lblFoodAdded.setTextFill(Color.GREEN);
+                CPG = 0.0;
+                menuTimePeriodFood.setText("Time");
+                TBoxFood.setText("");
+            } else {
+                lblFoodAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                lblFoodAdded.setTextFill(Color.RED);
+            }
         }
     }
 

@@ -132,7 +132,7 @@
                         <Font name="Bell MT" size="28.0" />
                      </font>
                   </Label>
-                  <Label fx:id="lblBmiInfo" layoutX="578.0" layoutY="1037.0" prefHeight="34.0" prefWidth="224.0" text="....................................">
+                  <Label fx:id="lblBmiInfo" layoutX="578.0" layoutY="1037.0" prefHeight="34.0" prefWidth="750.0" text="....................................">
                      <font>
                         <Font name="Bell MT" size="28.0" />
                      </font>
