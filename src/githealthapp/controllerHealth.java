@@ -33,6 +33,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -91,7 +92,7 @@ public class controllerHealth {
                 checkEmptyDays();
                 deleteOldData();
                 changeScenes("MainHealth.fxml", 950, 1500);
-
+                
             }
         }
     }
@@ -143,12 +144,48 @@ public class controllerHealth {
 
     @FXML
     private Button btnInfoPage;
+   
     @FXML
     private Button btnLoadGraphs;
+    
+    @FXML
+    private Label lblUsernameDashboard;
+    
+    /////////////////////////
+    //NEW STUFF FOR BMI 
+    //
+    //The Functions For The Buttons Clicked Are In Line 233 after loadGraphsBtnClicked
+    //
+    //******DELETE THOSE LINES (The comments)******
+    //////////
+    @FXML
+    private Label lblHeight;
 
     @FXML
+    private TextField txtFieldUpdateHeight;
+    
+    @FXML
+    private Button btnUpdateHeight;
+    
+    @FXML
+    private Label lblWeight;
+
+    @FXML
+    private TextField txtFieldUpdateWeight;
+
+    @FXML
+    private Button btnUpdateWeight;  
+    
+    @FXML
+    private Label lblBmi;
+
+    @FXML
+    private Label lblBmiInfo;
+
+    
+    @FXML
     void stepsMouseClicked(MouseEvent event) throws IOException {
-        //changeScenes("ViewInfoFXML.fxml", 750, 800);
+        
     }
 
     @FXML
@@ -192,7 +229,24 @@ public class controllerHealth {
         plotSleepGraphDashboard(getSleepData(user.getUserName(), today));
         plotWaterGraphDashboard(getGraphsData(user.getUserName(), "Water", today));
 
+        //
+        lblHeight.setText(Integer.toString(user.getHeight()));
+        lblWeight.setText(Integer.toString(user.getWeight()));
+        
     }
+    
+    ///////////////
+    //NEW FUNCTIONS FOR BMI
+    //////////
+    @FXML
+    void updateHeightBtnClicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void updateWeightBtnClicked(ActionEvent event) {
+
+    }    
 
     //Import user data from the user's table in database
     private int[] getGraphsData(String name, String column, LocalDate today) throws SQLException {
@@ -791,6 +845,10 @@ public class controllerHealth {
     //New Scene (View and edit date)
     @FXML
     private BorderPane mainPane;
+    
+    @FXML
+    private ImageView imageLogoViewInfo;
+    
     @FXML
     private Button btnSteps;
 
@@ -818,6 +876,12 @@ public class controllerHealth {
     @FXML
     private Button btnFood;
 
+    
+    @FXML
+    void logoViewInfoClicked(MouseEvent event) throws IOException {
+        changeScenes("MainHealth.fxml", 950, 1500);
+    }
+    
     @FXML
     void stepsBtnClicked(ActionEvent event) {
         getPane("StepsFXML");

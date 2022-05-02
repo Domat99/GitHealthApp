@@ -44,7 +44,7 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Button>
-                  <ImageView fitHeight="94.0" fitWidth="82.0" layoutX="14.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imageLogoViewInfo" fitHeight="94.0" fitWidth="82.0" layoutX="14.0" layoutY="28.0" onMouseClicked="#logoViewInfoClicked" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
                      <image>
                         <Image url="@Images/Picture2.png" />
                      </image>

@@ -8,13 +8,14 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1375.0" prefWidth="1500.0" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1375.0" prefWidth="1500.0" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
    <content>
       <BorderPane maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="1375.0" prefWidth="1500.0">
          <center>
@@ -47,29 +48,14 @@
                         <Font name="Bell MT" size="38.0" />
                      </font>
                   </Label>
-                  <Label layoutX="1002.0" layoutY="1124.0" text="Food">
-                     <font>
-                        <Font name="Bell MT" size="38.0" />
-                     </font>
-                  </Label>
-                  <ImageView fitHeight="238.0" fitWidth="291.0" layoutX="902.0" layoutY="875.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@Images/Food.png" />
-                     </image>
-                  </ImageView>
                   <Label layoutX="1141.0" layoutY="747.0" text="Oxygen Levels">
                      <font>
                         <Font name="Bell MT" size="38.0" />
                      </font>
                   </Label>
-                  <ImageView fitHeight="229.0" fitWidth="269.0" layoutX="443.0" layoutY="882.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@Images/Sports.png" />
-                     </image>
-                  </ImageView>
-                  <Label layoutX="397.0" layoutY="1123.0" text="Physical Activity">
+                  <Label layoutX="358.0" layoutY="938.0" text="Height:" textAlignment="RIGHT">
                      <font>
-                        <Font name="Bell MT" size="38.0" />
+                        <Font name="Bell MT" size="28.0" />
                      </font>
                   </Label>
                   <LineChart fx:id="graphSteps" layoutX="49.0" layoutY="33.0" legendVisible="false" onMouseClicked="#stepsMouseClicked" prefHeight="314.0" prefWidth="478.0" style="-fx-cursor: hand;">
@@ -104,6 +90,58 @@
                         <NumberAxis side="LEFT" />
                      </yAxis>
                   </LineChart>
+                  <Label layoutX="355.0" layoutY="988.0" text="Weight:" textAlignment="RIGHT">
+                     <font>
+                        <Font name="Bell MT" size="28.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="385.0" layoutY="1037.0" text="BMI:" textAlignment="RIGHT">
+                     <font>
+                        <Font name="Bell MT" size="28.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblHeight" alignment="CENTER_RIGHT" layoutX="458.0" layoutY="938.0" prefHeight="34.0" prefWidth="61.0" text="____">
+                     <font>
+                        <Font name="Bell MT" size="28.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblWeight" alignment="CENTER_RIGHT" layoutX="458.0" layoutY="988.0" prefHeight="34.0" prefWidth="61.0" text="____">
+                     <font>
+                        <Font name="Bell MT" size="28.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="527.0" layoutY="938.0" prefHeight="34.0" prefWidth="38.0" text="cm">
+                     <font>
+                        <Font name="Bell MT" size="28.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="526.0" layoutY="988.0" prefHeight="34.0" prefWidth="44.0" text="kg">
+                     <font>
+                        <Font name="Bell MT" size="28.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="txtFieldUpdateHeight" alignment="CENTER" layoutX="577.0" layoutY="940.0" prefHeight="39.0" prefWidth="225.0" promptText="Enter your new height in cm" style="-fx-background-radius: 12;" />
+                  <TextField fx:id="txtFieldUpdateWeight" alignment="CENTER" layoutX="577.0" layoutY="990.0" prefHeight="39.0" prefWidth="225.0" promptText="Enter your new weight in kg" style="-fx-background-radius: 12;" />
+                  <Button fx:id="btnUpdateHeight" layoutX="830.0" layoutY="940.0" mnemonicParsing="false" onAction="#updateHeightBtnClicked" prefHeight="39.0" prefWidth="164.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 12;" text="Update Height" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
+                  <Label fx:id="lblBmi" alignment="CENTER_RIGHT" layoutX="458.0" layoutY="1037.0" prefHeight="34.0" prefWidth="61.0" text="____">
+                     <font>
+                        <Font name="Bell MT" size="28.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblBmiInfo" layoutX="578.0" layoutY="1037.0" prefHeight="34.0" prefWidth="224.0" text="....................................">
+                     <font>
+                        <Font name="Bell MT" size="28.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="btnUpdateWeight" layoutX="830.0" layoutY="990.0" mnemonicParsing="false" onAction="#updateWeightBtnClicked" prefHeight="39.0" prefWidth="164.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 12;" text="Update Weight" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
                </children>
             </AnchorPane>
          </center>
@@ -125,7 +163,7 @@
                         <Font name="Bell MT Bold" size="38.0" />
                      </font>
                   </Label>
-                  <Label layoutX="942.0" layoutY="31.0" text="Account">
+                  <Label fx:id="lblUsernameDashboard" layoutX="942.0" layoutY="31.0" text="Username">
                      <font>
                         <Font name="Bell MT Bold" size="38.0" />
                      </font>
@@ -135,11 +173,6 @@
                         <Font size="18.0" />
                      </font>
                   </Button>
-                  <Label layoutX="726.0" text="Label">
-                     <font>
-                        <Font name="Californian FB Italic" size="96.0" />
-                     </font>
-                  </Label>
                   <Button fx:id="btnInfoPage" layoutX="349.0" layoutY="37.0" mnemonicParsing="false" onAction="#infoBtnClicked" prefHeight="43.0" prefWidth="117.0" style="-fx-background-color: #1d3454; -fx-cursor: hand;" text="More Info" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="18.0" />
@@ -156,4 +189,3 @@
       </BorderPane>
    </content>
 </ScrollPane>
-
