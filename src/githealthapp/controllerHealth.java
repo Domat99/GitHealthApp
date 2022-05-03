@@ -223,6 +223,8 @@ public class controllerHealth {
         plotWaterGraphDashboard(getGraphsData(user.getUserName(), "Water", today));
         lblHeight.setText(Integer.toString(user.getHeight()));
         lblWeight.setText(Integer.toString(user.getWeight()));
+        lblBmi.setText(Integer.toString(calBMI(user.getHeight(), user.getWeight())));
+        
     }
 
     

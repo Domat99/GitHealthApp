@@ -132,9 +132,9 @@
                         <Font name="Bell MT" size="28.0" />
                      </font>
                   </Label>
-                  <Label fx:id="lblBmiInfo" layoutX="578.0" layoutY="1037.0" prefHeight="34.0" prefWidth="750.0" text="....................................">
+                  <Label fx:id="lblBmiInfo" layoutX="577.0" layoutY="1037.0" prefHeight="34.0" prefWidth="750.0">
                      <font>
-                        <Font name="Bell MT" size="28.0" />
+                        <Font name="Bell MT" size="18.0" />
                      </font>
                   </Label>
                   <Button fx:id="btnUpdateWeight" layoutX="830.0" layoutY="990.0" mnemonicParsing="false" onAction="#updateWeightBtnClicked" prefHeight="39.0" prefWidth="164.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 12;" text="Update Weight" textFill="WHITE">
