@@ -64,12 +64,6 @@ public class controllerHealth {
         checkLogin();
     }
 
-    @FXML
-    public void adminBtnClicked(ActionEvent event) throws IOException {
-        lblNotFound.setText("Button not working yet.");
-        lblNotFound.setStyle("-fx-text-fill: purple");
-    }
-
     public void signUpClicked() throws IOException {
         changeScenes("CreateAccountHealth.fxml", 750, 800);
 
@@ -148,9 +142,6 @@ public class controllerHealth {
 
     @FXML
     private Button btnLoadGraphs;
-
-    @FXML
-    private Label lblUsernameDashboard;
 
     @FXML
     private Label lblHeight;
@@ -1770,9 +1761,6 @@ public class controllerHealth {
     private MenuItem sixToTwelvePmActTime;
 
     @FXML
-    private Button btnActivityLoad;
-
-    @FXML
     private Button btnAddActivity;
 
     @FXML
@@ -1796,10 +1784,6 @@ public class controllerHealth {
     @FXML
     private Label lblActivityAdded;
 
-    @FXML
-    void loadActivityBtnClicked(ActionEvent event) {
-
-    }
 
     @FXML
     void addActivityBtnClicked(ActionEvent event) throws SQLException {
@@ -1920,9 +1904,6 @@ public class controllerHealth {
     private DatePicker foodDatePicker;
 
     @FXML
-    private Button btnFoodLoad;
-
-    @FXML
     private Button btnAddFood;
 
     @FXML
@@ -1985,10 +1966,6 @@ public class controllerHealth {
         menuTimePeriodFood.setText("18:00-23:59");
     }
 
-    @FXML
-    void loadFoodBtnClicked(ActionEvent event) {
-
-    }
 
     @FXML
     void addFoodBtnClicked(ActionEvent event) throws SQLException {

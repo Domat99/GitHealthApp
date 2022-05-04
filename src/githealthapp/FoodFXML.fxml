@@ -44,11 +44,6 @@
             <Image url="@Images/Food.png" />
          </image>
       </ImageView>
-      <Button fx:id="btnFoodLoad" layoutX="666.0" layoutY="94.0" mnemonicParsing="false" onAction="#loadFoodBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #d47a9c; -fx-border-radius: 100;" text="Load" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="20.0" />
-         </font>
-      </Button>
       <Button fx:id="btnAddFood" layoutX="686.0" layoutY="315.0" mnemonicParsing="false" onAction="#addFoodBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #d47a9c; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #1d3454; -fx-border-radius: 100;" text="Add" textFill="WHITE">
          <font>
             <Font name="System Bold" size="20.0" />

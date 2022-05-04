@@ -29,8 +29,8 @@
             <NumberAxis side="LEFT" />
          </yAxis>
       </LineChart>
-      <DatePicker fx:id="calDatePicker" layoutX="80.0" layoutY="571.0" />
-      <MenuButton fx:id="menuTimePeriodCal" layoutX="324.0" layoutY="571.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Time">
+      <DatePicker fx:id="calDatePicker" layoutX="74.0" layoutY="611.0" />
+      <MenuButton fx:id="menuTimePeriodCal" layoutX="316.0" layoutY="608.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Time">
          <items>
             <MenuItem fx:id="zeroToSixAmCalTime" mnemonicParsing="false" onAction="#getZeroToSixAmCalTime" text="0:00-5:59" />
             <MenuItem fx:id="sixToTwelveAmCalTime" mnemonicParsing="false" onAction="#getsixToTwelveAmCalTime" text="6:00-11:59" />
@@ -38,19 +38,19 @@
             <MenuItem fx:id="sixToTwelvePmCalTime" mnemonicParsing="false" onAction="#getsixToTwelvePmCalTime" text="18:00-23:59" />
          </items>
       </MenuButton>
-      <TextField fx:id="TBoxCal" layoutX="451.0" layoutY="571.0" />
-      <Label fx:id="lblCalAdded" layoutX="367.0" layoutY="633.0" prefHeight="17.0" prefWidth="367.0" text="Enter how many calories you have burned or consumed as integers" />
+      <TextField fx:id="TBoxCal" layoutX="451.0" layoutY="611.0" />
+      <Label fx:id="lblCalAdded" layoutX="377.0" layoutY="645.0" prefHeight="17.0" prefWidth="367.0" text="Enter how many calories you have burned or consumed as integers" />
       <Button fx:id="btnCaloriesLoad" layoutX="661.0" layoutY="70.0" mnemonicParsing="false" onAction="#loadCaloriesBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #d47a9c; -fx-border-radius: 100;" text="Load" textFill="WHITE">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
       </Button>
-      <Button fx:id="btnAddCalories" layoutX="679.0" layoutY="522.0" mnemonicParsing="false" onAction="#addCaloriesBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #d47a9c; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #1d3454; -fx-border-radius: 100;" text="Add" textFill="WHITE">
+      <Button fx:id="btnAddCalories" layoutX="690.0" layoutY="569.0" mnemonicParsing="false" onAction="#addCaloriesBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #d47a9c; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #1d3454; -fx-border-radius: 100;" text="Add" textFill="WHITE">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
       </Button>
-      <RadioButton fx:id="rbCaloriesIn" layoutX="335.0" layoutY="531.0" mnemonicParsing="false" text="Calories In">
+      <RadioButton fx:id="rbCaloriesIn" layoutX="312.0" layoutY="568.0" mnemonicParsing="false" text="Calories In">
          <font>
             <Font name="Verdana" size="18.0" />
          </font>
@@ -58,7 +58,7 @@
             <ToggleGroup fx:id="caloriesGroup" />
          </toggleGroup>
       </RadioButton>
-      <RadioButton fx:id="rbCaloriesOut" layoutX="489.0" layoutY="533.0" mnemonicParsing="false" text="Calories Out" toggleGroup="$caloriesGroup">
+      <RadioButton fx:id="rbCaloriesOut" layoutX="469.0" layoutY="568.0" mnemonicParsing="false" text="Calories Out" toggleGroup="$caloriesGroup">
          <font>
             <Font name="Verdana" size="18.0" />
          </font>

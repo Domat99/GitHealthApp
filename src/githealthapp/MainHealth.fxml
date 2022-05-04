@@ -163,11 +163,6 @@
                         <Font name="Bell MT Bold" size="38.0" />
                      </font>
                   </Label>
-                  <Label fx:id="lblUsernameDashboard" layoutX="942.0" layoutY="31.0" text="Username">
-                     <font>
-                        <Font name="Bell MT Bold" size="38.0" />
-                     </font>
-                  </Label>
                   <Button fx:id="btnDeleteAccountMain" layoutX="1157.0" layoutY="36.0" mnemonicParsing="false" onAction="#deleteAccount2Clicked" style="-fx-cursor: hand; -fx-background-color: red;" text="DELETE ACCOUNT" textFill="WHITE">
                      <font>
                         <Font size="18.0" />
