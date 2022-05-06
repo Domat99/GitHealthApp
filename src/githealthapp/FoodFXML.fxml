@@ -13,20 +13,23 @@
 
 <AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #B4C7E7;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
    <children>
-      <Label layoutX="371.0" layoutY="66.0" text="Food">
+      <Label layoutX="355.0" layoutY="79.0" text="Food" textFill="#c54b7c">
          <font>
-            <Font size="33.0" />
+            <Font name="System Bold" size="38.0" />
          </font>
       </Label>
-      <MenuButton fx:id="menuTimePeriodFood" layoutX="324.0" layoutY="381.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Time">
+      <MenuButton fx:id="menuTimePeriodFood" alignment="CENTER" layoutX="338.0" layoutY="285.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="142.0" style="-fx-background-radius: 20;" text="Time">
          <items>
             <MenuItem fx:id="zeroToSixAmFoodTime" mnemonicParsing="false" onAction="#getZeroToSixAmFoodTime" text="0:00-5:59" />
             <MenuItem fx:id="sixToTwelveAmFoodTime" mnemonicParsing="false" onAction="#getsixToTwelveAmFoodTime" text="6:00-11:59" />
             <MenuItem fx:id="zeroToSixPmFoodTime" mnemonicParsing="false" onAction="#getzeroToSixPmFoodTime" text="12:00-17:59" />
             <MenuItem fx:id="sixToTwelvePmFoodTime" mnemonicParsing="false" onAction="#getsixToTwelvePmFoodTime" text="18:00-23:59" />
          </items>
+         <font>
+            <Font size="18.0" />
+         </font>
       </MenuButton>
-      <MenuButton fx:id="menuFood" layoutX="324.0" layoutY="263.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Food">
+      <MenuButton fx:id="menuFood" alignment="CENTER" layoutX="308.0" layoutY="198.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="187.0" style="-fx-background-radius: 20;" text="Food type">
          <items>
             <MenuItem fx:id="appleFood" mnemonicParsing="false" onAction="#getAppleValue" text="Apple" />
             <MenuItem fx:id="bananaFood" mnemonicParsing="false" onAction="#getBananaValue" text="Banana" />
@@ -35,16 +38,22 @@
             <MenuItem fx:id="beefFood" mnemonicParsing="false" onAction="#getBeefValue" text="Beef" />
             <MenuItem fx:id="fishFood" mnemonicParsing="false" onAction="#getFishValue" text="Fish" />
          </items>
+         <font>
+            <Font size="18.0" />
+         </font>
       </MenuButton>
-      <TextField fx:id="TBoxFood" layoutX="451.0" layoutY="381.0" />
-      <Label fx:id="lblFoodAdded" layoutX="446.0" layoutY="451.0" prefHeight="17.0" prefWidth="215.0" text="Enter the Quantity in Grams as integers" />
-      <DatePicker fx:id="foodDatePicker" layoutX="80.0" layoutY="381.0" />
-      <ImageView fitHeight="110.0" fitWidth="133.0" layoutX="165.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
+      <TextField fx:id="TBoxFood" layoutX="488.0" layoutY="285.0" prefHeight="39.0" prefWidth="173.0" promptText="Amount (in grams)" style="-fx-background-radius: 20;">
+         <font>
+            <Font size="18.0" />
+         </font></TextField>
+      <Label fx:id="lblFoodAdded" alignment="TOP_RIGHT" layoutX="69.0" layoutY="339.0" prefHeight="55.0" prefWidth="678.0" text="Enter the Amount in Grams as integers" wrapText="true" />
+      <DatePicker fx:id="foodDatePicker" layoutX="69.0" layoutY="285.0" prefHeight="39.0" prefWidth="256.0" promptText="Pick a date from the past week" />
+      <ImageView fitHeight="155.0" fitWidth="173.0" layoutX="80.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@Images/Food.png" />
          </image>
       </ImageView>
-      <Button fx:id="btnAddFood" layoutX="686.0" layoutY="315.0" mnemonicParsing="false" onAction="#addFoodBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #d47a9c; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #1d3454; -fx-border-radius: 100;" text="Add" textFill="WHITE">
+      <Button fx:id="btnAddFood" layoutX="669.0" layoutY="283.0" mnemonicParsing="false" onAction="#addFoodBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #d47a9c; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #1d3454; -fx-border-radius: 100;" text="Add" textFill="WHITE">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>

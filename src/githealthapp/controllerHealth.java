@@ -58,19 +58,23 @@ public class controllerHealth {
     private PasswordField txtFldPassword;
     @FXML
     private Label lblNotFound;
-
+    @FXML
+    private Button btnLogIn;
+    
+    
     @FXML
     private void logInClicked(ActionEvent event) throws IOException, SQLException {
         checkLogin();
     }
 
     public void signUpClicked() throws IOException {
-        changeScenes("CreateAccountHealth.fxml", 750, 800);
+        changeScenes("CreateAccountHealth.fxml", 775, 820);
 
     }
 
     public void forgotPasswordClicked() throws IOException {
-
+        lblNotFound.setText("Please contact us at example@sehtak.ca");
+        lblNotFound.setStyle("-fx-text-fill: #c54b7c");//Darkish Purple
     }
 
     private void checkLogin() throws IOException, SQLException {
@@ -230,6 +234,7 @@ public class controllerHealth {
             System.out.println("An Error Has Occured With updateHeightBtnClicked: " + ex.getMessage());
             lblBmiInfo.setText("Please enter the values as integers");
             lblBmiInfo.setTextFill(Color.RED);
+            lblBmi.setTextFill(Color.RED);
             isInteger = false;
         }
         if (isInteger == true) {
@@ -266,6 +271,7 @@ public class controllerHealth {
             System.out.println("An Error Has Occured With updateWeightBtnClicked: " + ex.getMessage());
             lblBmiInfo.setText("Please enter the values as integers");
             lblBmiInfo.setTextFill(Color.RED);
+            lblBmi.setTextFill(Color.RED);
             isInteger = false;
         }
 
@@ -296,20 +302,27 @@ public class controllerHealth {
         int BMI = (int) (weight / Math.pow(doubleHeight, 2));
         String BMIStat = "";
         if (BMI < 18) {
-            BMIStat = "You are Underweight! You should eat more!";
-            lblBmiInfo.setTextFill(Color.DARKTURQUOISE);
+            BMIStat = "You are Underweight. You should eat more!";
+//            lblBmiInfo.setStyle("-fx-text-fill: #0066ff"); //Darkish Blue
+//            lblBmi.setStyle("-fx-text-fill: #0066ff"); //Darkish Blue
+            lblBmiInfo.setTextFill(Color.DARKBLUE);
+            lblBmi.setTextFill(Color.DARKBLUE);
         } else if (BMI >= 18 && BMI < 25) {
             BMIStat = "You are Healthy! Keep it up!";
             lblBmiInfo.setTextFill(Color.GREEN);
+            lblBmi.setTextFill(Color.GREEN);
         } else if (BMI >= 25 && BMI < 30) {
-            BMIStat = "You are Overweight! You should start eating healthier!";
-            lblBmiInfo.setTextFill(Color.ORANGE);
+            BMIStat = "You are Overweight. You should start eating healthier!";
+            lblBmiInfo.setTextFill(Color.DARKORANGE);
+            lblBmi.setTextFill(Color.DARKORANGE);
         } else if (BMI >= 30 && BMI < 40) {
             BMIStat = "You are Obese! You should follow a strict diet!";
             lblBmiInfo.setTextFill(Color.ORANGERED);
+            lblBmi.setTextFill(Color.ORANGERED);
         } else if (BMI >= 40) {
             BMIStat = "You are Extremely Obese! You should Consult a doctor!";
             lblBmiInfo.setTextFill(Color.RED);
+            lblBmi.setTextFill(Color.RED);
         }
         lblBmiInfo.setText(BMIStat);
         return BMI;
@@ -847,7 +860,7 @@ public class controllerHealth {
     }
 
     @FXML
-    private void confirmDeleteClicked(ActionEvent event) {
+    private void confirmDeleteClicked(ActionEvent event) throws IOException {
         Connection connection = connectionProvider.getConnection();
         String name = txtFldUsernameDelete.getText().trim().toLowerCase();
 
@@ -881,7 +894,7 @@ public class controllerHealth {
         } catch (SQLException ex) {
             System.out.println("An Error Has Occured while deleting the account table: " + ex.getMessage());
         }
-
+        changeScenes("FXMLHealth.fxml", 500, 800);
     }
 
     //THIS FUNCTION IS NOT WORKING, YOU NEED TO FIX IT

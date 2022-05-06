@@ -15,50 +15,50 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1375.0" prefWidth="1500.0" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1280.0" prefWidth="1500.0" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
    <content>
       <BorderPane maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="1375.0" prefWidth="1500.0">
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #B4C7E7;" BorderPane.alignment="CENTER">
                <children>
-                  <ProgressIndicator fx:id="pieSleep" layoutX="554.0" layoutY="23.0" onMouseClicked="#sleepMouseClicked" prefHeight="306.0" prefWidth="419.0" progress="0.0" style="-fx-cursor: hand;" />
-                  <ProgressBar fx:id="barWater" layoutX="1085.0" layoutY="118.0" onMouseClicked="#waterMouseClicked" prefHeight="115.0" prefWidth="371.0" progress="0.0" style="-fx-cursor: hand;" />
-                  <Label layoutX="227.0" layoutY="339.0" text="Steps">
+                  <ProgressIndicator fx:id="pieSleep" layoutX="554.0" layoutY="180.0" onMouseClicked="#sleepMouseClicked" prefHeight="296.0" prefWidth="420.0" progress="0.0" />
+                  <ProgressBar fx:id="barWater" layoutX="1043.0" layoutY="273.0" onMouseClicked="#waterMouseClicked" prefHeight="110.0" prefWidth="408.0" progress="0.0" />
+                  <Label layoutX="226.0" layoutY="482.0" text="Steps">
                      <font>
                         <Font name="Bell MT" size="38.0" />
                      </font>
                   </Label>
-                  <Label layoutX="158.0" layoutY="737.0" text="Calories(in &amp; out)">
+                  <Label layoutX="150.0" layoutY="927.0" text="Calories Intake">
                      <font>
                         <Font name="Bell MT" size="38.0" />
                      </font>
                   </Label>
-                  <Label layoutX="712.0" layoutY="746.0" text="Heart Rate">
+                  <Label layoutX="664.0" layoutY="927.0" text="Heart Rate">
                      <font>
                         <Font name="Bell MT" size="38.0" />
                      </font>
                   </Label>
-                  <Label layoutX="1221.0" layoutY="343.0" text="Water">
+                  <Label layoutX="1216.0" layoutY="482.0" text="Water">
                      <font>
                         <Font name="Bell MT" size="38.0" />
                      </font>
                   </Label>
-                  <Label layoutX="722.0" layoutY="344.0" text="Sleep">
+                  <Label layoutX="717.0" layoutY="482.0" text="Sleep">
                      <font>
                         <Font name="Bell MT" size="38.0" />
                      </font>
                   </Label>
-                  <Label layoutX="1141.0" layoutY="747.0" text="Oxygen Levels">
+                  <Label layoutX="1115.0" layoutY="927.0" text="Oxygen Levels">
                      <font>
                         <Font name="Bell MT" size="38.0" />
                      </font>
                   </Label>
-                  <Label layoutX="358.0" layoutY="938.0" text="Height:" textAlignment="RIGHT">
+                  <Label layoutX="435.0" layoutY="19.0" text="Height:" textAlignment="RIGHT">
                      <font>
                         <Font name="Bell MT" size="28.0" />
                      </font>
                   </Label>
-                  <LineChart fx:id="graphSteps" layoutX="49.0" layoutY="33.0" legendVisible="false" onMouseClicked="#stepsMouseClicked" prefHeight="314.0" prefWidth="478.0" style="-fx-cursor: hand;">
+                  <LineChart fx:id="graphSteps" layoutX="35.0" layoutY="180.0" legendVisible="false" onMouseClicked="#stepsMouseClicked" prefHeight="296.0" prefWidth="466.0">
                     <xAxis>
                       <CategoryAxis side="BOTTOM" />
                     </xAxis>
@@ -66,7 +66,7 @@
                       <NumberAxis side="LEFT" />
                     </yAxis>
                   </LineChart>
-                  <LineChart fx:id="graphCalories" layoutX="49.0" layoutY="425.0" legendVisible="false" onMouseClicked="#caloriesMouseClicked" prefHeight="296.0" prefWidth="465.0" style="-fx-cursor: hand;">
+                  <LineChart fx:id="graphCalories" layoutX="35.0" layoutY="625.0" legendSide="TOP" legendVisible="false" onMouseClicked="#caloriesMouseClicked" prefHeight="296.0" prefWidth="466.0" titleSide="BOTTOM">
                      <xAxis>
                         <CategoryAxis side="BOTTOM" />
                      </xAxis>
@@ -74,7 +74,7 @@
                         <NumberAxis side="LEFT" />
                      </yAxis>
                   </LineChart>
-                  <LineChart fx:id="graphHR" layoutX="544.0" layoutY="432.0" legendVisible="false" onMouseClicked="#heartRateMouseClicked" prefHeight="296.0" prefWidth="438.0" style="-fx-cursor: hand;">
+                  <LineChart fx:id="graphHR" layoutX="517.0" layoutY="625.0" legendVisible="false" onMouseClicked="#heartRateMouseClicked" prefHeight="296.0" prefWidth="466.0">
                      <xAxis>
                         <CategoryAxis side="BOTTOM" />
                      </xAxis>
@@ -82,7 +82,7 @@
                         <NumberAxis side="LEFT" />
                      </yAxis>
                   </LineChart>
-                  <LineChart fx:id="graphOL" layoutX="1017.0" layoutY="432.0" legendVisible="false" onMouseClicked="#oxygenMouseClicked" prefHeight="296.0" prefWidth="438.0" style="-fx-cursor: hand;">
+                  <LineChart fx:id="graphOL" layoutX="999.0" layoutY="625.0" legendVisible="false" onMouseClicked="#oxygenMouseClicked" prefHeight="296.0" prefWidth="466.0">
                      <xAxis>
                         <CategoryAxis side="BOTTOM" />
                      </xAxis>
@@ -90,54 +90,60 @@
                         <NumberAxis side="LEFT" />
                      </yAxis>
                   </LineChart>
-                  <Label layoutX="355.0" layoutY="988.0" text="Weight:" textAlignment="RIGHT">
+                  <Label layoutX="432.0" layoutY="71.0" text="Weight:" textAlignment="RIGHT">
                      <font>
                         <Font name="Bell MT" size="28.0" />
                      </font>
                   </Label>
-                  <Label layoutX="385.0" layoutY="1037.0" text="BMI:" textAlignment="RIGHT">
+                  <Label layoutX="671.0" layoutY="48.0" text="BMI:" textAlignment="RIGHT">
                      <font>
                         <Font name="Bell MT" size="28.0" />
                      </font>
                   </Label>
-                  <Label fx:id="lblHeight" alignment="CENTER_RIGHT" layoutX="458.0" layoutY="938.0" prefHeight="34.0" prefWidth="61.0" text="____">
+                  <Label fx:id="lblHeight" alignment="CENTER_RIGHT" layoutX="527.0" layoutY="19.0" prefHeight="34.0" prefWidth="61.0" text="____">
                      <font>
                         <Font name="Bell MT" size="28.0" />
                      </font>
                   </Label>
-                  <Label fx:id="lblWeight" alignment="CENTER_RIGHT" layoutX="458.0" layoutY="988.0" prefHeight="34.0" prefWidth="61.0" text="____">
+                  <Label fx:id="lblWeight" alignment="CENTER_RIGHT" layoutX="526.0" layoutY="71.0" prefHeight="34.0" prefWidth="61.0" text="____">
                      <font>
                         <Font name="Bell MT" size="28.0" />
                      </font>
                   </Label>
-                  <Label layoutX="527.0" layoutY="938.0" prefHeight="34.0" prefWidth="38.0" text="cm">
+                  <Label layoutX="597.0" layoutY="19.0" prefHeight="34.0" prefWidth="38.0" text="cm">
                      <font>
                         <Font name="Bell MT" size="28.0" />
                      </font>
                   </Label>
-                  <Label layoutX="526.0" layoutY="988.0" prefHeight="34.0" prefWidth="44.0" text="kg">
+                  <Label layoutX="594.0" layoutY="71.0" prefHeight="34.0" prefWidth="44.0" text="kg">
                      <font>
                         <Font name="Bell MT" size="28.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtFieldUpdateHeight" alignment="CENTER" layoutX="577.0" layoutY="940.0" prefHeight="39.0" prefWidth="225.0" promptText="Enter your new height in cm" style="-fx-background-radius: 12;" />
-                  <TextField fx:id="txtFieldUpdateWeight" alignment="CENTER" layoutX="577.0" layoutY="990.0" prefHeight="39.0" prefWidth="225.0" promptText="Enter your new weight in kg" style="-fx-background-radius: 12;" />
-                  <Button fx:id="btnUpdateHeight" layoutX="830.0" layoutY="940.0" mnemonicParsing="false" onAction="#updateHeightBtnClicked" prefHeight="39.0" prefWidth="164.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 12;" text="Update Height" textFill="WHITE">
+                  <TextField fx:id="txtFieldUpdateHeight" alignment="CENTER" layoutX="850.0" layoutY="16.0" prefHeight="39.0" prefWidth="258.0" promptText="Enter your new height in cm" style="-fx-background-radius: 12;">
+                     <font>
+                        <Font size="18.0" />
+                     </font></TextField>
+                  <TextField fx:id="txtFieldUpdateWeight" alignment="CENTER" layoutX="850.0" layoutY="66.0" prefHeight="39.0" prefWidth="258.0" promptText="Enter your new weight in kg" style="-fx-background-radius: 12;">
+                     <font>
+                        <Font size="18.0" />
+                     </font></TextField>
+                  <Button fx:id="btnUpdateHeight" layoutX="1124.0" layoutY="16.0" mnemonicParsing="false" onAction="#updateHeightBtnClicked" prefHeight="39.0" prefWidth="164.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 12;" text="Update Height" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Button>
-                  <Label fx:id="lblBmi" alignment="CENTER_RIGHT" layoutX="458.0" layoutY="1037.0" prefHeight="34.0" prefWidth="61.0" text="____">
+                  <Label fx:id="lblBmi" layoutX="744.0" layoutY="48.0" prefHeight="34.0" prefWidth="61.0" text="____">
                      <font>
                         <Font name="Bell MT" size="28.0" />
                      </font>
                   </Label>
-                  <Label fx:id="lblBmiInfo" layoutX="577.0" layoutY="1037.0" prefHeight="34.0" prefWidth="750.0">
+                  <Label fx:id="lblBmiInfo" layoutX="436.0" layoutY="121.0" prefHeight="34.0" prefWidth="892.0">
                      <font>
                         <Font name="Bell MT" size="18.0" />
                      </font>
                   </Label>
-                  <Button fx:id="btnUpdateWeight" layoutX="830.0" layoutY="990.0" mnemonicParsing="false" onAction="#updateWeightBtnClicked" prefHeight="39.0" prefWidth="164.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 12;" text="Update Weight" textFill="WHITE">
+                  <Button fx:id="btnUpdateWeight" layoutX="1124.0" layoutY="66.0" mnemonicParsing="false" onAction="#updateWeightBtnClicked" prefHeight="39.0" prefWidth="164.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 12;" text="Update Weight" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
@@ -148,32 +154,32 @@
          <top>
             <AnchorPane prefHeight="100.0" prefWidth="399.0" style="-fx-background-color: #ADB9CA;" BorderPane.alignment="CENTER">
                <children>
-                  <ImageView fitHeight="54.0" fitWidth="26.0" layoutX="42.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="54.0" fitWidth="26.0" layoutX="42.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@Images/Picture2.png" />
                      </image>
                   </ImageView>
-                  <Button fx:id="btnLogOut" layoutX="1356.0" layoutY="36.0" mnemonicParsing="false" onAction="#logOutClicked" style="-fx-cursor: hand; -fx-background-color: red;" text="Log Out" textFill="WHITE">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Button>
-                  <Label layoutX="71.0" layoutY="25.0" text="Dashboard">
-                     <font>
-                        <Font name="Bell MT Bold" size="38.0" />
-                     </font>
-                  </Label>
-                  <Button fx:id="btnDeleteAccountMain" layoutX="1157.0" layoutY="36.0" mnemonicParsing="false" onAction="#deleteAccount2Clicked" style="-fx-cursor: hand; -fx-background-color: red;" text="DELETE ACCOUNT" textFill="WHITE">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="btnInfoPage" layoutX="349.0" layoutY="37.0" mnemonicParsing="false" onAction="#infoBtnClicked" prefHeight="43.0" prefWidth="117.0" style="-fx-background-color: #1d3454; -fx-cursor: hand;" text="More Info" textFill="WHITE">
+                  <Button fx:id="btnLogOut" layoutX="1356.0" layoutY="30.0" mnemonicParsing="false" onAction="#logOutClicked" style="-fx-cursor: hand; -fx-background-color: red; -fx-background-radius: 12;" text="Log Out" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnLoadGraphs" layoutX="509.0" layoutY="37.0" mnemonicParsing="false" onAction="#loadGraphsBtnClicked" prefHeight="43.0" prefWidth="143.0" style="-fx-background-color: #1d3454; -fx-cursor: hand;" text="Load Graphs" textFill="WHITE">
+                  <Label layoutX="71.0" layoutY="28.0" text="Dashboard">
+                     <font>
+                        <Font name="Bell MT Bold" size="38.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="btnDeleteAccountMain" layoutX="1139.0" layoutY="31.0" mnemonicParsing="false" onAction="#deleteAccount2Clicked" style="-fx-cursor: hand; -fx-background-color: red; -fx-background-radius: 12;" text="DELETE ACCOUNT" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnInfoPage" layoutX="696.0" layoutY="30.0" mnemonicParsing="false" onAction="#infoBtnClicked" prefHeight="43.0" prefWidth="117.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 12;" text="More Info" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnLoadGraphs" layoutX="520.0" layoutY="30.0" mnemonicParsing="false" onAction="#loadGraphsBtnClicked" prefHeight="43.0" prefWidth="143.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 12;" text="Load Graphs" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>

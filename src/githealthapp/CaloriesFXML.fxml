@@ -16,12 +16,12 @@
 
 <AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #B4C7E7;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
    <children>
-      <Label layoutX="283.0" layoutY="60.0" text="Calories(In &amp; out)">
+      <Label layoutX="240.5" layoutY="36.0" text="Calories(In &amp; out)" textFill="#c54b7c">
          <font>
-            <Font size="33.0" />
+            <Font name="System Bold" size="38.0" />
          </font>
       </Label>
-      <LineChart fx:id="graphCaloriesInfo" layoutX="161.0" layoutY="143.0">
+      <LineChart fx:id="graphCaloriesInfo" layoutX="85.0" layoutY="135.0" legendSide="RIGHT" prefHeight="400.0" prefWidth="630.0">
          <xAxis>
             <CategoryAxis side="BOTTOM" />
          </xAxis>
@@ -29,39 +29,50 @@
             <NumberAxis side="LEFT" />
          </yAxis>
       </LineChart>
-      <DatePicker fx:id="calDatePicker" layoutX="74.0" layoutY="611.0" />
-      <MenuButton fx:id="menuTimePeriodCal" layoutX="316.0" layoutY="608.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Time">
+      <DatePicker fx:id="calDatePicker" layoutX="69.0" layoutY="600.0" prefHeight="39.0" prefWidth="256.0" promptText="Pick a date from the past week" />
+      <MenuButton fx:id="menuTimePeriodCal" alignment="CENTER" layoutX="344.0" layoutY="600.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="141.0" style="-fx-background-radius: 20;" text="Time">
          <items>
             <MenuItem fx:id="zeroToSixAmCalTime" mnemonicParsing="false" onAction="#getZeroToSixAmCalTime" text="0:00-5:59" />
             <MenuItem fx:id="sixToTwelveAmCalTime" mnemonicParsing="false" onAction="#getsixToTwelveAmCalTime" text="6:00-11:59" />
             <MenuItem fx:id="zeroToSixPmCalTime" mnemonicParsing="false" onAction="#getzeroToSixPmCalTime" text="12:00-17:59" />
             <MenuItem fx:id="sixToTwelvePmCalTime" mnemonicParsing="false" onAction="#getsixToTwelvePmCalTime" text="18:00-23:59" />
          </items>
+         <font>
+            <Font size="18.0" />
+         </font>
       </MenuButton>
-      <TextField fx:id="TBoxCal" layoutX="451.0" layoutY="611.0" />
-      <Label fx:id="lblCalAdded" layoutX="377.0" layoutY="645.0" prefHeight="17.0" prefWidth="367.0" text="Enter how many calories you have burned or consumed as integers" />
-      <Button fx:id="btnCaloriesLoad" layoutX="661.0" layoutY="70.0" mnemonicParsing="false" onAction="#loadCaloriesBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #d47a9c; -fx-border-radius: 100;" text="Load" textFill="WHITE">
+      <TextField fx:id="TBoxCal" alignment="CENTER" layoutX="500.0" layoutY="600.0" prefHeight="39.0" prefWidth="154.0" promptText="Calories amount " style="-fx-background-radius: 20;">
+         <font>
+            <Font size="18.0" />
+         </font></TextField>
+      <Label fx:id="lblCalAdded" alignment="TOP_RIGHT" layoutX="69.0" layoutY="654.0" prefHeight="55.0" prefWidth="678.0" text="Enter how many calories you have burned or consumed as integers" wrapText="true" />
+      <Button fx:id="btnCaloriesLoad" layoutX="642.0" layoutY="82.0" mnemonicParsing="false" onAction="#loadCaloriesBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #d47a9c; -fx-border-radius: 100;" text="Load" textFill="WHITE">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
       </Button>
-      <Button fx:id="btnAddCalories" layoutX="690.0" layoutY="569.0" mnemonicParsing="false" onAction="#addCaloriesBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #d47a9c; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #1d3454; -fx-border-radius: 100;" text="Add" textFill="WHITE">
+      <Button fx:id="btnAddCalories" layoutX="668.0" layoutY="597.0" mnemonicParsing="false" onAction="#addCaloriesBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #d47a9c; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #1d3454; -fx-border-radius: 100;" text="Add" textFill="WHITE">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
       </Button>
-      <RadioButton fx:id="rbCaloriesIn" layoutX="312.0" layoutY="568.0" mnemonicParsing="false" text="Calories In">
+      <RadioButton fx:id="rbCaloriesIn" layoutX="342.0" layoutY="547.0" mnemonicParsing="false" text="Calories In">
          <font>
-            <Font name="Verdana" size="18.0" />
+            <Font name="Verdana" size="20.0" />
          </font>
          <toggleGroup>
             <ToggleGroup fx:id="caloriesGroup" />
          </toggleGroup>
       </RadioButton>
-      <RadioButton fx:id="rbCaloriesOut" layoutX="469.0" layoutY="568.0" mnemonicParsing="false" text="Calories Out" toggleGroup="$caloriesGroup">
+      <RadioButton fx:id="rbCaloriesOut" layoutX="499.0" layoutY="547.0" mnemonicParsing="false" text="Calories Out" toggleGroup="$caloriesGroup">
          <font>
-            <Font name="Verdana" size="18.0" />
+            <Font name="Verdana" size="20.0" />
          </font>
       </RadioButton>
+      <Label fx:id="lbl1" alignment="CENTER" layoutX="191.0" layoutY="92.0" text="Press Load to see your data over the past week" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="19.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

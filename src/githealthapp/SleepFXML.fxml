@@ -14,12 +14,12 @@
 
 <AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #B4C7E7;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
    <children>
-      <Label layoutX="371.0" layoutY="44.0" text="Sleep">
+      <Label layoutX="351.5" layoutY="36.0" text="Sleep" textFill="#c54b7c">
          <font>
-            <Font size="33.0" />
+            <Font name="System Bold" size="38.0" />
          </font>
       </Label>
-      <LineChart fx:id="graphSleepInfo" layoutX="161.0" layoutY="152.0" legendVisible="false">
+      <LineChart fx:id="graphSleepInfo" layoutX="117.0" layoutY="135.0" legendVisible="false" prefHeight="400.0" prefWidth="566.0">
          <xAxis>
             <CategoryAxis side="BOTTOM" />
          </xAxis>
@@ -27,26 +27,37 @@
             <NumberAxis side="LEFT" />
          </yAxis>
       </LineChart>
-      <DatePicker fx:id="sleepDatePicker" layoutX="80.0" layoutY="571.0" />
-      <MenuButton fx:id="menuTimePeriodSleep" layoutX="324.0" layoutY="571.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Time">
+      <DatePicker fx:id="sleepDatePicker" layoutX="69.0" layoutY="561.0" prefHeight="39.0" prefWidth="256.0" promptText="Pick a date from the past week" />
+      <MenuButton fx:id="menuTimePeriodSleep" alignment="CENTER" layoutX="336.0" layoutY="561.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="150.0" style="-fx-background-radius: 20;" text="Time">
          <items>
             <MenuItem fx:id="zeroToSixAmSleepTime" mnemonicParsing="false" onAction="#getZeroToSixAmSleepTime" text="0:00-5:59" />
             <MenuItem fx:id="sixToTwelveAmSleepTime" mnemonicParsing="false" onAction="#getsixToTwelveAmSleepTime" text="6:00-11:59" />
             <MenuItem fx:id="zeroToSixPmSleepTime" mnemonicParsing="false" onAction="#getzeroToSixPmSleepTime" text="12:00-17:59" />
             <MenuItem fx:id="sixToTwelvePmSleepTime" mnemonicParsing="false" onAction="#getsixToTwelvePmSleepTime" text="18:00-23:59" />
          </items>
+         <font>
+            <Font size="18.0" />
+         </font>
       </MenuButton>
-      <TextField fx:id="TBoxSleep" layoutX="451.0" layoutY="571.0" />
-      <Label fx:id="lblSleepAdded" layoutX="419.0" layoutY="621.0" prefHeight="17.0" prefWidth="291.0" text="Enter Sleep hours (You may include decimals)" />
-      <Button fx:id="btnSleepLoad" layoutX="656.0" layoutY="84.0" mnemonicParsing="false" onAction="#loadSleepBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #d47a9c; -fx-border-radius: 100;" text="Load" textFill="WHITE">
+      <TextField fx:id="TBoxSleep" alignment="CENTER" layoutX="496.0" layoutY="561.0" prefHeight="39.0" prefWidth="163.0" promptText="Sleep time(hours)" style="-fx-background-radius: 20;">
+         <font>
+            <Font size="18.0" />
+         </font></TextField>
+      <Label fx:id="lblSleepAdded" alignment="TOP_RIGHT" layoutX="69.0" layoutY="615.0" prefHeight="55.0" prefWidth="678.0" text="Enter Sleep hours (You may include decimals)" wrapText="true" />
+      <Button fx:id="btnSleepLoad" layoutX="642.0" layoutY="82.0" mnemonicParsing="false" onAction="#loadSleepBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #d47a9c; -fx-border-radius: 100;" text="Load" textFill="WHITE">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
       </Button>
-      <Button fx:id="btnAddSleep" layoutX="669.0" layoutY="512.0" mnemonicParsing="false" onAction="#addSleepBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #d47a9c; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #1d3454; -fx-border-radius: 100;" text="Add" textFill="WHITE">
+      <Button fx:id="btnAddSleep" layoutX="669.0" layoutY="559.0" mnemonicParsing="false" onAction="#addSleepBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #d47a9c; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #1d3454; -fx-border-radius: 100;" text="Add" textFill="WHITE">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
       </Button>
+      <Label fx:id="lbl1" alignment="CENTER" layoutX="191.0" layoutY="92.0" text="Press Load to see your data over the past week" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="19.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

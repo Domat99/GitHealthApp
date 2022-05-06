@@ -14,12 +14,12 @@
 
 <AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #B4C7E7;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="githealthapp.controllerHealth">
    <children>
-      <Label layoutX="334.0" layoutY="65.0" text="Heart Rate">
+      <Label layoutX="304.0" layoutY="36.0" text="Heart Rate" textFill="#c54b7c">
          <font>
-            <Font size="33.0" />
+            <Font name="System Bold" size="38.0" />
          </font>
       </Label>
-      <LineChart fx:id="graphHRInfo" layoutX="161.0" layoutY="143.0" legendVisible="false">
+      <LineChart fx:id="graphHRInfo" layoutX="117.0" layoutY="135.0" legendVisible="false" prefHeight="400.0" prefWidth="566.0">
          <xAxis>
             <CategoryAxis side="BOTTOM" />
          </xAxis>
@@ -27,26 +27,37 @@
             <NumberAxis side="LEFT" />
          </yAxis>
       </LineChart>
-      <DatePicker fx:id="HRDatePicker" layoutX="80.0" layoutY="571.0" />
-      <MenuButton fx:id="menuTimePeriodHR" layoutX="324.0" layoutY="571.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="95.0" text="Time">
+      <DatePicker fx:id="HRDatePicker" layoutX="69.0" layoutY="561.0" prefHeight="39.0" prefWidth="256.0" promptText="Pick a date from the past week" />
+      <MenuButton fx:id="menuTimePeriodHR" alignment="CENTER" layoutX="344.0" layoutY="561.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="141.0" style="-fx-background-radius: 20;" text="Time">
          <items>
             <MenuItem fx:id="zeroToSixAmHRTime" mnemonicParsing="false" onAction="#getZeroToSixAmHRTime" text="0:00-5:59" />
             <MenuItem fx:id="sixToTwelveAmHRTime" mnemonicParsing="false" onAction="#getsixToTwelveAmHRTime" text="6:00-11:59" />
             <MenuItem fx:id="zeroToSixPmHRTime" mnemonicParsing="false" onAction="#getzeroToSixPmHRTime" text="12:00-17:59" />
             <MenuItem fx:id="sixToTwelvePmHRTime" mnemonicParsing="false" onAction="#getsixToTwelvePmHRTime" text="18:00-23:59" />
          </items>
+         <font>
+            <Font size="18.0" />
+         </font>
       </MenuButton>
-      <TextField fx:id="TBoxHR" layoutX="451.0" layoutY="571.0" />
-      <Label fx:id="lblHRAdded" layoutX="435.0" layoutY="627.0" prefHeight="17.0" prefWidth="211.0" text="Enter the Heart Rate as integers" />
-      <Button fx:id="btnHeartRateLoad" layoutX="646.0" layoutY="75.0" mnemonicParsing="false" onAction="#loadHeartRateBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #d47a9c; -fx-border-radius: 100;" text="Load" textFill="WHITE">
+      <TextField fx:id="TBoxHR" alignment="CENTER" layoutX="500.0" layoutY="561.0" prefHeight="39.0" prefWidth="154.0" promptText="Heart Rate" style="-fx-background-radius: 20;">
+         <font>
+            <Font size="18.0" />
+         </font></TextField>
+      <Label fx:id="lblHRAdded" alignment="TOP_RIGHT" layoutX="69.0" layoutY="615.0" prefHeight="55.0" prefWidth="678.0" text="Enter the Heart Rate as integers" wrapText="true" />
+      <Button fx:id="btnHeartRateLoad" layoutX="642.0" layoutY="82.0" mnemonicParsing="false" onAction="#loadHeartRateBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #1d3454; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #d47a9c; -fx-border-radius: 100;" text="Load" textFill="WHITE">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
       </Button>
-      <Button fx:id="btnAddHeart" layoutX="679.0" layoutY="522.0" mnemonicParsing="false" onAction="#addHeartBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #d47a9c; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #1d3454; -fx-border-radius: 100;" text="Add" textFill="WHITE">
+      <Button fx:id="btnAddHeart" layoutX="669.0" layoutY="559.0" mnemonicParsing="false" onAction="#addHeartBtnClicked" prefHeight="44.0" prefWidth="81.0" style="-fx-background-color: #d47a9c; -fx-cursor: hand; -fx-background-radius: 100; -fx-border-color: #1d3454; -fx-border-radius: 100;" text="Add" textFill="WHITE">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
       </Button>
+      <Label fx:id="lbl1" alignment="CENTER" layoutX="191.0" layoutY="92.0" text="Press Load to see your data over the past week" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="19.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
