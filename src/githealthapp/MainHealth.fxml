@@ -21,6 +21,11 @@
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #B4C7E7;" BorderPane.alignment="CENTER">
                <children>
+                  <ImageView fitHeight="1125.0" fitWidth="1010.0" layoutX="245.0" layoutY="20.0" opacity="0.14" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Images/Picture1.png" />
+                     </image>
+                  </ImageView>
                   <ProgressIndicator fx:id="pieSleep" layoutX="554.0" layoutY="180.0" onMouseClicked="#sleepMouseClicked" prefHeight="296.0" prefWidth="420.0" progress="0.0" />
                   <ProgressBar fx:id="barWater" layoutX="1043.0" layoutY="273.0" onMouseClicked="#waterMouseClicked" prefHeight="110.0" prefWidth="408.0" progress="0.0" />
                   <Label layoutX="226.0" layoutY="482.0" text="Steps">

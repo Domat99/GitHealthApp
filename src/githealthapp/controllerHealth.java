@@ -42,6 +42,7 @@ import javafx.scene.paint.Color;
 /**
  *
  * @author elias
+ * @author Domat
  */
 public class controllerHealth {
 
@@ -52,6 +53,8 @@ public class controllerHealth {
     static User user;
     static Double CPG = 0.0;
 
+    
+    //Sign in page
     @FXML
     private TextField txtFldUsername;
     @FXML
@@ -122,7 +125,7 @@ public class controllerHealth {
 
     }
 
-    //For the main page after sign in
+    //For the main page (dashboard) after sign in
     @FXML
     private LineChart<String, Number> graphSteps;
 
@@ -171,6 +174,8 @@ public class controllerHealth {
     @FXML
     private Label lblBmiInfo;
 
+    //Functions for when clicked on the graphs
+    //Not used at the moment but are there in case we need them later. 
     @FXML
     void stepsMouseClicked(MouseEvent event) throws IOException {
 
@@ -303,8 +308,6 @@ public class controllerHealth {
         String BMIStat = "";
         if (BMI < 18) {
             BMIStat = "You are Underweight. You should eat more!";
-//            lblBmiInfo.setStyle("-fx-text-fill: #0066ff"); //Darkish Blue
-//            lblBmi.setStyle("-fx-text-fill: #0066ff"); //Darkish Blue
             lblBmiInfo.setTextFill(Color.DARKBLUE);
             lblBmi.setTextFill(Color.DARKBLUE);
         } else if (BMI >= 18 && BMI < 25) {
@@ -464,11 +467,14 @@ public class controllerHealth {
 
     @FXML
     private void deleteAccount2Clicked() throws IOException, SQLException {
-
+        user = null;
+        timeSlot = "";
+        MET = 0.0;
+        CPG = 0.0;
         changeScenes("DeleteAccount.fxml", 525, 800);
     }
 
-    //For sign up page
+    //For sign up page (create account) 
     @FXML
     private Label messageLabel;
     @FXML
@@ -817,6 +823,7 @@ public class controllerHealth {
         connection.close();
     }
 
+    //Delete account page
     @FXML
     private Button btnDeleteAccount;
     @FXML
@@ -923,7 +930,8 @@ public class controllerHealth {
         btn1.setTooltip(tt1);
     }
 
-    //New Scene (View and edit date)
+    //More info page (others scenes are loaded inside this scene)
+    
     @FXML
     private BorderPane mainPane;
 
@@ -1052,7 +1060,7 @@ public class controllerHealth {
     //
     //Scenes in View Info
     //
-    //
+    
     //
     //Steps
     //
