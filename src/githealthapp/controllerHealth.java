@@ -22,7 +22,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.Tooltip;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -53,7 +52,6 @@ public class controllerHealth {
     static User user;
     static Double CPG = 0.0;
 
-    
     //Sign in page
     @FXML
     private TextField txtFldUsername;
@@ -63,8 +61,7 @@ public class controllerHealth {
     private Label lblNotFound;
     @FXML
     private Button btnLogIn;
-    
-    
+
     @FXML
     private void logInClicked(ActionEvent event) throws IOException, SQLException {
         checkLogin();
@@ -118,7 +115,7 @@ public class controllerHealth {
             u1 = new User(userName, password, gender, DOB, height, weight);
 
         } catch (SQLException ex) {
-            System.out.println("An Error Has Occured With setGraphsImport Selecting: " + ex.getMessage());
+            System.out.println("An Error Has Occured With getUserObject Selecting: " + ex.getMessage());
         }
         connection.close();
         return u1;
@@ -214,7 +211,7 @@ public class controllerHealth {
 
     @FXML
     void loadGraphsBtnClicked(ActionEvent event) throws IOException, SQLException {
-        LocalDate today = LocalDate.of(2022, 03, 26); //MODIFY TO LocaDate.now
+        LocalDate today = LocalDate.now(); 
         plotGraphDashboard(getGraphsData(user.getUserName(), "Steps", today), "Steps");
         plotGraphDashboard(getGraphsData(user.getUserName(), "Calories_In", today), "Calories_In");
         plotGraphDashboard(getGraphsData(user.getUserName(), "Heart_Rate", today), "Heart_Rate");
@@ -224,10 +221,9 @@ public class controllerHealth {
         lblHeight.setText(Integer.toString(user.getHeight()));
         lblWeight.setText(Integer.toString(user.getWeight()));
         lblBmi.setText(Integer.toString(calBMI(user.getHeight(), user.getWeight())));
-        
+
     }
 
-    
     @FXML
     void updateHeightBtnClicked(ActionEvent event) throws SQLException {
         boolean isInteger = true;
@@ -352,7 +348,7 @@ public class controllerHealth {
                 i += 1;
             }
         } catch (SQLException ex) {
-            System.out.println("An Error Has Occured With setGraphsImport Selecting: " + ex.getMessage());
+            System.out.println("An Error Has Occured With setGraphsData Selecting: " + ex.getMessage());
         }
         connection.close();
         return results;
@@ -409,7 +405,7 @@ public class controllerHealth {
             results[0] = resultSet.getDouble("Sleep");
 
         } catch (SQLException ex) {
-            System.out.println("An Error Has Occured With setGraphsImport Selecting: " + ex.getMessage());
+            System.out.println("An Error Has Occured With getSleepData 1 Selecting: " + ex.getMessage());
         }
         String query2 = "SELECT Sleep FROM " + name + " WHERE Date = \"" + yesterdayString + "\" AND time = \"0-6\" OR Date = \"" + yesterdayString + "\" AND time = \"6-12\""
                 + " OR Date = \"" + yesterdayString + "\" AND time = \"12-18\"";
@@ -425,7 +421,7 @@ public class controllerHealth {
                 i += 1;
             }
         } catch (SQLException ex) {
-            System.out.println("An Error Has Occured With setGraphsImport Selecting: " + ex.getMessage());
+            System.out.println("An Error Has Occured With getSleepData 2 Selecting: " + ex.getMessage());
         }
         connection.close();
 
@@ -467,10 +463,6 @@ public class controllerHealth {
 
     @FXML
     private void deleteAccount2Clicked() throws IOException, SQLException {
-        user = null;
-        timeSlot = "";
-        MET = 0.0;
-        CPG = 0.0;
         changeScenes("DeleteAccount.fxml", 525, 800);
     }
 
@@ -514,6 +506,14 @@ public class controllerHealth {
         LocalDate date1 = LocalDate.now().minusYears(16);
         LocalDate birthDate1 = birthDate.getValue();
 
+        boolean isNum = true;
+        Double doubleX = 0.0;
+        try {
+            doubleX = Double.parseDouble(txtFldCreateUsername.getText().trim());
+        } catch (NumberFormatException ex) {
+            isNum = false;
+        }
+
         if ((txtFldCreateUsername.getText().trim().isEmpty())
                 || (txtFldCreatePassword.getText().trim().isEmpty())
                 || (txtFldConfirmPassword.getText().trim().isEmpty())
@@ -525,20 +525,24 @@ public class controllerHealth {
             messageLabel.setStyle("-fx-text-fill: #D05F12");//Orange
         } else if ((txtFldCreatePassword.getText().trim()).equals(txtFldConfirmPassword.getText().trim())) {
             if (birthDate1.isBefore(date1)) {
+                if (isNum == false) {
+                    if ((txtFldCreatePassword.getText().trim().chars().count()) >= (8.00)) {
 
-                if ((txtFldCreatePassword.getText().trim().chars().count()) >= (8.00)) {
+                        messageLabel.setText("Success");
+                        messageLabel.setStyle("-fx-text-fill: #00B050");//Green
 
-                    messageLabel.setText("Success");
-                    messageLabel.setStyle("-fx-text-fill: #00B050");//Green
+                        checkUsername(txtFldCreateUsername, txtFldCreatePassword, rbMale,
+                                rbFemale, birthDate, txtFldHeight, txtFldWeight, messageLabel);
 
-                    checkUsername(txtFldCreateUsername, txtFldCreatePassword, rbMale,
-                            rbFemale, birthDate, txtFldHeight, txtFldWeight, messageLabel);
-
+                    } else {
+                        messageLabel.setText("Please use at least 8 Characters for the password");
+                        messageLabel.setStyle("-fx-text-fill: #FF0000");//Red
+                    }
                 } else {
-                    messageLabel.setText("Please use at least 8 Characters for the password");
-                    messageLabel.setStyle("-fx-text-fill: #FF0000");//Red
-
+                    messageLabel.setText("Please include letters in the username");
+                    messageLabel.setTextFill(Color.RED);
                 }
+
             } else {
                 messageLabel.setText("You need to be at least 16 years old to use this program");
                 messageLabel.setStyle("-fx-text-fill: #FF0000");//Red
@@ -607,7 +611,7 @@ public class controllerHealth {
     }
 
     //Takes the user's info and creates an account.
-    protected void save(TextField username, PasswordField password, DatePicker dp,
+    private void save(TextField username, PasswordField password, DatePicker dp,
             TextField height, TextField weight, Label lbl1, String st1) throws SQLException {
         Connection connection = connectionProvider.getConnection();
         String query = "INSERT INTO Users (UserName, Password, Gender,DOB,Height,Weight) VALUES(?,?,?,?,?,?) ";
@@ -630,7 +634,7 @@ public class controllerHealth {
         connection.close();
     }
 
-    protected void createUserTable(TextField username) throws SQLException {
+    private void createUserTable(TextField username) throws SQLException {
         Connection connection = connectionProvider.getConnection();
 
         String user = username.getText().toLowerCase().trim();
@@ -659,7 +663,7 @@ public class controllerHealth {
     }
 
     private void checkEmptyDays() throws SQLException {
-        LocalDate today = LocalDate.of(2022, 03, 26); //MODIFY TO LocalDate.now
+        LocalDate today = LocalDate.now(); 
         Connection connection = connectionProvider.getConnection();
         String query = "SELECT Date FROM " + user.getUserName();
         int minDiff = 8;
@@ -689,7 +693,8 @@ public class controllerHealth {
     }
 
     private void lastSevenDaysInsertEmptyData(String userName, int missingDays) throws SQLException {
-        LocalDate day = LocalDate.of(2022, 03, 27); //CHOOSE ONE DAY AFTER THE LocalDate.now
+        LocalDate day = LocalDate.now();
+        day = day.plusDays(1);
         String dayString = day.toString();
         String twelveToSixAM = "0-6";
         String sixToTwelveAM = "6-12";
@@ -733,7 +738,7 @@ public class controllerHealth {
     }
 
     private void deleteOldData() throws SQLException {
-        LocalDate today = LocalDate.of(2022, 03, 26); //MODIFY TO LocalDate.now
+        LocalDate today = LocalDate.now(); 
         Connection connection = connectionProvider.getConnection();
         String query = "SELECT Date FROM " + user.getUserName();
         ArrayList<String> oldDays = new ArrayList();
@@ -777,7 +782,7 @@ public class controllerHealth {
 
     //Checks if the username is already taken. If not, it saves the new user's
     //info using the save() function.
-    protected void checkUsername(TextField username2, PasswordField password2, RadioButton rb1, RadioButton rb2,
+    private void checkUsername(TextField username2, PasswordField password2, RadioButton rb1, RadioButton rb2,
             DatePicker dp2, TextField height2, TextField weight2, Label lbl2) throws IOException, SQLException {
 
         Connection connection = connectionProvider.getConnection();
@@ -904,11 +909,6 @@ public class controllerHealth {
         changeScenes("FXMLHealth.fxml", 500, 800);
     }
 
-    //THIS FUNCTION IS NOT WORKING, YOU NEED TO FIX IT
-    @FXML
-    private void mouseEnteredCancel(ActionEvent event) {
-        setTooltipButton(btnCancelDelete);
-    }
 
     @FXML
     private void cancelDeleteClicked(ActionEvent event) throws IOException {
@@ -925,13 +925,8 @@ public class controllerHealth {
         m.stg.centerOnScreen();
     }
 
-    protected void setTooltipButton(Button btn1) {
-        Tooltip tt1 = new Tooltip("Cancel and Sign out");
-        btn1.setTooltip(tt1);
-    }
 
     //More info page (others scenes are loaded inside this scene)
-    
     @FXML
     private BorderPane mainPane;
 
@@ -1043,7 +1038,7 @@ public class controllerHealth {
 
     private Pane view;
 
-    public Pane getPane(String fxmlFile) {
+    private Pane getPane(String fxmlFile) {
         try {
             URL fileUrl = GitHealthApp.class.getResource("/githealthapp/" + fxmlFile + ".fxml");
             if (fileUrl == null) {
@@ -1060,7 +1055,6 @@ public class controllerHealth {
     //
     //Scenes in View Info
     //
-    
     //
     //Steps
     //
@@ -1085,7 +1079,7 @@ public class controllerHealth {
             }
         }
 
-        LocalDate today = LocalDate.of(2022, 03, 26); //CHANGE TO LocalDate.now()
+        LocalDate today = LocalDate.now();
         LocalDate oldDate = today.minusDays(8);
         if (!((choosenDate.isBefore(today) && choosenDate.isAfter(oldDate)) || choosenDate.equals(today))) {
             return false;
@@ -1357,7 +1351,7 @@ public class controllerHealth {
                 menuTimePeriodWater.setText("Time");
                 TBoxWater.setText("");
             } else {
-                lblWaterAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                lblWaterAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as an integer");
                 lblWaterAdded.setTextFill(Color.RED);
             }
         }
@@ -1463,7 +1457,7 @@ public class controllerHealth {
                 }
 
             } else {
-                lblCalAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                lblCalAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as an integer");
                 lblCalAdded.setTextFill(Color.RED);
             }
         }
@@ -1552,7 +1546,7 @@ public class controllerHealth {
                 menuTimePeriodHR.setText("Time");
                 TBoxHR.setText("");
             } else {
-                lblHRAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                lblHRAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as an integer");
                 lblHRAdded.setTextFill(Color.RED);
             }
         }
@@ -1641,14 +1635,14 @@ public class controllerHealth {
                 menuTimePeriodOL.setText("Time");
                 TBoxOL.setText("");
             } else {
-                lblOLAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                lblOLAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as an integer");
                 lblOLAdded.setTextFill(Color.RED);
             }
         }
     }
 
     private void plotGraphInfo(String column) throws SQLException {
-        LocalDate day = LocalDate.of(2022, 03, 26); //MODIFY TO LocalDate.now
+        LocalDate day = LocalDate.now(); 
 
         if (column.equals("Sleep")) {
             plotSleepGraphInfo(day);
@@ -1805,26 +1799,31 @@ public class controllerHealth {
     @FXML
     private Label lblActivityAdded;
 
-
     @FXML
     void addActivityBtnClicked(ActionEvent event) throws SQLException {
         if (TBoxActivityTime.getText() != "" || activityDatePicker.getValue() != null || MET != 0.0
                 || timeSlot != "") {
-            boolean isValid = checkEnteredDataInfo("Activity", activityDatePicker.getValue(), TBoxActivityTime);
-            if (isValid == true) {
-                String date = activityDatePicker.getValue().toString();
-                int time = Integer.parseInt(TBoxActivityTime.getText());
-                int calBurned = caloriesBurnedActivity(time);
-                addDataFromInfo("Calories_Out", date, timeSlot, calBurned);
-                lblActivityAdded.setText("Activity has been added Successfully!");
-                lblActivityAdded.setTextFill(Color.GREEN);
-                MET = 0.0;
-                menuTimePeriodActivity.setText("Time");
-                TBoxActivityTime.setText("");
+            if (!menuActivity.getText().equals("Activity type")) {
+                boolean isValid = checkEnteredDataInfo("Activity", activityDatePicker.getValue(), TBoxActivityTime);
+                if (isValid == true) {
+                    String date = activityDatePicker.getValue().toString();
+                    int time = Integer.parseInt(TBoxActivityTime.getText());
+                    int calBurned = caloriesBurnedActivity(time);
+                    addDataFromInfo("Calories_Out", date, timeSlot, calBurned);
+                    lblActivityAdded.setText("Activity has been added Successfully!");
+                    lblActivityAdded.setTextFill(Color.GREEN);
+                    MET = 0.0;
+                    menuTimePeriodActivity.setText("Time");
+                    TBoxActivityTime.setText("");
+                } else {
+                    lblActivityAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                    lblActivityAdded.setTextFill(Color.RED);
+                }
             } else {
-                lblActivityAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                lblActivityAdded.setText("Please select an activity type");
                 lblActivityAdded.setTextFill(Color.RED);
             }
+
         }
     }
 
@@ -1832,6 +1831,7 @@ public class controllerHealth {
     void getBasketballValue(ActionEvent event) {
         MET = 8.0;
         menuActivity.setText("Basketball");
+
     }
 
     @FXML
@@ -1987,26 +1987,31 @@ public class controllerHealth {
         menuTimePeriodFood.setText("18:00-23:59");
     }
 
-
     @FXML
     void addFoodBtnClicked(ActionEvent event) throws SQLException {
         if (TBoxFood.getText() != "" || foodDatePicker.getValue() != null || CPG != 0.0
                 || timeSlot != "") {
-            boolean isValid = checkEnteredDataInfo("Food", foodDatePicker.getValue(), TBoxFood);
-            if (isValid == true) {
-                String date = foodDatePicker.getValue().toString();
-                int grams = Integer.parseInt(TBoxFood.getText());
-                int calEaten = (int) (grams * CPG);
-                addDataFromInfo("Calories_In", date, timeSlot, calEaten);
-                lblFoodAdded.setText("Food has been added Successfully!");
-                lblFoodAdded.setTextFill(Color.GREEN);
-                CPG = 0.0;
-                menuTimePeriodFood.setText("Time");
-                TBoxFood.setText("");
+            if (!menuFood.getText().equals("Food type")) {
+                boolean isValid = checkEnteredDataInfo("Food", foodDatePicker.getValue(), TBoxFood);
+                if (isValid == true) {
+                    String date = foodDatePicker.getValue().toString();
+                    int grams = Integer.parseInt(TBoxFood.getText());
+                    int calEaten = (int) (grams * CPG);
+                    addDataFromInfo("Calories_In", date, timeSlot, calEaten);
+                    lblFoodAdded.setText("Food has been added Successfully!");
+                    lblFoodAdded.setTextFill(Color.GREEN);
+                    CPG = 0.0;
+                    menuTimePeriodFood.setText("Time");
+                    TBoxFood.setText("");
+                } else {
+                    lblFoodAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as an integer");
+                    lblFoodAdded.setTextFill(Color.RED);
+                }
             } else {
-                lblFoodAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                lblFoodAdded.setText("Please select the food type");
                 lblFoodAdded.setTextFill(Color.RED);
             }
+
         }
     }
 

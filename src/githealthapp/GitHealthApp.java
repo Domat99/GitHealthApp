@@ -47,8 +47,6 @@ public class GitHealthApp extends Application {
         Parent pane =  FXMLLoader.load(getClass().getResource(fxml));
         stg.getScene().setRoot(pane);
         stg.setResizable(true);
-        //stg.setMaxHeight(900);
-        //stg.setMaxWidth(1500);
     }
 
     

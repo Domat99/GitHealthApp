@@ -47,7 +47,7 @@
             <Font name="System Bold Italic" size="18.0" />
          </font>
       </Button>
-      <Button fx:id="btnCancelDelete" layoutX="558.0" layoutY="407.0" mnemonicParsing="false" onAction="#cancelDeleteClicked" onMouseDragEntered="#mouseEnteredCancel" style="-fx-cursor: hand; -fx-background-radius: 20; -fx-background-color: #1d3454;" text="Cancel" textFill="WHITE">
+      <Button fx:id="btnCancelDelete" layoutX="558.0" layoutY="407.0" mnemonicParsing="false" onAction="#cancelDeleteClicked" style="-fx-cursor: hand; -fx-background-radius: 20; -fx-background-color: #1d3454;" text="Cancel" textFill="WHITE">
          <font>
             <Font name="System Bold" size="18.0" />
          </font></Button>
