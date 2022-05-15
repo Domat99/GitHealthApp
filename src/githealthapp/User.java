@@ -70,15 +70,8 @@ public class User {
         return this.weight;
     }
 
-    @Override
-    public String toString() {
-        return "User{" + "userName=" + userName + ", password=" + password + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + ", height=" + height + ", weight=" + weight + '}';
-    }
-
     public void setWeight(int weight) {
         this.weight = weight;
     }
-    
-    
-    
+
 }

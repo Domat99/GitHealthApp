@@ -26,8 +26,8 @@
                         <Image url="@Images/Picture1.png" />
                      </image>
                   </ImageView>
-                  <ProgressIndicator fx:id="pieSleep" layoutX="554.0" layoutY="180.0" onMouseClicked="#sleepMouseClicked" prefHeight="296.0" prefWidth="420.0" progress="0.0" />
-                  <ProgressBar fx:id="barWater" layoutX="1043.0" layoutY="273.0" onMouseClicked="#waterMouseClicked" prefHeight="110.0" prefWidth="408.0" progress="0.0" />
+                  <ProgressIndicator fx:id="pieSleep" layoutX="554.0" layoutY="180.0" prefHeight="296.0" prefWidth="420.0" progress="0.0" />
+                  <ProgressBar fx:id="barWater" layoutX="1043.0" layoutY="273.0" prefHeight="110.0" prefWidth="408.0" progress="0.0" />
                   <Label layoutX="226.0" layoutY="482.0" text="Steps">
                      <font>
                         <Font name="Bell MT" size="38.0" />
@@ -63,7 +63,7 @@
                         <Font name="Bell MT" size="28.0" />
                      </font>
                   </Label>
-                  <LineChart fx:id="graphSteps" layoutX="35.0" layoutY="180.0" legendVisible="false" onMouseClicked="#stepsMouseClicked" prefHeight="296.0" prefWidth="466.0">
+                  <LineChart fx:id="graphSteps" layoutX="35.0" layoutY="180.0" legendVisible="false" prefHeight="296.0" prefWidth="466.0">
                     <xAxis>
                       <CategoryAxis side="BOTTOM" />
                     </xAxis>
@@ -71,7 +71,7 @@
                       <NumberAxis side="LEFT" />
                     </yAxis>
                   </LineChart>
-                  <LineChart fx:id="graphCalories" layoutX="35.0" layoutY="625.0" legendSide="TOP" legendVisible="false" onMouseClicked="#caloriesMouseClicked" prefHeight="296.0" prefWidth="466.0" titleSide="BOTTOM">
+                  <LineChart fx:id="graphCalories" layoutX="35.0" layoutY="625.0" legendSide="TOP" legendVisible="false" prefHeight="296.0" prefWidth="466.0" titleSide="BOTTOM">
                      <xAxis>
                         <CategoryAxis side="BOTTOM" />
                      </xAxis>
@@ -79,7 +79,7 @@
                         <NumberAxis side="LEFT" />
                      </yAxis>
                   </LineChart>
-                  <LineChart fx:id="graphHR" layoutX="517.0" layoutY="625.0" legendVisible="false" onMouseClicked="#heartRateMouseClicked" prefHeight="296.0" prefWidth="466.0">
+                  <LineChart fx:id="graphHR" layoutX="517.0" layoutY="625.0" legendVisible="false" prefHeight="296.0" prefWidth="466.0">
                      <xAxis>
                         <CategoryAxis side="BOTTOM" />
                      </xAxis>
@@ -87,7 +87,7 @@
                         <NumberAxis side="LEFT" />
                      </yAxis>
                   </LineChart>
-                  <LineChart fx:id="graphOL" layoutX="999.0" layoutY="625.0" legendVisible="false" onMouseClicked="#oxygenMouseClicked" prefHeight="296.0" prefWidth="466.0">
+                  <LineChart fx:id="graphOL" layoutX="999.0" layoutY="625.0" legendVisible="false" prefHeight="296.0" prefWidth="466.0">
                      <xAxis>
                         <CategoryAxis side="BOTTOM" />
                      </xAxis>

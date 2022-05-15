@@ -52,6 +52,16 @@ public class controllerHealth {
     static User user;
     static Double CPG = 0.0;
 
+    private void changeScenes(String sceneName, int h, int w) throws IOException {
+
+        GitHealthApp m = new GitHealthApp();
+
+        m.changeScene(sceneName);
+        m.stg.setHeight(h);
+        m.stg.setWidth(w);
+        m.stg.centerOnScreen();
+    }
+
     //Sign in page
     @FXML
     private TextField txtFldUsername;
@@ -171,47 +181,375 @@ public class controllerHealth {
     @FXML
     private Label lblBmiInfo;
 
-    //Functions for when clicked on the graphs
-    //Not used at the moment but are there in case we need them later. 
+    //For sign up page (create account) 
     @FXML
-    void stepsMouseClicked(MouseEvent event) throws IOException {
+    private Label messageLabel;
+    @FXML
+    private TextField txtFldCreateUsername;
+    @FXML
+    private PasswordField txtFldCreatePassword;
+    @FXML
+    private PasswordField txtFldConfirmPassword;
+    @FXML
+    private RadioButton rbMale;
+    @FXML
+    private RadioButton rbFemale;
+    @FXML
+    private DatePicker birthDate;
+    @FXML
+    private TextField txtFldHeight;
+    @FXML
+    private TextField txtFldWeight;
+
+    @FXML
+    private void createClicked(ActionEvent event) throws IOException, SQLException {
+        checkValues();
+    }
+
+    //Checks the entered values by the user when he/she tries to sign up
+    private void checkValues() throws IOException, SQLException {
+
+        LocalDate date1 = LocalDate.now().minusYears(16);
+        LocalDate birthDate1 = birthDate.getValue();
+
+        boolean isNum = true;
+        Double doubleX = 0.0;
+        try {
+            doubleX = Double.parseDouble(txtFldCreateUsername.getText().trim());
+        } catch (NumberFormatException ex) {
+            isNum = false;
+        }
+
+        if ((txtFldCreateUsername.getText().trim().isEmpty())
+                || (txtFldCreatePassword.getText().trim().isEmpty())
+                || (txtFldConfirmPassword.getText().trim().isEmpty())
+                || (!(rbMale.isSelected()) && !(rbFemale.isSelected()))
+                || (birthDate.getValue() == null)
+                || (txtFldHeight.getText().trim().isEmpty())
+                || (txtFldWeight.getText().trim().isEmpty())) {
+            messageLabel.setText("Please fill all the fields");
+            messageLabel.setStyle("-fx-text-fill: #D05F12");//Orange
+        } else if ((txtFldCreatePassword.getText().trim()).equals(txtFldConfirmPassword.getText().trim())) {
+            if (birthDate1.isBefore(date1)) {
+                if (isNum == false) {
+                    if ((txtFldCreatePassword.getText().trim().chars().count()) >= (8.00)) {
+
+                        messageLabel.setText("Success");
+                        messageLabel.setStyle("-fx-text-fill: #00B050");//Green
+
+                        checkUsername(txtFldCreateUsername, txtFldCreatePassword, rbMale,
+                                rbFemale, birthDate, txtFldHeight, txtFldWeight, messageLabel);
+
+                    } else {
+                        messageLabel.setText("Please use at least 8 Characters for the password");
+                        messageLabel.setStyle("-fx-text-fill: #FF0000");//Red
+                    }
+                } else {
+                    messageLabel.setText("Please include letters in the username");
+                    messageLabel.setTextFill(Color.RED);
+                }
+
+            } else {
+                messageLabel.setText("You need to be at least 16 years old to use this program");
+                messageLabel.setStyle("-fx-text-fill: #FF0000");//Red
+            }
+        } else if (!(txtFldCreatePassword.getText().trim()).equals(txtFldConfirmPassword.getText().trim())) {
+            messageLabel.setText("Please make sure the password matches in both boxes");
+            messageLabel.setStyle("-fx-text-fill: #D05F12");//Orange
+        } else {
+            messageLabel.setText("An Error has accured");
+            messageLabel.setStyle("-fx-text-fill: #FF0000");//Red
+        }
+    }
+
+    //Gets the users info to use for the sign in.
+    private Boolean importData(String s1, String s2, Label lbl) throws IOException, SQLException {
+        Connection connection = connectionProvider.getConnection();
+        String query = "SELECT Password FROM Users WHERE UserName = ?";
+        PreparedStatement stmt = null;
+        ResultSet resultSet = null;
+        try {
+            stmt = connection.prepareStatement(query);
+
+            stmt.setString(1, s1);
+
+            resultSet = stmt.executeQuery();
+
+            if (!resultSet.isBeforeFirst()) {
+                lbl.setText("User not found.");
+                lbl.setStyle("-fx-text-fill: #FF0000");//Red
+            } else {
+                while (resultSet.next()) {
+                    String retrievePassword = resultSet.getString("Password");
+                    lbl.setText("Wrong Password");
+                    lbl.setStyle("-fx-text-fill: #FF0000");//Red
+                    if (retrievePassword.equals(s2)) {
+                        lbl.setText("Success!!");
+                        lbl.setStyle("-fx-text-fill: #00B050");//Green
+                        connection.close();
+                        return true;
+                    }
+                }
+
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("An Error Has Occured With importData Selecting: " + ex.getMessage());
+        }
+
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+            }
+        }
+        if (resultSet != null) {
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+            }
+        }
+
+        connection.close();
+
+        return false;
 
     }
 
-    @FXML
-    void sleepMouseClicked(MouseEvent event) {
+    //Takes the user's info and creates an account.
+    private void save(TextField username, PasswordField password, DatePicker dp,
+            TextField height, TextField weight, Label lbl1, String st1) throws SQLException {
+        Connection connection = connectionProvider.getConnection();
+        String query = "INSERT INTO Users (UserName, Password, Gender,DOB,Height,Weight) VALUES(?,?,?,?,?,?) ";
+
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+
+            pstmt.setString(1, username.getText().toLowerCase().trim());
+            pstmt.setString(2, password.getText().trim());
+            pstmt.setString(3, st1);
+            pstmt.setString(4, dp.getValue().toString());
+            pstmt.setString(5, height.getText().trim());
+            pstmt.setString(6, weight.getText().trim());
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            System.out.println("An Error Has Occured With Users Update: " + ex.getMessage());
+        }
+        connection.close();
+    }
+
+    private void createUserTable(TextField username) throws SQLException {
+        Connection connection = connectionProvider.getConnection();
+
+        String user = username.getText().toLowerCase().trim();
+
+        String sql = "CREATE TABLE IF NOT EXISTS " + user + " (\n"
+                + "	Date text,\n"
+                + "	time text,\n"
+                + "	Heart_Rate integer,\n"
+                + "     Oxygen_Level integer,\n"
+                + "     Calories_In integer,\n"
+                + "     Steps integer,\n"
+                + "     Calories_Out integer,\n"
+                + "     Sleep real,\n"
+                + "     Water integer\n);";
+
+        try {
+
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            System.out.println("An Error Has Occured while creating a user table: " + ex.getMessage());
+        }
+        connection.close();
+    }
+
+    private void checkEmptyDays() throws SQLException {
+        LocalDate today = LocalDate.now();
+        Connection connection = connectionProvider.getConnection();
+        String query = "SELECT Date FROM " + user.getUserName();
+        int minDiff = 8;
+        try {
+
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            ResultSet resultSet = stmt.executeQuery();
+
+            while (resultSet.next()) {
+                String testDayString = resultSet.getString("Date");
+                LocalDate testDay = LocalDate.parse(testDayString);
+                Period period = Period.between(testDay, today);
+                if (period.getDays() >= 0 && period.getDays() < minDiff) {
+                    minDiff = period.getDays();
+                }
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("An Error Has Occured With checkEmptyDays Selecting: " + ex.getMessage());
+        }
+        connection.close();
+        if (minDiff != 0) {
+            lastDaysInsertEmptyData(user.getUserName(), minDiff);
+        }
 
     }
 
-    @FXML
-    void waterMouseClicked(MouseEvent event) {
+    private void lastDaysInsertEmptyData(String userName, int missingDays) throws SQLException {
+        LocalDate day = LocalDate.now();
+        day = day.plusDays(1);
+        String dayString = day.toString();
+        String twelveToSixAM = "0-6";
+        String sixToTwelveAM = "6-12";
+        String twelveToSixPM = "12-18";
+        String sixToTwelvePM = "18-24";
+        for (int i = 0; i < missingDays; i++) {
+            day = day.minusDays(1);
+            dayString = day.toString();
+            for (int j = 0; j < 4; j++) {
+                Connection connection = connectionProvider.getConnection();
+                String query = "INSERT INTO " + userName + " (Date, time, Heart_Rate, Oxygen_Level, Calories_In, Steps, Calories_Out, Sleep, Water) VALUES(?,?,?,?,?,?,?,?,?) ";
+                try {
+                    PreparedStatement pstmt = connection.prepareStatement(query);
 
+                    pstmt.setString(1, dayString);
+                    if (j == 0) {
+                        pstmt.setString(2, twelveToSixAM);
+                    } else if (j == 1) {
+                        pstmt.setString(2, sixToTwelveAM);
+                    } else if (j == 2) {
+                        pstmt.setString(2, twelveToSixPM);
+                    } else if (j == 3) {
+                        pstmt.setString(2, sixToTwelvePM);
+                    }
+                    pstmt.setInt(3, 0);
+                    pstmt.setInt(4, 0);
+                    pstmt.setInt(5, 0);
+                    pstmt.setInt(6, 0);
+                    pstmt.setInt(7, 0);
+                    pstmt.setDouble(8, 0.0);
+                    pstmt.setInt(9, 0);
+
+                    pstmt.executeUpdate();
+
+                } catch (SQLException ex) {
+                    System.out.println("An Error Has Occured With adding empty data to user while creating: " + ex.getMessage());
+                }
+                connection.close();
+            }
+        }
     }
 
-    @FXML
-    void caloriesMouseClicked(MouseEvent event) {
+    private void deleteOldData() throws SQLException {
+        LocalDate today = LocalDate.now();
+        Connection connection = connectionProvider.getConnection();
+        String query = "SELECT Date FROM " + user.getUserName();
+        ArrayList<String> oldDays = new ArrayList();
+        try {
 
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            ResultSet resultSet = stmt.executeQuery();
+
+            while (resultSet.next()) {
+                String testDayString = resultSet.getString("Date");
+                LocalDate testDay = LocalDate.parse(testDayString);
+                Period period = Period.between(testDay, today);
+                if (period.getDays() >= 8) {
+                    if (oldDays.contains(testDayString) == false) {
+                        oldDays.add(testDayString);
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println("An Error Has Occured With checkEmptyDays Selecting: " + ex.getMessage());
+        }
+        connection.close();
+        if (oldDays.size() > 0) {
+            for (int i = 0; i < oldDays.size(); i++) {
+                Connection connection2 = connectionProvider.getConnection();
+                String query2 = "DELETE FROM " + user.getUserName() + " WHERE Date = \"" + oldDays.get(i) + "\"";
+                try {
+
+                    PreparedStatement pstmt = connection2.prepareStatement(query2);
+
+                    pstmt.executeUpdate();
+
+                } catch (SQLException ex) {
+                    System.out.println("An Error Has Occured while deleting the account from the users data: " + ex.getMessage());
+                }
+                connection2.close();
+            }
+        }
     }
 
-    @FXML
-    void heartRateMouseClicked(MouseEvent event) {
+    //Checks if the username is already taken. If not, it saves the new user's
+    //info using the save() function, creates a tabel in the database for the user
+    //for the last 8 days and adds its name to the users table.
+    private void checkUsername(TextField username2, PasswordField password2, RadioButton rb1, RadioButton rb2,
+            DatePicker dp2, TextField height2, TextField weight2, Label lbl2) throws IOException, SQLException {
 
+        Connection connection = connectionProvider.getConnection();
+        String gender = "";
+
+        String query = "SELECT * FROM Users WHERE UserName = ?;";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setString(1, username2.getText().toLowerCase().trim());
+
+            ResultSet resultSet = stmt.executeQuery();
+
+            if (resultSet.isBeforeFirst()) {
+                lbl2.setText("The username is already taken, please choose another one");
+                lbl2.setStyle("-fx-text-fill: #FF0000");//Red
+            } else if (username2.getText().toLowerCase().trim().equals("users")) {
+                lbl2.setText("This username is not available, please choose another one");
+                lbl2.setStyle("-fx-text-fill: #FF0000");//Red
+            } else {
+                lbl2.setText("Success! Welcome to Sehtak Fitness!");
+                lbl2.setStyle("-fx-text-fill: #00B050");//Green
+
+                if (rb1.isSelected()) {
+                    gender = "male";
+                } else if (rb2.isSelected()) {
+                    gender = "female";
+                } else {
+                    lbl2.setText("ERROR, please try again or contact us");
+                    lbl2.setStyle("-fx-text-fill: #FF0000");//Red
+                }
+
+                save(username2, password2, dp2, height2, weight2, lbl2, gender);
+                createUserTable(username2);
+                lastDaysInsertEmptyData(username2.getText().trim().toLowerCase(), 8);
+                changeScenes("FXMLHealth.fxml", 500, 800);
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("An Error Has Occured With checkUsername Selecting: " + ex.getMessage());
+        }
+        connection.close();
     }
 
-    @FXML
-    void oxygenMouseClicked(MouseEvent event) {
-
-    }
-
+    //*
+    //*
+    //*
+    //Dashboard
+    //*
+    //*
+    //*
     @FXML
     void infoBtnClicked(ActionEvent event) throws IOException {
         changeScenes("ViewInfoFXML.fxml", 750, 800);
-
     }
 
     @FXML
     void loadGraphsBtnClicked(ActionEvent event) throws IOException, SQLException {
-        LocalDate today = LocalDate.now(); 
+        LocalDate today = LocalDate.now();
         plotGraphDashboard(getGraphsData(user.getUserName(), "Steps", today), "Steps");
         plotGraphDashboard(getGraphsData(user.getUserName(), "Calories_In", today), "Calories_In");
         plotGraphDashboard(getGraphsData(user.getUserName(), "Heart_Rate", today), "Heart_Rate");
@@ -221,7 +559,6 @@ public class controllerHealth {
         lblHeight.setText(Integer.toString(user.getHeight()));
         lblWeight.setText(Integer.toString(user.getWeight()));
         lblBmi.setText(Integer.toString(calBMI(user.getHeight(), user.getWeight())));
-
     }
 
     @FXML
@@ -396,7 +733,7 @@ public class controllerHealth {
         String yesterdayString = yesterday.toString();
 
         Double[] results = new Double[4];
-        String query = "SELECT Sleep FROM " + name + " WHERE Date = \"" + dateToday + "\" AND time = \"18-24\"";
+        String query = "SELECT Sleep FROM " + name + " WHERE Date = \"" + yesterdayString + "\" AND time = \"18-24\"";
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
 
@@ -407,8 +744,8 @@ public class controllerHealth {
         } catch (SQLException ex) {
             System.out.println("An Error Has Occured With getSleepData 1 Selecting: " + ex.getMessage());
         }
-        String query2 = "SELECT Sleep FROM " + name + " WHERE Date = \"" + yesterdayString + "\" AND time = \"0-6\" OR Date = \"" + yesterdayString + "\" AND time = \"6-12\""
-                + " OR Date = \"" + yesterdayString + "\" AND time = \"12-18\"";
+        String query2 = "SELECT Sleep FROM " + name + " WHERE Date = \"" + dateToday + "\" AND time = \"0-6\" OR Date = \"" + dateToday + "\" AND time = \"6-12\""
+                + " OR Date = \"" + dateToday + "\" AND time = \"12-18\"";
         try {
             PreparedStatement stmt2 = connection.prepareStatement(query2);
 
@@ -436,7 +773,6 @@ public class controllerHealth {
 
         Double sleepPercentage = sleepTime / 24.0;
         pieSleep.setProgress(sleepPercentage);
-
     }
 
     private void plotWaterGraphDashboard(int[] results) {
@@ -466,26 +802,6 @@ public class controllerHealth {
         changeScenes("DeleteAccount.fxml", 525, 800);
     }
 
-    //For sign up page (create account) 
-    @FXML
-    private Label messageLabel;
-    @FXML
-    private TextField txtFldCreateUsername;
-    @FXML
-    private PasswordField txtFldCreatePassword;
-    @FXML
-    private PasswordField txtFldConfirmPassword;
-    @FXML
-    private RadioButton rbMale;
-    @FXML
-    private RadioButton rbFemale;
-    @FXML
-    private DatePicker birthDate;
-    @FXML
-    private TextField txtFldHeight;
-    @FXML
-    private TextField txtFldWeight;
-
     @FXML
     private void backClicked(ActionEvent event) {
         try {
@@ -494,338 +810,6 @@ public class controllerHealth {
             Logger.getLogger(controllerHealth.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    }
-
-    @FXML
-    private void createClicked(ActionEvent event) throws IOException, SQLException {
-        checkValues();
-    }
-
-    private void checkValues() throws IOException, SQLException {
-
-        LocalDate date1 = LocalDate.now().minusYears(16);
-        LocalDate birthDate1 = birthDate.getValue();
-
-        boolean isNum = true;
-        Double doubleX = 0.0;
-        try {
-            doubleX = Double.parseDouble(txtFldCreateUsername.getText().trim());
-        } catch (NumberFormatException ex) {
-            isNum = false;
-        }
-
-        if ((txtFldCreateUsername.getText().trim().isEmpty())
-                || (txtFldCreatePassword.getText().trim().isEmpty())
-                || (txtFldConfirmPassword.getText().trim().isEmpty())
-                || (!(rbMale.isSelected()) && !(rbFemale.isSelected()))
-                || (birthDate.getValue() == null)
-                || (txtFldHeight.getText().trim().isEmpty())
-                || (txtFldWeight.getText().trim().isEmpty())) {
-            messageLabel.setText("Please fill all the fields");
-            messageLabel.setStyle("-fx-text-fill: #D05F12");//Orange
-        } else if ((txtFldCreatePassword.getText().trim()).equals(txtFldConfirmPassword.getText().trim())) {
-            if (birthDate1.isBefore(date1)) {
-                if (isNum == false) {
-                    if ((txtFldCreatePassword.getText().trim().chars().count()) >= (8.00)) {
-
-                        messageLabel.setText("Success");
-                        messageLabel.setStyle("-fx-text-fill: #00B050");//Green
-
-                        checkUsername(txtFldCreateUsername, txtFldCreatePassword, rbMale,
-                                rbFemale, birthDate, txtFldHeight, txtFldWeight, messageLabel);
-
-                    } else {
-                        messageLabel.setText("Please use at least 8 Characters for the password");
-                        messageLabel.setStyle("-fx-text-fill: #FF0000");//Red
-                    }
-                } else {
-                    messageLabel.setText("Please include letters in the username");
-                    messageLabel.setTextFill(Color.RED);
-                }
-
-            } else {
-                messageLabel.setText("You need to be at least 16 years old to use this program");
-                messageLabel.setStyle("-fx-text-fill: #FF0000");//Red
-            }
-        } else if (!(txtFldCreatePassword.getText().trim()).equals(txtFldConfirmPassword.getText().trim())) {
-            messageLabel.setText("Please make sure the password matches in both boxes");
-            messageLabel.setStyle("-fx-text-fill: #D05F12");//Orange
-        } else {
-            messageLabel.setText("An Error has accured");
-            messageLabel.setStyle("-fx-text-fill: #FF0000");//Red
-        }
-    }
-
-    //Gets the users info to use for the sign in.
-    private Boolean importData(String s1, String s2, Label lbl) throws IOException, SQLException {
-        Connection connection = connectionProvider.getConnection();
-        String query = "SELECT Password FROM Users WHERE UserName = ?";
-        PreparedStatement stmt = null;
-        ResultSet resultSet = null;
-        try {
-            stmt = connection.prepareStatement(query);
-
-            stmt.setString(1, s1);
-
-            resultSet = stmt.executeQuery();
-
-            if (!resultSet.isBeforeFirst()) {
-                lbl.setText("User not found.");
-                lbl.setStyle("-fx-text-fill: #FF0000");//Red
-            } else {
-                while (resultSet.next()) {
-                    String retrievePassword = resultSet.getString("Password");
-                    lbl.setText("Wrong Password");
-                    lbl.setStyle("-fx-text-fill: #FF0000");//Red
-                    if (retrievePassword.equals(s2)) {
-                        lbl.setText("Success!!");
-                        lbl.setStyle("-fx-text-fill: #00B050");//Green
-                        connection.close();
-                        return true;
-                    }
-                }
-
-            }
-
-        } catch (SQLException ex) {
-            System.out.println("An Error Has Occured With importData Selecting: " + ex.getMessage());
-        }
-
-        if (stmt != null) {
-            try {
-                stmt.close();
-            } catch (SQLException e) {
-            }
-        }
-        if (resultSet != null) {
-            try {
-                resultSet.close();
-            } catch (SQLException e) {
-            }
-        }
-
-        connection.close();
-
-        return false;
-
-    }
-
-    //Takes the user's info and creates an account.
-    private void save(TextField username, PasswordField password, DatePicker dp,
-            TextField height, TextField weight, Label lbl1, String st1) throws SQLException {
-        Connection connection = connectionProvider.getConnection();
-        String query = "INSERT INTO Users (UserName, Password, Gender,DOB,Height,Weight) VALUES(?,?,?,?,?,?) ";
-
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(query);
-
-            pstmt.setString(1, username.getText().toLowerCase().trim());
-            pstmt.setString(2, password.getText().trim());
-            pstmt.setString(3, st1);
-            pstmt.setString(4, dp.getValue().toString());
-            pstmt.setString(5, height.getText().trim());
-            pstmt.setString(6, weight.getText().trim());
-
-            pstmt.executeUpdate();
-
-        } catch (SQLException ex) {
-            System.out.println("An Error Has Occured With Users Update: " + ex.getMessage());
-        }
-        connection.close();
-    }
-
-    private void createUserTable(TextField username) throws SQLException {
-        Connection connection = connectionProvider.getConnection();
-
-        String user = username.getText().toLowerCase().trim();
-
-        String sql = "CREATE TABLE IF NOT EXISTS " + user + " (\n"
-                + "	Date text,\n"
-                + "	time text,\n"
-                + "	Heart_Rate integer,\n"
-                + "     Oxygen_Level integer,\n"
-                + "     Calories_In integer,\n"
-                + "     Steps integer,\n"
-                + "     Calories_Out integer,\n"
-                + "     Sleep real,\n"
-                + "     Water integer\n);";
-
-        try {
-
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-
-            pstmt.executeUpdate();
-
-        } catch (SQLException ex) {
-            System.out.println("An Error Has Occured while creating a user table: " + ex.getMessage());
-        }
-        connection.close();
-    }
-
-    private void checkEmptyDays() throws SQLException {
-        LocalDate today = LocalDate.now(); 
-        Connection connection = connectionProvider.getConnection();
-        String query = "SELECT Date FROM " + user.getUserName();
-        int minDiff = 8;
-        try {
-
-            PreparedStatement stmt = connection.prepareStatement(query);
-
-            ResultSet resultSet = stmt.executeQuery();
-
-            while (resultSet.next()) {
-                String testDayString = resultSet.getString("Date");
-                LocalDate testDay = LocalDate.parse(testDayString);
-                Period period = Period.between(testDay, today);
-                if (period.getDays() >= 0 && period.getDays() < minDiff) {
-                    minDiff = period.getDays();
-                }
-            }
-
-        } catch (SQLException ex) {
-            System.out.println("An Error Has Occured With checkEmptyDays Selecting: " + ex.getMessage());
-        }
-        connection.close();
-        if (minDiff != 0) {
-            lastSevenDaysInsertEmptyData(user.getUserName(), minDiff);
-        }
-
-    }
-
-    private void lastSevenDaysInsertEmptyData(String userName, int missingDays) throws SQLException {
-        LocalDate day = LocalDate.now();
-        day = day.plusDays(1);
-        String dayString = day.toString();
-        String twelveToSixAM = "0-6";
-        String sixToTwelveAM = "6-12";
-        String twelveToSixPM = "12-18";
-        String sixToTwelvePM = "18-24";
-        for (int i = 0; i < missingDays; i++) {
-            day = day.minusDays(1);
-            dayString = day.toString();
-            for (int j = 0; j < 4; j++) {
-                Connection connection = connectionProvider.getConnection();
-                String query = "INSERT INTO " + userName + " (Date, time, Heart_Rate, Oxygen_Level, Calories_In, Steps, Calories_Out, Sleep, Water) VALUES(?,?,?,?,?,?,?,?,?) ";
-                try {
-                    PreparedStatement pstmt = connection.prepareStatement(query);
-
-                    pstmt.setString(1, dayString);
-                    if (j == 0) {
-                        pstmt.setString(2, twelveToSixAM);
-                    } else if (j == 1) {
-                        pstmt.setString(2, sixToTwelveAM);
-                    } else if (j == 2) {
-                        pstmt.setString(2, twelveToSixPM);
-                    } else if (j == 3) {
-                        pstmt.setString(2, sixToTwelvePM);
-                    }
-                    pstmt.setInt(3, 0);
-                    pstmt.setInt(4, 0);
-                    pstmt.setInt(5, 0);
-                    pstmt.setInt(6, 0);
-                    pstmt.setInt(7, 0);
-                    pstmt.setDouble(8, 0.0);
-                    pstmt.setInt(9, 0);
-
-                    pstmt.executeUpdate();
-
-                } catch (SQLException ex) {
-                    System.out.println("An Error Has Occured With adding empty data to user while creating: " + ex.getMessage());
-                }
-                connection.close();
-            }
-        }
-    }
-
-    private void deleteOldData() throws SQLException {
-        LocalDate today = LocalDate.now(); 
-        Connection connection = connectionProvider.getConnection();
-        String query = "SELECT Date FROM " + user.getUserName();
-        ArrayList<String> oldDays = new ArrayList();
-        try {
-
-            PreparedStatement stmt = connection.prepareStatement(query);
-
-            ResultSet resultSet = stmt.executeQuery();
-
-            while (resultSet.next()) {
-                String testDayString = resultSet.getString("Date");
-                LocalDate testDay = LocalDate.parse(testDayString);
-                Period period = Period.between(testDay, today);
-                if (period.getDays() >= 8) {
-                    if (oldDays.contains(testDayString) == false) {
-                        oldDays.add(testDayString);
-                    }
-                }
-            }
-        } catch (SQLException ex) {
-            System.out.println("An Error Has Occured With checkEmptyDays Selecting: " + ex.getMessage());
-        }
-        connection.close();
-        if (oldDays.size() > 0) {
-            for (int i = 0; i < oldDays.size(); i++) {
-                Connection connection2 = connectionProvider.getConnection();
-                String query2 = "DELETE FROM " + user.getUserName() + " WHERE Date = \"" + oldDays.get(i) + "\"";
-                try {
-
-                    PreparedStatement pstmt = connection2.prepareStatement(query2);
-
-                    pstmt.executeUpdate();
-
-                } catch (SQLException ex) {
-                    System.out.println("An Error Has Occured while deleting the account from the users data: " + ex.getMessage());
-                }
-                connection2.close();
-            }
-        }
-    }
-
-    //Checks if the username is already taken. If not, it saves the new user's
-    //info using the save() function.
-    private void checkUsername(TextField username2, PasswordField password2, RadioButton rb1, RadioButton rb2,
-            DatePicker dp2, TextField height2, TextField weight2, Label lbl2) throws IOException, SQLException {
-
-        Connection connection = connectionProvider.getConnection();
-        String gender = "";
-
-        String query = "SELECT * FROM Users WHERE UserName = ?;";
-
-        try {
-            PreparedStatement stmt = connection.prepareStatement(query);
-
-            stmt.setString(1, username2.getText().toLowerCase().trim());
-
-            ResultSet resultSet = stmt.executeQuery();
-
-            if (resultSet.isBeforeFirst()) {
-                lbl2.setText("The username is already taken, please choose another one");
-                lbl2.setStyle("-fx-text-fill: #FF0000");//Red
-            } else if (username2.getText().toLowerCase().trim().equals("users")) {
-                lbl2.setText("This username is not available, please choose another one");
-                lbl2.setStyle("-fx-text-fill: #FF0000");//Red
-            } else {
-                lbl2.setText("Success! Welcome to Sehtak Fitness!");
-                lbl2.setStyle("-fx-text-fill: #00B050");//Green
-
-                if (rb1.isSelected()) {
-                    gender = "male";
-                } else if (rb2.isSelected()) {
-                    gender = "female";
-                } else {
-                    lbl2.setText("ERROR, please try again or contact us");
-                    lbl2.setStyle("-fx-text-fill: #FF0000");//Red
-                }
-
-                save(username2, password2, dp2, height2, weight2, lbl2, gender);
-                createUserTable(username2);
-                lastSevenDaysInsertEmptyData(username2.getText().trim().toLowerCase(), 8);
-                changeScenes("FXMLHealth.fxml", 500, 800);
-            }
-
-        } catch (SQLException ex) {
-
-        }
-        connection.close();
     }
 
     //Delete account page
@@ -855,7 +839,7 @@ public class controllerHealth {
             boolean data = importData(name, password, lblDeleteInfo);
             if (data == true) {
                 if (!name.equals(user.getUserName())) {
-                    lblDeleteInfo.setText("Please enter the user name that you have used to sign in");
+                    lblDeleteInfo.setText("Please enter your own user name");
                     lblDeleteInfo.setStyle("-fx-text-fill: #FF0000");//Red
                 } else {
 
@@ -909,22 +893,10 @@ public class controllerHealth {
         changeScenes("FXMLHealth.fxml", 500, 800);
     }
 
-
     @FXML
     private void cancelDeleteClicked(ActionEvent event) throws IOException {
         changeScenes("MainHealth.fxml", 950, 1500);
     }
-
-    protected void changeScenes(String sceneName, int h, int w) throws IOException {
-
-        GitHealthApp m = new GitHealthApp();
-
-        m.changeScene(sceneName);
-        m.stg.setHeight(h);
-        m.stg.setWidth(w);
-        m.stg.centerOnScreen();
-    }
-
 
     //More info page (others scenes are loaded inside this scene)
     @FXML
@@ -960,6 +932,7 @@ public class controllerHealth {
     @FXML
     private Button btnFood;
 
+    //To make the user go back to the dashboard after clicking on the logo on the top left
     @FXML
     void logoViewInfoClicked(MouseEvent event) throws IOException {
         changeScenes("MainHealth.fxml", 950, 1500);
@@ -1055,6 +1028,8 @@ public class controllerHealth {
     //
     //Scenes in View Info
     //
+    //
+    
     //
     //Steps
     //
@@ -1256,7 +1231,7 @@ public class controllerHealth {
                 } else {
                     tot -= newSleep;
                     lblSleepAdded.setText("Sleep hours Cannot be updated since you already\n"
-                            + "have slept for " + tot + "hours");
+                            + "have slept for " + tot + " hours");
                     lblSleepAdded.setTextFill(Color.RED);
                 }
                 menuTimePeriodSleep.setText("Time");
@@ -1642,12 +1617,12 @@ public class controllerHealth {
     }
 
     private void plotGraphInfo(String column) throws SQLException {
-        LocalDate day = LocalDate.now(); 
+        LocalDate day = LocalDate.now();
 
         if (column.equals("Sleep")) {
             plotSleepGraphInfo(day);
         } else {
-            int[] totResults = new int[7];
+            int[] totResults = new int[8];
             int[] dayResults = new int[4];
             int results;
             int addedDays;
@@ -1705,7 +1680,7 @@ public class controllerHealth {
             chart.getYAxis().setAnimated(true);
             chart.setAnimated(true);
             day = day.plusDays(1);
-            for (int k = 6; k >= 0; k--) {
+            for (int k = 7; k >= 0; k--) {
                 series1.getData().add(new XYChart.Data<>(day.toString(), totResults[k]));
                 day = day.plusDays(1);
             }
@@ -2103,5 +2078,4 @@ public class controllerHealth {
             return newResult;
         }
     }
-
 }
