@@ -1791,7 +1791,7 @@ public class controllerHealth {
                     menuTimePeriodActivity.setText("Time");
                     TBoxActivityTime.setText("");
                 } else {
-                    lblActivityAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as a decimal");
+                    lblActivityAdded.setText("Please select a date between today and from 8 days and make sure to enter the value as an integer");
                     lblActivityAdded.setTextFill(Color.RED);
                 }
             } else {

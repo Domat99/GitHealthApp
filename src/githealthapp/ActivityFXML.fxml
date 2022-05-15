@@ -55,6 +55,6 @@
                 <Font name="System Bold" size="20.0" />
             </font>
         </Button>
-      <Label fx:id="lblActivityAdded" alignment="TOP_RIGHT" layoutX="69.0" layoutY="339.0" prefHeight="55.0" prefWidth="678.0" text="Enter how many minutes you have spent performing this activity" wrapText="true" />
+      <Label fx:id="lblActivityAdded" alignment="TOP_RIGHT" layoutX="69.0" layoutY="339.0" prefHeight="55.0" prefWidth="678.0" text="Enter how many minutes you have spent performing this activity as integer" wrapText="true" />
     </children>
 </AnchorPane>
